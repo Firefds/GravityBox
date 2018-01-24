@@ -154,10 +154,20 @@ public class ModPowerMenu {
                            R.drawable.ic_lock_screen_record_vibeui : R.drawable.ic_lock_screen_record);
 
                    mRebootItemList = new ArrayList<IIconListAdapterItem>();
-                   mRebootItemList.add(new BasicIconListItem(mRebootStr, null, mRebootIcon, null));
-                   mRebootItemList.add(new BasicIconListItem(mRebootSoftStr, null, mRebootSoftIcon, null));
-                   mRebootItemList.add(new BasicIconListItem(mRecoveryStr, null, mRecoveryIcon, null));
-                   mRebootItemList.add(new BasicIconListItem(mBootloaderStr, null, mBootloaderIcon, null));
+                   //checks if one of the RTL languages and orders the list accordingly
+                   if (Locale.getDefault().getLanguage().equals("iw") || Locale.getDefault().getLanguage().equals("ar") || 
+                           Locale.getDefault().getLanguage().equals("fa") || Locale.getDefault().getLanguage().equals("ur")) {
+                       mRebootItemList.add(new BasicIconListItem(mRebootStr, null, null, mRebootIcon));
+                       mRebootItemList.add(new BasicIconListItem(mRebootSoftStr, null, null, mRebootSoftIcon));
+                       mRebootItemList.add(new BasicIconListItem(mRecoveryStr, null, null, mRecoveryIcon));
+                       mRebootItemList.add(new BasicIconListItem(mBootloaderStr, null, null, mBootloaderIcon));
+                   }
+                   else {
+                       mRebootItemList.add(new BasicIconListItem(mRebootStr, null, mRebootIcon, null));
+                       mRebootItemList.add(new BasicIconListItem(mRebootSoftStr, null, mRebootSoftIcon, null));
+                       mRebootItemList.add(new BasicIconListItem(mRecoveryStr, null, mRecoveryIcon, null));
+                       mRebootItemList.add(new BasicIconListItem(mBootloaderStr, null, mBootloaderIcon, null));
+                   }
 
                    mRebootConfirmStr = String.format(gbContext.getString(R.string.reboot_confirm),
                            gbContext.getString(Utils.isTablet() ? R.string.device_tablet : R.string.device_phone));
