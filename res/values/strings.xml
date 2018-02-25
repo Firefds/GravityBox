@@ -1693,7 +1693,7 @@
 
     <!-- DND tile settings -->
     <string name="pref_cat_qs_dnd_tile_title">Do not disturb tile settings</string>
-    <string name="pref_dnd_tile_quick_mode_summary">Allows cycling through chosen do not diturb modes on tile single-press</string>
+    <string name="pref_dnd_tile_quick_mode_summary">Allows cycling through chosen do not disturb modes on tile single-press</string>
     <string name="pref_dnd_tile_enabled_modes_summary">Sets which do not disturb modes to cycle through</string>
     <string name="dnd_tile_em_priority">Priority only</string>
     <string name="dnd_tile_em_alarms">Alarms only</string>

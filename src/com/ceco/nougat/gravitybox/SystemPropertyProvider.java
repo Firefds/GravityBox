@@ -46,7 +46,7 @@ public class SystemPropertyProvider {
     public static final String EXTRA_UUID_TYPE = "uuidType";
     private static final String SETTING_GRAVITYBOX_UUID = "gravitybox_uuid";
     private static final String SETTING_GRAVITYBOX_UUID_TYPE = "gravitybox_uuid_type";
-    private static final String SETTING_UNC_TRIAL_COUNTDOWN = "gravitybox_unc_trial_countdown";
+    public static final String SETTING_UNC_TRIAL_COUNTDOWN = "gravitybox_unc_trial_countdown";
 
     private static String mSettingsUuid;
 
@@ -95,16 +95,6 @@ public class SystemPropertyProvider {
                     if (context != null) {
                         if (DEBUG) log("SystemUIService created. Registering BroadcastReceiver");
                         final ContentResolver cr = context.getContentResolver();
-
-                        // register or decrease UNC trial countdown
-                        int uncTrialCountdown = Settings.System.getInt(cr, SETTING_UNC_TRIAL_COUNTDOWN, -1);
-                        if (uncTrialCountdown == -1) {
-                            Settings.System.putInt(cr, SETTING_UNC_TRIAL_COUNTDOWN, 50);
-                        } else {
-                            if (--uncTrialCountdown >= 0) {
-                                Settings.System.putInt(cr, SETTING_UNC_TRIAL_COUNTDOWN, uncTrialCountdown);
-                            }
-                        }
 
                         IntentFilter intentFilter = new IntentFilter();
                         intentFilter.addAction(ACTION_GET_SYSTEM_PROPERTIES);

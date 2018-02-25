@@ -402,9 +402,10 @@ public class AppLauncher implements BroadcastSubReceiver {
                 if (loadLabelAndIcon) {
                     final int mode = mIntent.getIntExtra("mode", AppPickerPreference.MODE_APP);
                     Bitmap appIcon = null;
-                    final int iconResId = mIntent.getStringExtra("iconResName") != null ?
-                            mGbResources.getIdentifier(mIntent.getStringExtra("iconResName"),
-                            "drawable", mGbContext.getPackageName()) : 0;
+                    final String iconResName = mIntent.getStringExtra("iconResName");
+                    final int iconResId = iconResName != null ?
+                            mGbResources.getIdentifier(iconResName, "drawable",
+                                    mGbContext.getPackageName()) : 0;
                     if (iconResId != 0) {
                         appIcon = Utils.drawableToBitmap(mGbContext.getDrawable(iconResId));
                     } else if (mIntent.hasExtra("icon")) {
@@ -433,6 +434,9 @@ public class AppLauncher implements BroadcastSubReceiver {
                                 mResources.getDisplayMetrics());
                         Bitmap scaledIcon = Bitmap.createScaledBitmap(appIcon, sizePx, sizePx, true);
                         mAppIcon = new BitmapDrawable(mResources, scaledIcon);
+                        if (iconResName != null && iconResName.startsWith("ic_shortcut")) {
+                            mAppIcon.setTint(0xFF707070);
+                        }
                     }
                 }
 

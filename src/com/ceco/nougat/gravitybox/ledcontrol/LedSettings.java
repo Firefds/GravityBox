@@ -15,6 +15,7 @@
 
 package com.ceco.nougat.gravitybox.ledcontrol;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,6 +40,7 @@ public class LedSettings {
     public static final String PREF_KEY_ACTIVE_SCREEN_POCKET_MODE = "pref_unc_as_pocket_mode";
 
     public static final String ACTION_UNC_SETTINGS_CHANGED = "gravitybox.intent.action.UNC_SETTINGS_CHANGED";
+    public static final String EXTRA_UNC_PACKAGE_SETTINGS = "gravitybox.uncPackageSettings";
 
     public enum LedMode { ORIGINAL, OVERRIDE, OFF };
     public enum HeadsUpMode { DEFAULT, ALWAYS, IMMERSIVE, OFF };
@@ -112,6 +114,10 @@ public class LedSettings {
 
     public static LedSettings deserialize(Set<String> dataSet) {
         return deserialize(null, null, dataSet);
+    }
+
+    public static LedSettings deserialize(String pkg, ArrayList<String> list) {
+        return deserialize(null, pkg, new HashSet<String>(list));
     }
 
     private static LedSettings deserialize(Context context, String packageName, Set<String> dataSet) {
@@ -222,6 +228,12 @@ public class LedSettings {
 
     protected static LedSettings getDefault(Context context) {
         return deserialize(context, "default");
+    }
+
+    protected static LedSettings createForPreview() {
+        LedSettings settings = new LedSettings(null, "preview");
+        settings.setEnabled(true);
+        return settings;
     }
 
     protected static boolean isActiveScreenMasterEnabled(Context context) {
@@ -588,44 +600,51 @@ public class LedSettings {
         return mLedIgnoreUpdate;
     }
 
+    private Set<String> createDataSet() {
+        Set<String> dataSet = new HashSet<String>();
+
+        dataSet.add("enabled:" + mEnabled);
+        dataSet.add("ongoing:" + mOngoing);
+        dataSet.add("ledOnMs:" + mLedOnMs);
+        dataSet.add("ledOffMs:" + mLedOffMs);
+        dataSet.add("color:" + mColor);
+        dataSet.add("soundOverride:" + mSoundOverride);
+        if (mSoundUri != null) {
+            dataSet.add("sound:" + mSoundUri.toString());
+        }
+        dataSet.add("soundOnlyOnce:" + mSoundOnlyOnce);
+        dataSet.add("soundOnlyOnceTimeoutMs:" + mSoundOnlyOnceTimeout);
+        dataSet.add("insistent:" + mInsistent);
+        dataSet.add("vibrateOverride:" + mVibrateOverride);
+        if (mVibratePatternStr != null) {
+            dataSet.add("vibratePattern:" + mVibratePatternStr);
+        }
+        dataSet.add("activeScreenMode:" + mActiveScreenMode);
+        dataSet.add("activeScreenIgnoreUpdate:" + mActiveScreenIgnoreUpdate);
+        dataSet.add("ledMode:" + mLedMode);
+        dataSet.add("qhIgnore:" + mQhIgnore);
+        if (mQhIgnoreList != null) {
+            dataSet.add("qhIgnoreList:" + mQhIgnoreList);
+        }
+        dataSet.add("headsUpMode:" + mHeadsUpMode.toString());
+        dataSet.add("headsUpDnd:" + mHeadsUpDnd);
+        dataSet.add("headsUpTimeout:" + mHeadsUpTimeout);
+        dataSet.add("progressTracking:" + mProgressTracking);
+        dataSet.add("visibility:" + mVisibility.toString());
+        dataSet.add("visibilityLs:" + mVisibilityLs.toString());
+        dataSet.add("soundToVibrateDisabled:" + mSoundToVibrateDisabled);
+        dataSet.add("vibrateReplace:" + mVibrateReplace);
+        dataSet.add("soundReplace:" + mSoundReplace);
+        dataSet.add("hidePersistent:" + mHidePersistent);
+        dataSet.add("ledDnd:" + mLedDnd);
+        dataSet.add("ledIgnoreUpdate:" + mLedIgnoreUpdate);
+
+        return dataSet;
+    }
+
     protected void serialize() {
         try {
-            Set<String> dataSet = new HashSet<String>();
-            dataSet.add("enabled:" + mEnabled);
-            dataSet.add("ongoing:" + mOngoing);
-            dataSet.add("ledOnMs:" + mLedOnMs);
-            dataSet.add("ledOffMs:" + mLedOffMs);
-            dataSet.add("color:" + mColor);
-            dataSet.add("soundOverride:" + mSoundOverride);
-            if (mSoundUri != null) {
-                dataSet.add("sound:" + mSoundUri.toString());
-            }
-            dataSet.add("soundOnlyOnce:" + mSoundOnlyOnce);
-            dataSet.add("soundOnlyOnceTimeoutMs:" + mSoundOnlyOnceTimeout);
-            dataSet.add("insistent:" + mInsistent);
-            dataSet.add("vibrateOverride:" + mVibrateOverride);
-            if (mVibratePatternStr != null) {
-                dataSet.add("vibratePattern:" + mVibratePatternStr);
-            }
-            dataSet.add("activeScreenMode:" + mActiveScreenMode);
-            dataSet.add("activeScreenIgnoreUpdate:" + mActiveScreenIgnoreUpdate);
-            dataSet.add("ledMode:" + mLedMode);
-            dataSet.add("qhIgnore:" + mQhIgnore);
-            if (mQhIgnoreList != null) {
-                dataSet.add("qhIgnoreList:" + mQhIgnoreList);
-            }
-            dataSet.add("headsUpMode:" + mHeadsUpMode.toString());
-            dataSet.add("headsUpDnd:" + mHeadsUpDnd);
-            dataSet.add("headsUpTimeout:" + mHeadsUpTimeout);
-            dataSet.add("progressTracking:" + mProgressTracking);
-            dataSet.add("visibility:" + mVisibility.toString());
-            dataSet.add("visibilityLs:" + mVisibilityLs.toString());
-            dataSet.add("soundToVibrateDisabled:" + mSoundToVibrateDisabled);
-            dataSet.add("vibrateReplace:" + mVibrateReplace);
-            dataSet.add("soundReplace:" + mSoundReplace);
-            dataSet.add("hidePersistent:" + mHidePersistent);
-            dataSet.add("ledDnd:" + mLedDnd);
-            dataSet.add("ledIgnoreUpdate:" + mLedIgnoreUpdate);
+            final Set<String> dataSet = createDataSet();
             WorldReadablePrefs prefs = SettingsManager.getInstance(mContext).getLedControlPrefs();
             prefs.edit().putStringSet(mPackageName, dataSet).commit(new OnPreferencesCommitedListener() {
                 @Override
@@ -640,6 +659,10 @@ public class LedSettings {
             t.printStackTrace();
         }
     }
+
+    public ArrayList<String> toArrayList() {
+        return new ArrayList<>(createDataSet());
+    } 
 
     public String toString() {
         String buf = "[" + mPackageName + "," + mEnabled + "," + mColor + "," + mLedOnMs + 

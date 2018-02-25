@@ -1110,8 +1110,8 @@
 
     <!-- QS Tiles: tile specific settings categories -->
     <string name="pref_cat_qs_tile_settings_title">Особые настройки</string>
-    <string name="pref_cat_qs_tile_settings_summary">Применение особых настроек плитки</string>
-    <string name="pref_cat_qs_nm_tile_settings_title">Плитка сет.режима</string>
+    <string name="pref_cat_qs_tile_settings_summary">Применение особых настроек плиток</string>
+    <string name="pref_cat_qs_nm_tile_settings_title">Плитка режима сети</string>
 
     <!-- Led control -->
     <string name="pref_led_control_title">Управление оповещением</string>
@@ -1425,7 +1425,7 @@
     <string name="pref_powermenu_expanded_desktop_summary">Убедитесь, что доступен альтернативный метод отключения расширенного рабочего стола!!!</string>
 
     <!-- QuickRecord tile settings -->
-    <string name="pref_cat_quickrecord_tile_title">Настройки плитки быстрой записи</string>
+    <string name="pref_cat_quickrecord_tile_title">Плитка быстрой записи</string>
     <string name="pref_quickrecord_quality_title">Качество аудио</string>
     <string name="qr_audio_quality_low">Низкое (16кГц)</string>
     <string name="qr_audio_quality_medium">Среднее (22кГц)</string>
@@ -1571,7 +1571,7 @@
     <string name="lc_notif_visibility_secret">Скрыть уведомление</string>
 
     <!-- Cellular tile settings -->
-    <string name="pref_cat_qs_cell_tile_title">Настройки плитки моб. сети</string>
+    <string name="pref_cat_qs_cell_tile_title">Плитка моб. данных</string>
 
     <!-- Lockscreen: app shortcuts -->
     <string name="pref_lockscreen_shortcuts_title">Ярлыки</string>
@@ -1591,7 +1591,7 @@
     <string name="wifi_trusted_info">Доверенно для умной блокировки</string>
 
     <!-- QS: Battery tile settings -->
-    <string name="pref_cat_qs_battery_tile_title">Параметры плитки батареи</string>
+    <string name="pref_cat_qs_battery_tile_title">Плитка батареи</string>
     <string name="pref_battery_tile_temp_unit_title">Единицы температуры</string>
     <string name="celsius">Цельсий</string>
     <string name="fahrenheit">Фаренгейт</string>
@@ -1633,10 +1633,10 @@
     <string name="pref_pie_control_trigind_color_title">Цвет индикатора триггера</string>
 
     <!-- WiFi tile settings -->
-    <string name="pref_cat_qs_wifi_tile_title">Параметры плитки WiFi</string>
+    <string name="pref_cat_qs_wifi_tile_title">Плитка WiFi</string>
 
     <!-- Bluetooth tile settings -->
-    <string name="pref_cat_qs_bt_tile_title">Параметры плитки BlueTooth</string>
+    <string name="pref_cat_qs_bt_tile_title">Плитка BlueTooth</string>
 
     <!-- MTK: disable network type indicators -->
     <string name="pref_signal_cluster_dnti_title">Отключение индикаторов типа сети</string>
@@ -1684,7 +1684,7 @@
     <string name="pref_tile_enabled_modes_title">Включенные режимы</string>
 
     <!-- DND tile settings -->
-    <string name="pref_cat_qs_dnd_tile_title">Параметры плитки Не беспокоить</string>
+    <string name="pref_cat_qs_dnd_tile_title">Плитка Не беспокоить</string>
     <string name="pref_dnd_tile_quick_mode_summary">Переключение между выбранными режимами Не беспокоить одиночным нажатием на плитке</string>
     <string name="pref_dnd_tile_enabled_modes_summary">Режимы Не беспокоить, между которыми производится переключение</string>
     <string name="dnd_tile_em_priority">Только важные</string>
@@ -1697,7 +1697,7 @@
     <string name="pref_dnd_tile_duration_title">Установить пользовательскую длительность</string>
 
     <!-- Location tile (Slimkat) settings -->
-    <string name="pref_cat_qs_location_tile_title">Настройки плитки местоположения (SlimKat)</string>
+    <string name="pref_cat_qs_location_tile_title">Плитка местоположения (SlimKat)</string>
     <string name="pref_location_tile_quick_mode_summary">Опция переключения режимов местоположения при нажатии на плитку</string>
 
     <!-- Cellular network modes -->
@@ -1731,12 +1731,12 @@
     <string name="pref_nm_tile_quick_mode_summary">Опция переключения сетевых режимов при нажатии на плитку</string>
 
     <!-- Ringer mode tile settings -->
-    <string name="pref_cat_qs_rm_tile_title">Настройки плитки режима звонка</string>
+    <string name="pref_cat_qs_rm_tile_title">Плитка режима звонка</string>
     <string name="pref_rm_tile_enabled_modes_summary">Определение режимов звонка, которые должна поддерживать плитка</string>
     <string name="pref_rm_tile_quick_mode_summary">Опция переключения режимов звонка при нажатии на плитку</string>
 
     <!-- Stay awake tile settings -->
-    <string name="pref_cat_qs_sa_tile_title">Настройки плитки бодрствования</string>
+    <string name="pref_cat_qs_sa_tile_title">Плитка бодрствования</string>
     <string name="pref_sa_tile_enabled_modes_summary">Определение режимов задержки отключения экрана, которые должна поддерживать плитка</string>
     <string name="pref_sa_tile_quick_mode_summary">Опция переключения режимов задержки отключения экрана при нажатии на плитку</string>
 

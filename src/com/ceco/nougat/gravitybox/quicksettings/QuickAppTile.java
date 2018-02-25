@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Peter Gregus for GravityBox Project (C3C076@xda)
+ * Copyright (C) 2018 Peter Gregus for GravityBox Project (C3C076@xda)
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,8 +20,8 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ceco.nougat.gravitybox.GravityBoxSettings;
 import com.ceco.nougat.gravitybox.R;
+import com.ceco.nougat.gravitybox.GravityBoxSettings;
 import com.ceco.nougat.gravitybox.Utils;
 import com.ceco.nougat.gravitybox.preference.AppPickerPreference;
 import com.ceco.nougat.gravitybox.shortcuts.ShortcutActivity;
@@ -80,8 +80,8 @@ public class QuickAppTile extends QsTile {
 
     private final class AppInfo {
         private String mAppName;
-        private Drawable mAppIcon;
-        private Drawable mAppIconSmall;
+        private Drawable mAppIconDrawable;
+        private int mAppIconResId;
         private String mValue;
         private int mResId;
         private Intent mIntent;
@@ -101,14 +101,13 @@ public class QuickAppTile extends QsTile {
                     mGbContext.getString(R.string.qs_tile_quickapp) : mAppName);
         }
 
-        public Drawable getAppIcon() {
-            return (mAppIcon == null ? 
-                    mGbContext.getDrawable(android.R.drawable.ic_menu_help) : mAppIcon);
+        public Drawable getAppIconDrawable() {
+            return (mAppIconDrawable == null ? 
+                    mGbContext.getDrawable(android.R.drawable.ic_menu_help) : mAppIconDrawable);
         }
 
-        public Drawable getAppIconSmall() {
-            return (mAppIconSmall == null ? 
-                    mGbContext.getDrawable(android.R.drawable.ic_menu_help) : mAppIconSmall);
+        public int getAppIconResId() {
+            return mAppIconResId;
         }
 
         public String getValue() {
@@ -121,16 +120,16 @@ public class QuickAppTile extends QsTile {
 
         private void reset() {
             mValue = mAppName = null;
-            mAppIcon = mAppIconSmall = null;
+            mAppIconDrawable = null;
+            mAppIconResId = 0;
             mIntent = null;
         }
 
         public void initAppInfo(String value) {
+            reset();
             mValue = value;
-            if (mValue == null) {
-                reset();
+            if (mValue == null)
                 return;
-            }
 
             try {
                 mIntent = Intent.parseUri(value, 0);
@@ -141,10 +140,12 @@ public class QuickAppTile extends QsTile {
                 final int mode = mIntent.getIntExtra("mode", AppPickerPreference.MODE_APP);
 
                 Bitmap appIcon = null;
-                final int iconResId = mIntent.getStringExtra("iconResName") != null ?
-                        mResources.getIdentifier(mIntent.getStringExtra("iconResName"),
-                        "drawable", mGbContext.getPackageName()) : 0;
+                final String iconResName = mIntent.getStringExtra("iconResName");
+                final int iconResId = iconResName != null ?
+                        mResources.getIdentifier(iconResName, "drawable",
+                                mGbContext.getPackageName()) : 0;
                 if (iconResId != 0) {
+                    mAppIconResId = iconResId;
                     appIcon = Utils.drawableToBitmap(mGbContext.getDrawable(iconResId));
                 } else {
                     final String appIconPath = mIntent.getStringExtra("icon");
@@ -167,16 +168,15 @@ public class QuickAppTile extends QsTile {
                 } else if (mode == AppPickerPreference.MODE_SHORTCUT) {
                     mAppName = mIntent.getStringExtra("label");
                 }
+
                 if (appIcon != null) {
                     int sizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, 
                             mResources.getDisplayMetrics());
-                    int sizePxSmall = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 35, 
-                            mResources.getDisplayMetrics());
-                    Bitmap scaledIcon;
-                    scaledIcon = Bitmap.createScaledBitmap(appIcon, sizePx, sizePx, true);
-                    mAppIcon = new BitmapDrawable(mResources, scaledIcon);
-                    scaledIcon = Bitmap.createScaledBitmap(appIcon, sizePxSmall, sizePxSmall, true);
-                    mAppIconSmall = new BitmapDrawable(mResources, scaledIcon);
+                    Bitmap scaledIcon = Bitmap.createScaledBitmap(appIcon, sizePx, sizePx, true);
+                    mAppIconDrawable = new BitmapDrawable(mResources, scaledIcon);
+                    if (mResId != mId && iconResName != null && iconResName.startsWith("ic_shortcut")) {
+                        mAppIconDrawable.setTint(0xFF707070);
+                    }
                 }
                 if (DEBUG) log(getKey() + ": AppInfo initialized for: " + getAppName());
             } catch (NameNotFoundException e) {
@@ -333,9 +333,13 @@ public class QuickAppTile extends QsTile {
 
     @Override
     public void handleUpdateState(Object state, Object arg) {
-        mState.booleanValue = false;
-        mState.label = mMainApp.getAppName();
-        mState.icon = iconFromDrawable(mMainApp.getAppIconSmall());
+        mState.booleanValue = true;
+        if (mMainApp != null) {
+            mState.label = mMainApp.getAppName();
+            mState.icon = mMainApp.getAppIconResId() == 0 ? 
+                    iconFromDrawable(mMainApp.getAppIconDrawable()) :
+                        iconFromResId(mMainApp.getAppIconResId());
+        }
         super.handleUpdateState(state, arg);
     }
 
@@ -346,8 +350,8 @@ public class QuickAppTile extends QsTile {
 
     @Override
     public boolean supportsHideOnChange() {
-        // starting activity collapses panel anyway
-        return false;
+        // allow explicitly for actions of broadcast type as starting normal activity collapses panel anyway
+        return (ShortcutActivity.isGbBroadcastShortcut(mMainApp.getIntent()));
     }
 
     @Override
@@ -378,7 +382,7 @@ public class QuickAppTile extends QsTile {
             tv.setTextSize(1, 10);
             tv.setMaxLines(2);
             tv.setEllipsize(TruncateAt.END);
-            tv.setCompoundDrawablesWithIntrinsicBounds(null, ai.getAppIcon(), null, null);
+            tv.setCompoundDrawablesWithIntrinsicBounds(null, ai.getAppIconDrawable(), null, null);
             tv.setClickable(true);
             tv.setOnClickListener(mOnSlotClick);
             count++;

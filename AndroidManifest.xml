@@ -16,8 +16,8 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ceco.nougat.gravitybox"
-    android:versionCode="707"
-    android:versionName="7.0.6" >
+    android:versionCode="709"
+    android:versionName="7.0.8" >
 
     <uses-sdk
         android:minSdkVersion="24"
@@ -180,17 +180,6 @@
             android:exported="false">
             <intent-filter>
                  <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
-        <receiver 
-            android:name="com.ceco.nougat.gravitybox.UnlockActivity$UnlockReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="gravitybox.permission.UNLOCK">
-            <intent-filter>
-                 <action android:name="gravitybox.intent.action.UNLOCK" />
-                 <action android:name="gravitybox.intent.action.CHECK_POLICY" />
             </intent-filter>
         </receiver>
 

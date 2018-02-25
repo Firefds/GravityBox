@@ -196,6 +196,9 @@ public class UnlockActivity extends GravityBoxActivity implements GravityBoxResu
                 Toast.makeText(context, context.getString(R.string.msg_unlocker_old),
                         Toast.LENGTH_LONG).show();
             } else {
+                context.registerReceiver(new UnlockReceiver(),
+                        new IntentFilter(ACTION_UNLOCK),
+                        PERMISSION_UNLOCK, null);
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 intent.setPackage(PKG_UNLOCKER);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

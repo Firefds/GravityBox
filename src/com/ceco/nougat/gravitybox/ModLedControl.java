@@ -36,6 +36,7 @@ import android.app.KeyguardManager;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -183,6 +184,7 @@ public class ModLedControl {
                         intentFilter.addAction(GravityBoxSettings.ACTION_PREF_POWER_CHANGED);
                         mContext.registerReceiver(mBroadcastReceiver, intentFilter);
 
+                        updateUncTrialCountdown();
                         updateActiveScreenFeature();
                         hookNotificationDelegate();
 
@@ -204,6 +206,25 @@ public class ModLedControl {
 
             XposedBridge.hookAllMethods(XposedHelpers.findClass(CLASS_VIBRATOR_SERVICE, classLoader),
                     "startVibrationLocked", startVibrationHook);
+        } catch (Throwable t) {
+            GravityBox.log(TAG, t);
+        }
+    }
+
+    private static void updateUncTrialCountdown() {
+        try {
+            final ContentResolver cr = mContext.getContentResolver();
+            int uncTrialCountdown = Settings.System.getInt(cr,
+                    SystemPropertyProvider.SETTING_UNC_TRIAL_COUNTDOWN, -1);
+            if (uncTrialCountdown == -1) {
+                Settings.System.putInt(cr,
+                        SystemPropertyProvider.SETTING_UNC_TRIAL_COUNTDOWN, 50);
+            } else {
+                if (--uncTrialCountdown >= 0) {
+                    Settings.System.putInt(cr,
+                            SystemPropertyProvider.SETTING_UNC_TRIAL_COUNTDOWN, uncTrialCountdown);
+                }
+            }
         } catch (Throwable t) {
             GravityBox.log(TAG, t);
         }
@@ -232,22 +253,27 @@ public class ModLedControl {
                                     getDefaultNotificationLedOff() : n.ledOffMS));
                 }
 
-                if (n.extras.containsKey("gbIgnoreNotification")) return;
-
                 Object oldRecord = getOldNotificationRecord(param.args[0], param.args[4],
                         param.args[5], param.args[8]);
                 Notification oldN = getNotificationFromRecord(oldRecord);
                 final String pkgName = (String) param.args[0];
 
-                LedSettings ls = LedSettings.deserialize(mUncPrefs.getStringSet(pkgName, null));
-                if (!ls.getEnabled()) {
-                    // use default settings in case they are active
-                    ls = LedSettings.deserialize(mUncPrefs.getStringSet("default", null));
-                    if (!ls.getEnabled() && !mQuietHours.quietHoursActive(ls, n, mUserPresent)) {
-                        return;
+                LedSettings ls;
+                if (n.extras.containsKey("gbUncPreviewNotification")) {
+                    ls = LedSettings.deserialize("preview", n.extras.getStringArrayList(
+                            LedSettings.EXTRA_UNC_PACKAGE_SETTINGS));
+                    if (DEBUG) log("Received UNC preview notification");
+                } else {
+                    ls = LedSettings.deserialize(mUncPrefs.getStringSet(pkgName, null));
+                    if (!ls.getEnabled()) {
+                        // use default settings in case they are active
+                        ls = LedSettings.deserialize(mUncPrefs.getStringSet("default", null));
+                        if (!ls.getEnabled() && !mQuietHours.quietHoursActive(ls, n, mUserPresent)) {
+                            return;
+                        }
                     }
+                    if (DEBUG) log(pkgName + ": " + ls.toString());
                 }
-                if (DEBUG) log(pkgName + ": " + ls.toString());
 
                 final boolean qhActive = mQuietHours.quietHoursActive(ls, n, mUserPresent);
                 final boolean qhActiveIncludingLed = qhActive && mQuietHours.muteLED;

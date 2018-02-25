@@ -164,6 +164,9 @@ public class GravityBox implements IXposedHookZygoteInit, IXposedHookInitPackage
             if (prefs.getBoolean(GravityBoxSettings.PREF_KEY_FINGERPRINT_LAUNCHER_ENABLE, false)) {
                 FingerprintLauncher.initAndroid(lpparam.classLoader);
             }
+            if (Build.VERSION.SDK_INT >= 25) {
+                ModActivityManager.initAndroid(lpparam.classLoader);
+            }
         }
 
         if (lpparam.packageName.equals(SystemPropertyProvider.PACKAGE_NAME)) {
@@ -180,7 +183,9 @@ public class GravityBox implements IXposedHookZygoteInit, IXposedHookInitPackage
         }
 
         if (ModDialer.PACKAGE_NAMES.contains(lpparam.packageName) && !Utils.isOxygenOsRom()) {
-            if (lpparam.appInfo.targetSdkVersion >= 25) {
+            if (lpparam.appInfo.targetSdkVersion >= 26) {
+                ModDialer26.init(prefs, qhPrefs, lpparam.classLoader, lpparam.packageName);
+            } else if (lpparam.appInfo.targetSdkVersion == 25) {
                 ModDialer25.init(prefs, qhPrefs, lpparam.classLoader, lpparam.packageName);
             } else if (lpparam.appInfo.targetSdkVersion == 24) {
                 ModDialer24.init(prefs, qhPrefs, lpparam.classLoader, lpparam.packageName);

@@ -36,6 +36,7 @@
     <string name="poweroff_advanced_summary">Engedélyezi a haladó kikapcsoló menüt újraindítás Recovery-be opcióval</string>
     <string name="poweroff_recovery">Recovery</string>    
     <string name="poweroff_bootloader">Bootloader</string>
+    <string name="poweroff_download">Letöltés</string>
 
     <string name="vol_key_cursor_control_title">Kurzor irányítás hangerő gombokkal</string>
     <string name="vol_key_cursor_control_summary">Kurzor irányítása szöveges mezőkben a hangerő gombok használatával</string>
@@ -73,6 +74,7 @@
     <string name="quick_settings_quiet_hours_off">Csendes Időszak kikapcsolva</string>
     <string name="quick_settings_quiet_hours_on">Csendes Időszak bekapcsolva</string>
     <string name="quick_settings_quiet_hours_auto">Automatikus Csendes Időszak</string>
+    <string name="quick_settings_quiet_hours_wear">Wear mód</string>
 
     <!--  QuickSettings settings -->
     <string name="quick_settings_title">Állapotsáv Gyorsbeállítások csempéi</string>
@@ -85,6 +87,7 @@
     <string name="qs_tile_gps_alt">GPS (CM stílus)</string>
     <string name="qs_tile_network_mode">Hálózati üzemmód</string>
     <string name="qs_tile_data_usage">Adat használat</string>
+    <string name="qs_tile_data">Mobil adathasználat</string>
     <string name="qs_tile_sync">Szinkronizáció</string>
     <string name="qs_tile_wifi_ap">Internet-hozzáférési pont</string>
     <string name="qs_tile_torch_gb">Zseblámpa (GravityBox)</string>
@@ -122,6 +125,7 @@
     <string name="reboot_confirm">A telefon újra fog indulni.</string>
     <string name="reboot_confirm_recovery">A telefon Recovery módba fog újraindulni.</string>
     <string name="reboot_confirm_bootloader">A telefon Bootloader módba fog újraindulni.</string>
+    <string name="reboot_confirm_download">A %s letöltés módban indul újra.</string>
 
     <!-- Engineering mode shortcut -->
     <string name="engineering_mode_title">Tervező üzemmód</string>
@@ -1368,6 +1372,10 @@
     <string name="imgpick_dialog_title">Képkiválasztás</string>
     <string name="imgpick_choose_error">Hiba történt a kép kiválasztása során</string>
     <string name="imgpick_crop_error">Hiba történt a kép kivágás során</string>
+    <string name="imgpick_crop_uri_null">A kivágást végző alkalmazás nem adott kivágott képet. Az eredeti kép kerül felhasználásra.</string>
+    <string name="imgpick_crop_ask_title">Kivágja a képet?</string>
+    <string name="imgpick_crop_ask_msg">Ha a nemet választod, az eredeti kép lesz használva. 
+        Győződj meg róla, hogy a mérete közeli ehhez: %1$dx%2$dpx</string>
 
     <!-- Proximity wake -->
     <string name="pref_power_proximity_wake_title">Ébresztés közelség érzékelővel</string>
@@ -1789,10 +1797,11 @@
     <string name="nfc_on">NFC be</string>
     <string name="nfc_off">NFC ki</string>
 	
-	<!-- Quiet hours shortcut -->
+    <!-- Quiet hours shortcut -->
     <string name="quiet_hours_on">Csendes időszak be</string>
     <string name="quiet_hours_off">Csendes időszak ki</string>
     <string name="quiet_hours_auto">Automatikus Csendes időszak</string>
+    <string name="quiet_hours_wear">Wear mód</string>
 
     <!-- Auto rotation shortcut -->
     <string name="auto_rotation_on">Automatikus elforgatás be</string>
@@ -1869,7 +1878,7 @@
     <string name="pref_cat_fingerprint_launcher_fingers_title">Ujjankénti műveletek</string>
     <string name="finger">Ujj</string>
     <string name="pref_cat_fingerprint_launcher_quick_tap_title">Gyors érintés művelet</string>
-	<string name="pref_fingerprint_launcher_pause_title">Szüneteltet</string>
+    <string name="pref_fingerprint_launcher_pause_title">Szüneteltet</string>
     <string name="pref_fingerprint_launcher_pause_summary">Szünetelteti az indítót a következő képernyő ki-bekapcsolásig. Akkor használd, ha más alkalmazásoknak hosszabb ideig szüksége van a szenzorra, pl. ujjlenyomat rögzítése.</string>
     <string name="fingerprint_launcher_paused">Az indító szüneteltetésre kerül a következő képernyő ki-bekapcsolási ciklusig.</string>
     <string name="pref_fingerprint_launcher_show_toast_title">Állapot üzenetek megjelenítése</string>
@@ -1898,4 +1907,102 @@
     <string name="pref_statusbar_download_progress_sound_screen_off_title">Csak kikapcsolt képernyőnél</string>
     <string name="pref_statusbar_download_progress_sound_screen_off_summary">Értesítési hang lejátszása csak kikapocsolt képernyő esetén</string>
 
+    <!-- Unlocker policy check feedback -->
+    <string name="msg_unlocker_missing">Nem sikerült kapcsolódni a GravityBox Feloldóhoz a licenc ellenőrzés végrehajtásához</string>
+    <string name="msg_unlocker_old">A GravityBox Feloldó verziója elavult. Kérlek frissítsd.</string>
+    <string name="msg_unlocker_error">Nem várt hiba történt a GravityBox Feloldóhoz történt kapcsolódáskor</string>
+
+    <!-- Lockscreen: hide bottom actions -->
+    <string name="pref_lockscreen_bottom_actions_hide_title">Alsó műveletek elrejtése</string>
+    <string name="bottom_action_left">Baloldali művelet elrejtése</string>
+    <string name="bottom_action_right">Jobboldali művelet elrejtése</string>
+
+    <!-- Lockscreen: Direct unlock see through transparency level -->
+    <string name="pref_lockscreen_direct_unlock_trans_level_title">Látható átlátszóság</string>
+
+    <!-- Subscription manager -->
+    <string name="sm_choose_voice_sub">Alapértelmezett SIM választása hívásokhoz</string>
+    <string name="sm_choose_sms_sub">Alapértelmezett SIM választása üzenetkezeléshez</string>
+    <string name="sm_choose_data_sub">Alapértelmezett SIM választása mobil adathasználathoz</string>
+    <string name="sm_sub_change_voice_failed">Nem sikerült beállítani a hívásokhoz az alapértelmezett SIM-et</string>
+    <string name="sm_sub_change_sms_failed">Nem sikerült beállítani az üzenetkezeléshez az alapértelmezett SIM-et</string>
+    <string name="sm_sub_change_data_failed">Nem sikerült beállítani a mobil adathasználathoz az alapértelmezett SIM-et</string>
+    <string name="sm_sub_change_voice_ok">Alapértelmezett SIM beállítva hívásokhoz:</string>
+    <string name="sm_sub_change_sms_ok">Alapértelmezett SIM beállítva üzenetkezeléshez:</string>
+    <string name="sm_sub_change_data_ok">Alapértelmezett SIM beállítva mobil adathasználathoz:</string>
+    <string name="sm_voice_ask">Minden alkalommal rákérdez</string>
+
+    <!-- GB Actions: SIM settings -->
+    <string name="shortcut_sm_title">SIM beállítások</string>
+    <string name="shortcut_sm_voice_sim_1">SIM 1 hívásokhoz</string>
+    <string name="shortcut_sm_voice_sim_2">SIM 2 hívásokhoz</string>
+    <string name="shortcut_sm_voice_sim_ask">Kérdezzen rá hívás indításakor</string>
+    <string name="shortcut_sm_voice_sim_ui">SIM választása hívásokhoz</string>
+    <string name="shortcut_sm_sms_sim_1">SIM 1 SMS küldéshez</string>
+    <string name="shortcut_sm_sms_sim_2">SIM 2 SMS küldéshez</string>
+    <string name="shortcut_sm_sms_sim_ui">SIM választása SMS küldéshez</string>
+    <string name="shortcut_sm_data_sim_1">SIM 1 adatforgalomhoz</string>
+    <string name="shortcut_sm_data_sim_2">SIM 2 adatforgalomhoz</string>
+    <string name="shortcut_sm_data_sim_ui">SIM választása adatforgalomhoz</string>
+
+    <!-- QuickApp Tile #3 and #4 -->
+    <string name="pref_cat_quickapp_tile_3_title">Gyors Programelérés csempe 3 beállítások</string>
+    <string name="qs_tile_quickapp_3">Gyors Programelérés 3</string>
+    <string name="pref_cat_quickapp_tile_4_title">Gyors Programelérés csempe 4 beállítások</string>
+    <string name="qs_tile_quickapp_4">Gyors Programelérés 4</string>
+
+    <!-- QS Bluetooth Tethering tile -->
+    <string name="qs_tile_bt_tethering">Bluetooth megosztás</string>
+    <string name="qs_tile_bt_tethering_on">Bluetooth megosztás Be</string>
+    <string name="qs_tile_bt_tethering_off">Bluetooth megosztás Ki</string>
+    <string name="qs_tile_bt_tethering_error">Hiba</string>
+
+    <!-- QS protected when device locked -->
+    <string name="qs_protected_summary">Védett, amikor az eszköz zárolva van</string>
+
+    <!-- Volume panel: notification stream label -->
+    <string name="notification_stream_name">Értesítés</string>
+
+    <!-- OOS: hide dash charge icon -->
+    <string name="pref_battery_hide_dash_icon_title">Dash töltés ikon elrejtése</string>
+    <string name="pref_battery_hide_dash_icon_summary">Gyári akkumulátor ikonhoz</string>
+
+    <!-- OOS: call recording -->
+    <string name="pref_oos_call_recording_title">Hívásrögzítés engedélyezése</string>
+    <string name="pref_oos_call_recording_summary">Ne feledd, hogy a hívások rögzítése illegális lehet a te országodban</string>
+
+    <!-- OOS: disable dash charging sound -->
+    <string name="pref_oos_dash_sound_disable_title">Dash töltés hang letiltása</string>
+
+    <!-- Storage permission toast -->
+    <string name="permission_storage_denied">A Háttértárhoz való hozzáférési engedély megtagadásra került</string>
+
+    <!-- QS: Locked tile indicattor -->
+    <string name="pref_qs_locked_tile_indicator_title">Lezárás csempe kijelzése</string>
+    <string name="locked_tile_indicator_none">Semmi</string>
+    <string name="locked_tile_indicator_dim">Sötétített ikon</string>
+    <string name="locked_tile_indicator_padlock">Lakat &#x1f512;</string>
+    <string name="locked_tile_indicator_key">Kulcs &#x1f511;</string>
+
+    <!-- QS: WiFi quick mode -->
+    <string name="pref_wifi_tile_quick_mode_summary">Lehetővé teszi a WiFi ki-bekapcsolását a csempe egyszeri érintésére</string>
+
+    <!-- QS: BT quick mode -->
+    <string name="pref_bt_tile_quick_mode_summary">Lehetővé teszi a Bluetooth ki-bekapcsolását a csempe egyszeri érintésére</string>
+
+    <!-- KeyAction: Toggle split screen -->
+    <string name="hwkey_action_split_screen">Osztott képernyő ki-bekapcsolása</string>
+
+    <!-- Yes/No -->
+    <string name="yes">Igen</string>
+    <string name="no">Nem</string>
+
+    <!-- Error logging -->
+    <string name="pref_log_errors_title">Hibanaplózás</string>
+    <string name="pref_log_errors_summary">Naplózza az összes hibát az Xposed naplóba, ha engedélyezve van (újraindítás szükséges)</string>
+
+    <!-- SignalCluster: Moto: use AOSP mobile type icon -->
+    <string name="pref_signal_cluster_aosp_mobile_type_title">AOSP mobil ikon típus használata</string>
+    <string name="pref_signal_cluster_aosp_mobile_type_summary">Újraindítás szükséges</string>
+	
 </resources>

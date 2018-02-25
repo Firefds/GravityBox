@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Peter Gregus for GravityBox Project (C3C076@xda)
+ * Copyright (C) 2018 Peter Gregus for GravityBox Project (C3C076@xda)
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,7 +23,6 @@ import com.ceco.nougat.gravitybox.RecordingService;
 import com.ceco.nougat.gravitybox.GravityBoxResultReceiver.Receiver;
 
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedBridge;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -46,7 +45,7 @@ public class QuickRecordTile extends QsTile {
     private static final int STATE_NO_RECORDING = 4;
 
     private String mAudioFileName;
-    private int mRecordingState = STATE_IDLE;
+    private int mRecordingState = STATE_NO_RECORDING;
     private MediaPlayer mPlayer;
     private Handler mHandler;
     private int mAudioQuality;
@@ -71,7 +70,8 @@ public class QuickRecordTile extends QsTile {
                 }
                 switch(newState) {
                 case RecordingService.RECORDING_STATUS_IDLE:
-                    mRecordingState = STATE_IDLE;
+                    mRecordingState = mAudioFileName == null ? 
+                            STATE_NO_RECORDING : STATE_IDLE;
                     break;
                 case RecordingService.RECORDING_STATUS_STARTED:
                     mRecordingState = STATE_RECORDING;

@@ -340,6 +340,9 @@ public class BatteryStyleController implements BroadcastSubReceiver {
     }
 
     private void updateDashChargeView() {
+        if (!Utils.isOxygenOsRom())
+            return;
+
         try {
             XposedHelpers.callMethod(mPhoneStatusBar, "updateDashChargeView");
         } catch (Throwable t) {
