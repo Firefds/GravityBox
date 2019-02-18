@@ -87,6 +87,10 @@ public abstract class QsTile extends BaseTile {
             return new UsbTetherTile(host, key, tile, prefs, eventDistributor);
         else if (key.contains(BluetoothTetheringTile.Service.KEY))
             return new BluetoothTetheringTile(host, key, tile, prefs, eventDistributor);
+        else if (key.contains(AmbientDisplayTile.Service.KEY))
+            return new AmbientDisplayTile(host, key, tile, prefs, eventDistributor);
+        else if (key.contains(HeadsUpTile.Service.KEY))
+            return new HeadsUpTile(host, key, tile, prefs, eventDistributor);
 
         return null;
     }

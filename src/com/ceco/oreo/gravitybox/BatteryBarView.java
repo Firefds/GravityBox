@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Peter Gregus for GravityBox Project (C3C076@xda)
+ * Copyright (C) 2018 Peter Gregus for GravityBox Project (C3C076@xda)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,6 +78,7 @@ public class BatteryBarView extends View implements IconManagerListener,
     private ContainerType mContainerType;
     private ViewGroup mContainer;
     private boolean mHiddenByPolicy;
+    private boolean mChargingOnly;
 
     private static void log(String message) {
         XposedBridge.log(TAG + ": " + message);
@@ -90,6 +91,7 @@ public class BatteryBarView extends View implements IconManagerListener,
         mContainerType = containerType;
 
         mEnabled = prefs.getBoolean(GravityBoxSettings.PREF_KEY_BATTERY_BAR_SHOW, false);
+        mChargingOnly = prefs.getBoolean(GravityBoxSettings.PREF_KEY_BATTERY_BAR_SHOW_CHARGING, false);
         mPosition = Position.valueOf(prefs.getString(
                 GravityBoxSettings.PREF_KEY_BATTERY_BAR_POSITION, "TOP"));
         mMarginPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -174,7 +176,8 @@ public class BatteryBarView extends View implements IconManagerListener,
     }
 
     private void update() {
-        if (mEnabled && !mHiddenByProgressBar && !mHiddenByPolicy && isValidStatusBarState()) {
+        if (mEnabled && (mCharging || !mChargingOnly) &&
+                !mHiddenByProgressBar && !mHiddenByPolicy && isValidStatusBarState()) {
             setVisibility(View.VISIBLE);
             if (mDynaColor) {
                 int cappedLevel = Math.min(Math.max(mLevel, 15), 90);
@@ -317,6 +320,10 @@ public class BatteryBarView extends View implements IconManagerListener,
                     unsetListeners();
                     setScaleX(0f);
                 }
+                update();
+            }
+            if (intent.hasExtra(GravityBoxSettings.EXTRA_BBAR_SHOW_CHARGING)) {
+                mChargingOnly = intent.getBooleanExtra(GravityBoxSettings.EXTRA_BBAR_SHOW_CHARGING, false);
                 update();
             }
             if (intent.hasExtra(GravityBoxSettings.EXTRA_BBAR_POSITION)) {

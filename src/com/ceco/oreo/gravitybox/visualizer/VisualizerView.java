@@ -17,108 +17,22 @@
 
 package com.ceco.oreo.gravitybox.visualizer;
 
-import com.ceco.oreo.gravitybox.GravityBox;
-
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.media.audiofx.Visualizer;
-import android.os.AsyncTask;
 import android.view.View;
-import de.robv.android.xposed.XposedBridge;
 
 public class VisualizerView extends View {
 
-    private static final String TAG = "GB:VisualizerView";
-    private static final boolean DEBUG = false;
-
-    private static void log(String message) {
-        XposedBridge.log(TAG + ": " + message);
-    }
-
     private Paint mPaint;
-    private Visualizer mVisualizer;
     private ValueAnimator[] mValueAnimators;
     private float[] mFFTPoints;
+    private float mDbCapValue = 16f;
 
-    private Visualizer.OnDataCaptureListener mVisualizerListener =
-            new Visualizer.OnDataCaptureListener() {
-        byte rfk, ifk;
-        int dbValue;
-        float magnitude;
-
-        @Override
-        public void onWaveFormDataCapture(Visualizer visualizer, byte[] bytes, int samplingRate) {
-        }
-
-        @Override
-        public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate) {
-            for (int i = 0; i < 32; i++) {
-                mValueAnimators[i].cancel();
-                rfk = fft[i * 2 + 2];
-                ifk = fft[i * 2 + 3];
-                magnitude = rfk * rfk + ifk * ifk;
-                dbValue = magnitude > 0 ? (int) (10 * Math.log10(magnitude)) : 0;
-
-                mValueAnimators[i].setFloatValues(mFFTPoints[i * 4 + 1],
-                        mFFTPoints[3] - (dbValue * 16f));
-                mValueAnimators[i].start();
-            }
-        }
-    };
-
-    private final Runnable mLinkVisualizer = new Runnable() {
-        @Override
-        public void run() {
-            if (DEBUG) {
-                log("+++ mLinkVisualizer run()");
-            }
-
-            try {
-                mVisualizer = new Visualizer(0);
-            } catch (Exception e) {
-                GravityBox.log(TAG, "error initializing visualizer", e);
-                return;
-            }
-
-            mVisualizer.setEnabled(false);
-            mVisualizer.setCaptureSize(66);
-            mVisualizer.setDataCaptureListener(mVisualizerListener,Visualizer.getMaxCaptureRate(),
-                    false, true);
-            mVisualizer.setEnabled(true);
-
-            if (DEBUG) {
-                log("--- mLinkVisualizer run()");
-            }
-        }
-    };
-
-    private final Runnable mAsyncUnlinkVisualizer = new Runnable() {
-        @Override
-        public void run() {
-            AsyncTask.execute(mUnlinkVisualizer);
-        }
-    };
-
-    private final Runnable mUnlinkVisualizer = new Runnable() {
-        @Override
-        public void run() {
-            if (DEBUG) {
-                log("+++ mUnlinkVisualizer run(), mVisualizer: " + mVisualizer);
-            }
-
-            if (mVisualizer != null) {
-                mVisualizer.setEnabled(false);
-                mVisualizer.release();
-                mVisualizer = null;
-            }
-
-            if (DEBUG) {
-                log("--- mUninkVisualizer run()");
-            }
-        }
-    };
+    private boolean mSupportsVerticalPosition = false;
+    private boolean mIsVertical = false;
+    private boolean mIsVerticalLeft = false;
 
     VisualizerView(Context context) {
         super(context, null, 0);
@@ -127,9 +41,43 @@ public class VisualizerView extends View {
         mPaint.setAntiAlias(true);
 
         mFFTPoints = new float[128];
+        loadValueAnimators();
+    }
+
+    void setDbCapValue(float dbCap) {
+        mDbCapValue = dbCap;
+    }
+
+    void setSupportsVerticalPosition(boolean value) {
+        if (mSupportsVerticalPosition != value) {
+            mSupportsVerticalPosition = value;
+            mIsVerticalLeft &= mSupportsVerticalPosition;
+            onSizeChanged(getWidth(), getHeight(), 0, 0);
+        }
+    }
+
+    public void setVerticalLeft(boolean isleft) {
+        if (mSupportsVerticalPosition && mIsVerticalLeft != isleft) {
+            mIsVerticalLeft = isleft;
+            onSizeChanged(getWidth(), getHeight(), 0, 0);
+        }
+    }
+
+    private void loadValueAnimators() {
+        if (mValueAnimators != null) {
+            for (int i = 0; i < 32; i++) {
+                mValueAnimators[i].cancel();
+            }
+        }
+
         mValueAnimators = new ValueAnimator[32];
         for (int i = 0; i < 32; i++) {
-            final int j = i * 4 + 1;
+            final int j;
+            if (mIsVertical) {
+                j = i * 4;
+            } else {
+                j = i * 4 + 1;
+            }
             mValueAnimators[i] = new ValueAnimator();
             mValueAnimators[i].setDuration(128);
             mValueAnimators[i].addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -142,10 +90,47 @@ public class VisualizerView extends View {
         }
     }
 
+    void setData(byte[] fft) {
+        byte rfk, ifk;
+        int dbValue;
+        float magnitude;
+        for (int i = 0; i < 32; i++) {
+            mValueAnimators[i].cancel();
+            rfk = fft[i * 2 + 2];
+            ifk = fft[i * 2 + 3];
+            magnitude = rfk * rfk + ifk * ifk;
+            dbValue = magnitude > 0 ? (int) (10 * Math.log10(magnitude)) : 0;
+
+            if (mIsVertical) {
+                if (mIsVerticalLeft) {
+                    mValueAnimators[i].setFloatValues(mFFTPoints[i * 4],
+                            dbValue * mDbCapValue);
+                } else {
+                    mValueAnimators[i].setFloatValues(mFFTPoints[i * 4],
+                            mFFTPoints[2] - (dbValue * mDbCapValue));
+                }
+            } else {
+                mValueAnimators[i].setFloatValues(mFFTPoints[i * 4 + 1],
+                        mFFTPoints[3] - (dbValue * mDbCapValue));
+            }
+            mValueAnimators[i].start();
+        }
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
+        mIsVertical = mSupportsVerticalPosition && (h > w);
+        loadValueAnimators();
+        if (mIsVertical) {
+            setVertical(w, h);
+        } else {
+            setHorizontal(w, h);
+        }
+    }
+
+    private void setHorizontal(int w, int h) {
         float barUnit = w / 32f;
         float barWidth = barUnit * 8f / 9f;
         barUnit = barWidth + (barUnit - barWidth) * 32f / 31f;
@@ -158,6 +143,18 @@ public class VisualizerView extends View {
         }
     }
 
+    private void setVertical(int w, int h) {
+        float barUnit = h / 32f;
+        float barHeight = barUnit * 8f / 9f;
+        barUnit = barHeight + (barUnit - barHeight) * 32f / 31f;
+        mPaint.setStrokeWidth(barHeight);
+        for (int i = 0; i < 32; i++) {
+            mFFTPoints[i * 4 + 1] = mFFTPoints[i * 4 + 3] = i * barUnit + (barHeight / 2);
+            mFFTPoints[i * 4] = mIsVerticalLeft ? 0 : w;
+            mFFTPoints[i * 4 + 2] = mIsVerticalLeft ? 0 : w;
+        }
+    }
+
     @Override
     public boolean hasOverlappingRendering() {
         return false;
@@ -167,27 +164,10 @@ public class VisualizerView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (mVisualizer != null) {
-            canvas.drawLines(mFFTPoints, mPaint);
-        }
+        canvas.drawLines(mFFTPoints, mPaint);
     }
 
     void setColor(int color) {
         mPaint.setColor(color);
-    }
-
-    void setPlaying(boolean playing) {
-        if (playing) {
-            AsyncTask.execute(mLinkVisualizer);
-            animate()
-                .alpha(1f)
-                .withEndAction(null)
-                .setDuration(800);
-        } else {
-            animate()
-                .alpha(0f)
-                .withEndAction(mAsyncUnlinkVisualizer)
-                .setDuration(600);
-        }
     }
 }

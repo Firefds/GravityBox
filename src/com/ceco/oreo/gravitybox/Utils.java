@@ -27,6 +27,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XResources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -40,6 +41,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -47,6 +49,7 @@ import android.os.Looper;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.os.Vibrator;
+import android.provider.ContactsContract.Contacts;
 import android.renderscript.Allocation;
 import android.renderscript.Allocation.MipmapControl;
 import android.telecom.TelecomManager;
@@ -97,13 +100,11 @@ public class Utils {
     private static Boolean mIsMotoXtDevice = null;
     private static Boolean mIsGpeDevice = null;
     private static Boolean mIsExynosDevice = null;
-    private static Boolean mHasLenovoCustomUI = null;
-    private static Boolean mHasLenovoVibeUI = null;
-    private static Boolean mIsLenovoROW = null;
     private static Boolean mIsSamsumgRom = null;
     private static Boolean mIsWifiOnly = null;
     private static String mDeviceCharacteristics = null;
     private static Boolean mIsOxygenOsRom = null;
+    private static Boolean mIsOnePlus6Rom = null;
     private static Boolean mIsFileBasedEncrypted = null;
 
     // Device features
@@ -259,31 +260,6 @@ public class Utils {
         return mIsExynosDevice;
     }
 
-    public static boolean hasLenovoCustomUI() {
-        if (mHasLenovoCustomUI != null) return mHasLenovoCustomUI;
-
-        File f = new File("/system/framework/lenovo-res/lenovo-res.apk");
-        mHasLenovoCustomUI = f.exists();
-        return mHasLenovoCustomUI;
-    }
-
-    public static boolean hasLenovoVibeUI() {
-        if (mHasLenovoVibeUI != null) return mHasLenovoVibeUI;
-
-        File f = new File("/system/framework/lenovosystemuiadapter.jar");
-        mHasLenovoVibeUI = hasLenovoCustomUI() && f.exists();
-        return mHasLenovoVibeUI;
-    }
-
-    public static boolean isLenovoROW() {
-        // Lenovo releases ROW (Rest Of the World) firmware for European versions of their devices
-        if (mIsLenovoROW != null) return mIsLenovoROW;
-
-        mIsLenovoROW = hasLenovoCustomUI() &&
-                SystemProp.get("ro.product.device").toUpperCase(Locale.US).endsWith("_ROW");
-        return mIsLenovoROW;
-    }
-
     public static boolean isSamsungRom() {
         if (mIsSamsumgRom != null) return mIsSamsumgRom;
 
@@ -297,6 +273,13 @@ public class Utils {
             mIsOxygenOsRom = version != null && !version.isEmpty() &&  !"0".equals(version); 
         }
         return mIsOxygenOsRom;
+    }
+
+    public static boolean isOnePlus6Rom() {
+        if (mIsOnePlus6Rom == null) {
+            mIsOnePlus6Rom = isOxygenOsRom() && Build.MODEL.contains("A600");
+        }
+        return mIsOnePlus6Rom;
     }
 
     public static boolean isFileBasedEncrypted(Context con) {
@@ -753,6 +736,17 @@ public class Utils {
     public static boolean hasFieldOfType(Object o, String name, Class<?> type) {
         Field f = XposedHelpers.findFieldIfExists(o.getClass(), name);
         return (f != null && type.isAssignableFrom(f.getType()));
+    }
+
+    public static String getContactLookupKey(Context ctx, Uri uri) {
+        String lookupKey = null;
+        String[] projection = new String[] { Contacts.LOOKUP_KEY };
+        Cursor cursor = ctx.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null && cursor.moveToNext()) {
+            lookupKey = cursor.getString(0);
+            cursor.close();
+        }
+        return lookupKey;
     }
 
     static class SystemProp extends Utils {

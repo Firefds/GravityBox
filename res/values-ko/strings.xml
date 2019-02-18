@@ -968,9 +968,6 @@
 
     <string name="battery_percent_text_charging_color_title">충전 중 LED</string>
 
-    <string name="pref_lc_qh_cat_weekdays_title">주일</string>
-    <string name="pref_lc_qh_cat_weekend_title">주말</string>
-
     <string name="pref_force_english_locale_title">강제로 영어 사용 (English)</string>
 
     <string name="pref_lc_qh_ignore_title">무음 모드 무시</string>
@@ -1115,8 +1112,6 @@
     <string name="charging_led_default">기본값</string>
     <string name="charging_led_emulated">에뮬레이트됨</string>
     <string name="charging_led_disabled">비활성화</string>
-
-    <string name="pref_lc_qh_weekdays_title">주일 설정</string>
 
     <string name="pref_lc_qh_mute_system_sounds_title">시스템 소리 음소거</string>
     <string name="system_sound_dialpad">다이얼패드 효과음</string>

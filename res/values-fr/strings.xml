@@ -994,9 +994,6 @@
     <string name="pref_lc_qh_statusbar_icon_summary">Affiche une icône dans la barre d\'état pendant les heures silencieuses</string>
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">Couleur durant la charge</string>
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">Jours de la semaine</string>
-    <string name="pref_lc_qh_cat_weekend_title">Week-end</string>
     <!-- Force English locale -->
     <string name="pref_force_english_locale_title">Forcer la localisation en anglais</string>
     <!-- UNC Quiet Hours: ignore on per-app basis -->
@@ -1096,8 +1093,7 @@
     <string name="pref_headset_action_unplug_title">Au débranchement du kit piéton</string>
     <!-- Quiet Hours: mute vibrations -->
     <string name="pref_lc_qh_mute_vibe_title">Supprimer les vibrations de notification</string>
-    <string name="pref_lc_qh_mute_vibe_summary">Arrête les vibrations de notification sur cet appareil et
-        tout appareil Android Wear apairé</string>
+    <string name="pref_lc_qh_mute_vibe_summary">Désactive les vibrations de notification</string>
     <!-- Quiet Hours: interactive mode -->
     <string name="pref_lc_qh_interactive_title">Mode interactif</string>
     <string name="pref_lc_qh_interactive_summary">Les notifications resteront silencieuses durant une interaction de l\'utilisateur 
@@ -1152,8 +1148,6 @@ Assurez-vous que ses dimensions soient proches de : %1$dx%2$dpx</string>
     <string name="charging_led_emulated">Émulée</string>
     <string name="charging_led_constant">Constant (nécessite le support du driver LED)</string>
     <string name="charging_led_disabled">Désactivée</string>
-    <!-- Quiet hours week days -->
-    <string name="pref_lc_qh_weekdays_title">Choisir les jours de la semaine</string>
     <!-- QuietHours: mute system sounds -->
     <string name="pref_lc_qh_mute_system_sounds_title">Sons système en sourdine</string>
     <string name="system_sound_dialpad">Tonalités clavier téléphonique</string>
@@ -1327,9 +1321,8 @@ Assurez-vous que ses dimensions soient proches de : %1$dx%2$dpx</string>
         d\'être contraintes à vibrer dans le mode de sonnerie vibrer uniquement</string>
     <!-- UNC: QuietHours: mute system level vibrations -->
     <string name="pref_lc_qh_mute_system_vibe_title">Arrêter les vibrations sur cet appareil</string>
-    <string name="pref_lc_qh_mute_system_vibe_summary">Arrête TOUTES les vibrations au niveau système,
-        en incluant les vibrations de notification sur CET appareil. Les notifications sur un appareil Android Wear apairé peuvent
-        toujours vibrer dans le cas où les notifications seraient actives</string>
+    <string name="pref_lc_qh_mute_system_vibe_summary">Désactive TOUTES les vibrations au niveau système,
+y compris les vibrations de notification, le retour haptique, etc.</string>
     <!-- Lockscreen: doubletap to sleep -->
     <string name="pref_lockscreen_dt2s_title">Double appui pour mettre en veille</string>
     <!-- Status bar: disable peek -->
@@ -1685,7 +1678,65 @@ Utiliser dans le cas où une autre application nécessite l\'utilisation du capt
     <string name="pref_visualizer_active_mode_summary">Maintient l\'écran de verrouillage actif lorsque le visualiseur est affiché</string>
     <string name="pref_visualizer_dim_title">Écran tamisé</string>
     <string name="pref_visualizer_dim_summary">Assombrir le contenu de l\'écran de verrouillage après un délai d\'inactivité</string>
-    <string name="pref_visualizer_dim_level_title">Niveau de luminosité</string>
+    <string name="pref_visualizer_dim_level_title">Niveau d\'opacité</string>
     <string name="pref_visualizer_dim_info_title">Afficher les informations des médias</string>
     <string name="pref_visualizer_dim_info_summary">Affiche les informations du média en cours sur l\'écran tamisé</string>
+    <string name="pref_visualizer_dim_header_title">Afficher l\'en-tête</string>
+    <string name="pref_visualizer_dim_header_summary">Affiche l\'en-tête contenant l\'heure actuelle et le niveau de batterie sur l\'écran tamisé</string>
+    <string name="pref_visualizer_dim_controls_title">Afficher les contrôles multimédia</string>
+    <string name="pref_visualizer_dim_controls_summary">Affiche les contrôles de lecture multimédia sur l\'écran tamisé</string>
+    <string name="pref_visualizer_dim_artwork_title">Afficher la pochette</string>
+    <string name="pref_visualizer_dim_artwork_summary">Affiche la pochette de l\'album au-dessus de l\'écran de verrouillage sur l\'écran tamisé</string>
+    <string name="pref_visualizer_navbar_title">Barre de navigation</string>
+    <string name="pref_visualizer_navbar_summary">Affiche le visualiseur également dans la barre de navigation</string>
+    <!-- QS: Ambient Display tile -->
+    <string name="qs_tile_ambient_display">Affichage en mode veille</string>
+    <!-- QS: Heads Up tile -->
+    <string name="qs_tile_heads_up">Notifications flottantes</string>
+    <!-- Reboot -->
+    <string name="reboot">Redémarrer</string>
+    <!-- StatusBar: corner padding -->
+    <string name="pref_sb_corner_padding_remove_title">Supprimer le remplissage d\'angle</string>
+    <string name="pref_sb_corner_padding_remove_summary">Supprime le remplissage destiné à l\'affichage des coins arrondis (nécessite un redémarrage)</string>
+    <!-- QS: tiles per header -->
+    <string name="pref_qs_tiles_per_header_title">Tuiles par en-tête</string>
+    <string name="pref_qs_tiles_per_header_summary">Définit le nombre de tuiles à afficher dans l\'en-tête</string>
+    <!-- BatteryBar: only while charging -->
+    <string name="pref_battery_bar_show_charging_title">Seulement lors de la charge</string>
+    <!-- Search -->
+    <string name="search">Rechercher</string>
+    <string name="search_reset">Réinitialiser la recherche</string>
+    <string name="search_keyword_short">Le mot clé est trop court</string>
+    <string name="search_no_match">Aucune préférence trouvée</string>
+    <!-- UNC: ignore QH durine ginteractive mode -->
+    <string name="pref_lc_qh_ignore_interactive_title">Pour le mode interactif</string>
+    <string name="pref_lc_qh_ignore_interactive_summary">Lorsque activé, les notifications correspondant à des règles d\'exclusion ne seront pas désactivées par le mode interactif des heures silencieuses.</string>
+    <!-- QH: Phone ringer whitelist -->
+    <string name="pref_lc_qh_ringer_whitelist_title">Liste blanche</string>
+    <string name="pref_lc_qh_ringer_whitelist_summary">Gérer la liste des contacts pour lesquels la sonnerie du téléphone ne doit pas être désactivée pendant les heures silencieuses</string>
+    <string name="search_no_contacts">Aucun contact correspondant au mot-clé</string>
+    <string name="qhrw_menu_show_all">Tout afficher</string>
+    <string name="qhrw_menu_show_starred">Afficher les favoris</string>
+    <string name="qhrw_menu_show_whitelisted">Afficher ceux en liste blanche</string>
+    <string name="qhrw_permission_denied">L\'autorisation d\'accès aux contacts a été refusée</string>
+    <!-- QH: Time ranges -->
+    <string name="pref_lc_qh_ranges_title">Mode automatique</string>
+    <string name="pref_lc_qh_ranges_summary">Permet de définir des plages horaires et leurs règles pour les heures silencieuses automatiques</string>
+    <string name="lc_qh_ranges_list_label">Heures silencieuses - plages horaires</string>
+    <string name="lc_qh_ranges_list_empty">Aucune plage horaire actuellement définie</string>
+    <string name="lc_qh_ranges_detail_label">Heures silencieuses - plage horaire</string>
+    <string name="pref_lc_qh_range_days_title">Jours</string>
+    <string name="next_day">le lendemain</string>
+    <!-- QH: settings categorization -->
+    <string name="pref_lc_qh_cat_general_title">Général</string>
+    <string name="pref_lc_qh_cat_rules_title">Règles</string>
+    <string name="pref_lc_qh_manual_title">Mode manuel</string>
+    <string name="pref_lc_qh_manual_summary">Permet de définir les règles pour les heures silencieuses manuelles</string>
+    <!-- QH: current mode -->
+    <string name="pref_lc_qh_mode_title">Mode actuel</string>
+    <!-- Notification control: Quiet hours for weekends-->
+    <string name="pref_lc_qh_cat_weekdays_title">Jours de la semaine</string>
+    <string name="pref_lc_qh_cat_weekend_title">Week-end</string>
+    <!-- Quiet hours week days -->
+    <string name="pref_lc_qh_weekdays_title">Choisir les jours de la semaine</string>
 </resources>

@@ -140,6 +140,7 @@ public class LedSettingsActivity extends GravityBoxActivity implements OnClickLi
         settings.setLedMode(mPrefsFragment.getLedMode());
         settings.setQhIgnore(mPrefsFragment.getQhIgnore());
         settings.setQhIgnoreList(mPrefsFragment.getQhIgnoreList());
+        settings.setQhIgnoreInteractive(mPrefsFragment.getQhIgnoreInteractive());
         settings.setHeadsUpMode(mPrefsFragment.getHeadsUpMode());
         settings.setHeadsUpDnd(mPrefsFragment.getHeadsUpDnd());
         settings.setHeadsUpTimeout(mPrefsFragment.getHeadsUpTimeout());

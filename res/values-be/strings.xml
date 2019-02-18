@@ -1197,10 +1197,6 @@ ID транзакцыі ахвяравання PayPal. Спробавы перы
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">Колер пры зарадцы</string>
 
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">Будні</string>
-    <string name="pref_lc_qh_cat_weekend_title">Выхадныя</string>
-
     <!-- Force English locale -->
     <string name="pref_force_english_locale_title">Ангельскі прымусова</string>
 
@@ -1387,9 +1383,6 @@ ID транзакцыі ахвяравання PayPal. Спробавы перы
     <string name="charging_led_default">Па змаўчанні</string>
     <string name="charging_led_emulated">Эмуляцыя</string>
     <string name="charging_led_disabled">Адключана</string>
-
-    <!-- Quiet hours week days -->
-    <string name="pref_lc_qh_weekdays_title">Усталёўка будняў</string>
 
     <!-- QuietHours: mute system sounds -->
     <string name="pref_lc_qh_mute_system_sounds_title">Адключэнне сістэмных гукаў</string>

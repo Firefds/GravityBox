@@ -633,7 +633,7 @@
     <string name="hwkey_ls_torch_power_longpress">Güç tuşuna uzun basıldığında</string>
 
     <!-- QuickSettings management master switch -->
-    <string name="pref_qs_management_enable_summary">Hızlı Ayarlar yönetimini açar (yeniden başlatma gerektirir)</string>
+    <string name="pref_qs_management_enable_summary">Hızlı Ayarlar yönetimini açar/kapatır (yeniden başlatma gerektirir)</string>
 
     <!-- AppPickerPreference: shortcut support -->
     <string name="app_picker_applications">Uygulamalar</string>
@@ -1043,7 +1043,7 @@
     <string name="pref_screenrecord_rotate_title">Kaydı döndür</string>
     <string name="pref_screenrecord_rotate_summary">Çıkış dosyasını 90 derece döndürür</string>
     <string name="pref_screenrecord_microphone_title">Mikrofon kullan</string>
-    <string name="pref_screenrecord_microphone_summary">Ses girişi için mikrofon kullanıp kullanmamak</string>
+    <string name="pref_screenrecord_microphone_summary">Ses girişi için mikrofon kullanılıp kullanılmayacağı</string>
 
     <!-- Icon picker: new icons -->
     <string name="shortcuts_icon_picker_tapatalk">Tapatalk</string>
@@ -1067,7 +1067,7 @@
     <string name="pref_screenrecord_use_stock_summary">Etkinleştirildiğinde, kayıt için stok dosyalar kullanılır. Alternatif dosyalar sorun çıkarırsa kullanın. Stok dosyaların ses kaydına ve 3 dakikadan fazla kayda izin vermediğini unutmayın.</string>
 
     <!-- Clock settings master switch -->
-    <string name="pref_sb_clock_masterswitch_summary">Durum çubuğu saat ayarlarını açar (yeniden başlatma gerektirir)</string>
+    <string name="pref_sb_clock_masterswitch_summary">Durum çubuğu saat ayarlarını açar/kapatır (yeniden başlatma gerektirir)</string>
 
     <!-- Clock: day of week size -->
     <string name="pref_sb_clock_dow_size_title">Haftanın günü boyutu</string>
@@ -1187,10 +1187,6 @@
 
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">Şarj rengi</string>
-
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">Hafta içi</string>
-    <string name="pref_lc_qh_cat_weekend_title">Hafta sonu</string>
 
     <!-- Force English locale -->
     <string name="pref_force_english_locale_title">İngilizce dilini zorla</string>
@@ -1317,7 +1313,7 @@
 
     <!-- Quiet Hours: mute vibrations -->
     <string name="pref_lc_qh_mute_vibe_title">Bildirim titreşimlerini kapat</string>
-    <string name="pref_lc_qh_mute_vibe_summary">Bu cihazda ve herhangi bir eşleştirilmiş Android Wear cihazda bildirim titreşimini kapatır</string>
+    <string name="pref_lc_qh_mute_vibe_summary">Bildirim titreşimlerini kapatır</string>
 
     <!-- Quiet Hours: interactive mode -->
     <string name="pref_lc_qh_interactive_title">Etkileşimli mod</string>
@@ -1381,9 +1377,6 @@
     <string name="charging_led_emulated">Taklit et</string>
     <string name="charging_led_constant">Sabit (LED sürücüsü desteği gerekir)</string>
     <string name="charging_led_disabled">Devre dışı</string>
-
-    <!-- Quiet hours week days -->
-    <string name="pref_lc_qh_weekdays_title">Hafta günlerini ayarla</string>
 
     <!-- QuietHours: mute system sounds -->
     <string name="pref_lc_qh_mute_system_sounds_title">Sistem seslerini kapat</string>
@@ -1587,7 +1580,7 @@ Devam ederseniz, kendi sorumluluğunuz altındadır ve herhangi bir destek bekle
 
     <!-- UNC: QuietHours: mute system level vibrations -->
     <string name="pref_lc_qh_mute_system_vibe_title">Cihaz titreşimlerini kapat</string>
-    <string name="pref_lc_qh_mute_system_vibe_summary">BU cihazdaki bildirim titreşimleri de dahil olmak üzere sistem seviyesindeki TÜM titreşimleri kapatır. Eşleştirilen Android Wear cihazındaki bildirimler, bildirim titreşimleri etkinleştirildiğinde yine de titreşim gösterebilir.
+    <string name="pref_lc_qh_mute_system_vibe_summary">Bildirim titreşimleri, dokunma geribildirimi vb. dahil olmak üzere sistem seviyesindeki TÜM titreşimleri kapatır
     </string>
 
     <!-- Lockscreen: doubletap to sleep -->
@@ -1652,7 +1645,7 @@ Devam ederseniz, kendi sorumluluğunuz altındadır ve herhangi bir destek bekle
     <string name="pref_cat_qs_dnd_tile_title">Rahatsız etme karesi ayarları</string>
     <string name="pref_dnd_tile_quick_mode_summary">Kareye tek basmada seçilen rahatsız etme modları arasında dolaşmaya izin verir</string>
     <string name="pref_dnd_tile_enabled_modes_summary">Aralarında dolaşılacak rahatsız etme modlarını ayarlar</string>
-    <string name="dnd_tile_em_priority">Yalnızca öncelik</string>
+    <string name="dnd_tile_em_priority">Yalnızca öncelikliler</string>
     <string name="dnd_tile_em_alarms">Yalnızca alarmlar</string>
     <string name="dnd_tile_em_silence">Tamamen sessiz</string>
     <string name="pref_dnd_tile_duration_mode_title">Öntanımlı süre</string>
@@ -1984,7 +1977,7 @@ Devam ederseniz, kendi sorumluluğunuz altındadır ve herhangi bir destek bekle
 
     <!-- Error logging -->
     <string name="pref_log_errors_title">Hata günlüğü</string>
-    <string name="pref_log_errors_summary">Etkinleştirildiğinde tüm hataları Xposed günlüğe kaydeder (yeniden başlatma gerektirir)</string>
+    <string name="pref_log_errors_summary">Etkinleştirildiğinde tüm hataları Xposed günlüğüne kaydeder (yeniden başlatma gerektirir)</string>
 
     <!-- SignalCluster: Moto: use AOSP mobile type icon -->
     <string name="pref_signal_cluster_aosp_mobile_type_title">AOSP mobil tipi simgeleri kullan</string>
@@ -2021,5 +2014,75 @@ Devam ederseniz, kendi sorumluluğunuz altındadır ve herhangi bir destek bekle
     <string name="pref_visualizer_opacity_title">Renk opaklığı</string>
     <string name="pref_visualizer_active_mode_title">Etkin mod</string>
     <string name="pref_visualizer_active_mode_summary">Görselleştirici gösterilirken kilit ekranı etkin kalır</string>
+    <string name="pref_visualizer_dim_title">Ekranı karart</string>
+    <string name="pref_visualizer_dim_summary">Kullanıcı hareketsizlik zaman aşımı sonrasında kilit ekranı içeriğini karartır</string>
+    <string name="pref_visualizer_dim_level_title">Karartma seviyesi</string>
+    <string name="pref_visualizer_dim_info_title">Medya bilgisini göster</string>
+    <string name="pref_visualizer_dim_info_summary">Karartılmış ekranda geçerli medya bilgisini gösterir</string>
+    <string name="pref_visualizer_dim_header_title">Başlığı göster</string>
+    <string name="pref_visualizer_dim_header_summary">Karartılmış ekranda geçerli zaman ve pil seviyesini içeren başlığı gösterir</string>
+    <string name="pref_visualizer_dim_controls_title">Medya kontrollerini göster</string>
+    <string name="pref_visualizer_dim_controls_summary">Karartılmış ekranda medya oynatma kontrollerini gösterir</string>
+    <string name="pref_visualizer_dim_artwork_title">Albüm resmini göster</string>
+    <string name="pref_visualizer_dim_artwork_summary">Karartılmış ekranda kilit ekranı içeriğini kapsayan albüm resmini gösterir</string>
+    <string name="pref_visualizer_navbar_title">Gezinti çubuğu</string>
+    <string name="pref_visualizer_navbar_summary">Görselleştiriciyi gezinme çubuğunda da gösterir</string>
 
+    <!-- QS: Ambient Display tile -->
+    <string name="qs_tile_ambient_display">Ortam ekranı</string>
+
+    <!-- QS: Heads Up tile -->
+    <string name="qs_tile_heads_up">Üst bildirim</string>
+    
+    <!-- Reboot -->
+    <string name="reboot">Yeniden başlat</string>
+
+    <!-- StatusBar: corner padding -->
+    <string name="pref_sb_corner_padding_remove_title">Köşe dolgusunu kaldır</string>
+    <string name="pref_sb_corner_padding_remove_summary">Yuvarlak köşeli ekranlar için tasarlanan dolguyu kaldırır (yeniden başlatma gerektirir)</string>
+
+    <!-- QS: tiles per header -->
+    <string name="pref_qs_tiles_per_header_title">Başlık başına kareler</string>
+    <string name="pref_qs_tiles_per_header_summary">Başlıkta kaç tane kare görüntüleneceğini tanımlar</string>
+
+    <!-- BatteryBar: only while charging -->
+    <string name="pref_battery_bar_show_charging_title">Yalnızca şarj olurken</string>
+    
+    <!-- Search -->
+    <string name="search">Ara</string>
+    <string name="search_reset">Aramayı sıfırla</string>
+    <string name="search_keyword_short">Anahtar kelime çok kısa</string>
+    <string name="search_no_match">Ayar bulunamadı</string>
+
+    <!-- UNC: ignore QH durine ginteractive mode -->
+    <string name="pref_lc_qh_ignore_interactive_title">Etkileşimli mod için</string>
+    <string name="pref_lc_qh_ignore_interactive_summary">Etkinleştirildiğinde, yoksayma kurallarıyla eşleşen bildirimler, sessiz saatlerdeki etkileşimli mod tarafından kapatılmaz</string>
+
+    <!-- QH: Phone ringer whitelist -->
+    <string name="pref_lc_qh_ringer_whitelist_title">Telefon zili beyaz listesi</string>
+    <string name="pref_lc_qh_ringer_whitelist_summary">Sessiz saatlerde telefon zil sesini kapatmayacak kişilerin listesini yönetir</string>
+    <string name="search_no_contacts">Anahtar kelime kişilerle eşleşmiyor</string>
+    <string name="qhrw_menu_show_all">Tümünü göster</string>
+    <string name="qhrw_menu_show_starred">Yıldızlıyı göster</string>
+    <string name="qhrw_menu_show_whitelisted">Beyaz listedekiyi göster</string>
+    <string name="qhrw_permission_denied">Kişileri okuma izni reddedildi</string>
+
+    <!-- QH: Time ranges -->
+    <string name="pref_lc_qh_ranges_title">Otomatik mod</string>
+    <string name="pref_lc_qh_ranges_summary">Otomatik sessiz saatler için zaman aralıkları ve kurallarını belirlemenizi sağlar</string>
+    <string name="lc_qh_ranges_list_label">Sessiz saatler - zaman aralıkları</string>
+    <string name="lc_qh_ranges_list_empty">Şu anda ayarlanmış zaman aralığı yok</string>
+    <string name="lc_qh_ranges_detail_label">Sessiz saatler - zaman aralığı</string>
+    <string name="pref_lc_qh_range_days_title">Günler</string>
+    <string name="next_day">ertesi gün</string>
+    
+    <!-- QH: settings categorization -->
+    <string name="pref_lc_qh_cat_general_title">Genel</string>
+    <string name="pref_lc_qh_cat_rules_title">Kurallar</string>
+    <string name="pref_lc_qh_manual_title">Manuel mod</string>
+    <string name="pref_lc_qh_manual_summary">Manuel sessiz saatler için kurallar belirlemenizi sağlar</string>
+
+    <!-- QH: current mode -->
+    <string name="pref_lc_qh_mode_title">Geçerli mod</string>
+    
 </resources>

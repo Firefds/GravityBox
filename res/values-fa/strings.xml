@@ -762,8 +762,6 @@
 <string name="pref_lc_qh_statusbar_icon_title">آیکون نوار وضعیت</string>
 <string name="pref_lc_qh_statusbar_icon_summary">نمایش آیکون در نوار وضعیت در ساعات آرامش</string>
 <string name="battery_percent_text_charging_color_title">رنگ نشانگر در حالت شارژ</string>
-<string name="pref_lc_qh_cat_weekdays_title">روز های هفته</string>
-<string name="pref_lc_qh_cat_weekend_title">آخر هفته</string>
 <string name="pref_force_english_locale_title">استفاده اجباری از زبان انگلیسی</string>
 <string name="pref_lc_qh_ignore_title">نادیده‌گرفتن ساعات آرامش</string>
 <string name="pref_lc_qh_ignore_list_title">برای کلمات کلیدی خاص</string>
@@ -872,7 +870,6 @@
 <string name="charging_led_default">پیشفرض</string>
 <string name="charging_led_emulated">شبیه سازی</string>
 <string name="charging_led_disabled">غیرفعال</string>
-<string name="pref_lc_qh_weekdays_title">تنظیم روزهای هفته</string>
 <string name="pref_lc_qh_mute_system_sounds_title">بیصدا کردن صداهای سیستم</string>
 <string name="system_sound_dialpad">صداهای صفحه شماره‌گیری</string>
 <string name="system_sound_touch">صداهای لمس</string>

@@ -15,90 +15,85 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <SwitchPreference
-        android:key="pref_lc_qh_enabled"
-        android:title="@string/pref_lc_qh_enabled_title"
-        android:summary="@string/pref_lc_qh_enabled_summary"
-        android:defaultValue="false" />
-
-    <CheckBoxPreference
-        android:key="pref_lc_qh_mute_led"
-        android:title="@string/pref_lc_qh_mute_led_title"
-        android:defaultValue="false"
-        android:dependency="pref_lc_qh_enabled" />
-
-    <CheckBoxPreference
-        android:key="pref_lc_qh_mute_vibe"
-        android:title="@string/pref_lc_qh_mute_vibe_title"
-        android:summary="@string/pref_lc_qh_mute_vibe_summary"
-        android:defaultValue="true"
-        android:dependency="pref_lc_qh_enabled" />
-
-    <CheckBoxPreference
-        android:key="pref_lc_qh_mute_system_vibe"
-        android:title="@string/pref_lc_qh_mute_system_vibe_title"
-        android:summary="@string/pref_lc_qh_mute_system_vibe_summary"
-        android:defaultValue="false"
-        android:dependency="pref_lc_qh_enabled" />
-
-    <MultiSelectListPreference 
-        android:key="pref_lc_qh_mute_system_sounds"
-        android:title="@string/pref_lc_qh_mute_system_sounds_title"
-        android:entries="@array/system_sound_entries"
-        android:entryValues="@array/system_sound_values"
-        android:defaultValue="@array/empty_array"
-        android:dependency="pref_lc_qh_enabled" />
-
-    <CheckBoxPreference
-        android:key="pref_lc_qh_statusbar_icon"
-        android:title="@string/pref_lc_qh_statusbar_icon_title"
-        android:summary="@string/pref_lc_qh_statusbar_icon_summary"
-        android:defaultValue="true"
-        android:dependency="pref_lc_qh_enabled" />
-
-    <CheckBoxPreference
-        android:key="pref_lc_qh_interactive"
-        android:title="@string/pref_lc_qh_interactive_title"
-        android:summary="@string/pref_lc_qh_interactive_summary"
-        android:defaultValue="false"
-        android:dependency="pref_lc_qh_enabled" />
-
     <PreferenceCategory 
-        android:key="pref_lc_qh_cat_weekdays"
-        android:title="@string/pref_lc_qh_cat_weekdays_title">
+        android:title="@string/pref_lc_qh_cat_general_title">
 
-        <MultiSelectListPreference 
-            android:key="pref_lc_qh_weekdays"
-            android:title="@string/pref_lc_qh_weekdays_title"
+        <SwitchPreference
+            android:key="pref_lc_qh_enabled"
+            android:title="@string/pref_lc_qh_enabled_title"
+            android:summary="@string/pref_lc_qh_enabled_summary"
+            android:defaultValue="false" />
+
+        <ListPreference
+            android:key="pref_lc_qh_mode"
+            android:title="@string/pref_lc_qh_mode_title"
+            android:entries="@array/lc_qh_mode_entries"
+            android:entryValues="@array/lc_qh_mode_values"
+            android:defaultValue="AUTO"
             android:dependency="pref_lc_qh_enabled" />
 
-        <com.ceco.oreo.gravitybox.preference.TimePreference
-            android:key="pref_lc_qh_start2"
-            android:title="@string/pref_lc_qh_start_title"
-            android:defaultValue="1380"
+        <CheckBoxPreference
+            android:key="pref_lc_qh_statusbar_icon"
+            android:title="@string/pref_lc_qh_statusbar_icon_title"
+            android:summary="@string/pref_lc_qh_statusbar_icon_summary"
+            android:defaultValue="true"
+            android:dependency="pref_lc_qh_enabled" />
+    
+        <CheckBoxPreference
+            android:key="pref_lc_qh_interactive"
+            android:title="@string/pref_lc_qh_interactive_title"
+            android:summary="@string/pref_lc_qh_interactive_summary"
+            android:defaultValue="false"
             android:dependency="pref_lc_qh_enabled" />
 
-        <com.ceco.oreo.gravitybox.preference.TimePreference
-            android:key="pref_lc_qh_end2"
-            android:title="@string/pref_lc_qh_end_title"
-            android:defaultValue="360"
-            android:dependency="pref_lc_qh_enabled" />
     </PreferenceCategory>
 
     <PreferenceCategory 
-        android:key="pref_lc_qh_cat_weekend"
-        android:title="@string/pref_lc_qh_cat_weekend_title">
-        <com.ceco.oreo.gravitybox.preference.TimePreference
-            android:key="pref_lc_qh_start_alt2"
-            android:title="@string/pref_lc_qh_start_title"
-            android:defaultValue="1380"
-            android:dependency="pref_lc_qh_enabled" />
+        android:title="@string/pref_lc_qh_cat_rules_title"
+        android:dependency="pref_lc_qh_enabled">
 
-        <com.ceco.oreo.gravitybox.preference.TimePreference
-            android:key="pref_lc_qh_end_alt2"
-            android:title="@string/pref_lc_qh_end_title"
-            android:defaultValue="360"
-            android:dependency="pref_lc_qh_enabled" />
+        <PreferenceScreen 
+            android:title="@string/pref_lc_qh_manual_title"
+            android:summary="@string/pref_lc_qh_manual_summary">
+
+            <CheckBoxPreference
+                android:key="pref_lc_qh_mute_led"
+                android:title="@string/pref_lc_qh_mute_led_title"
+                android:defaultValue="false" />
+        
+            <CheckBoxPreference
+                android:key="pref_lc_qh_mute_vibe"
+                android:title="@string/pref_lc_qh_mute_vibe_title"
+                android:summary="@string/pref_lc_qh_mute_vibe_summary"
+                android:defaultValue="true" />
+        
+            <CheckBoxPreference
+                android:key="pref_lc_qh_mute_system_vibe"
+                android:title="@string/pref_lc_qh_mute_system_vibe_title"
+                android:summary="@string/pref_lc_qh_mute_system_vibe_summary"
+                android:defaultValue="false" />
+        
+            <MultiSelectListPreference 
+                android:key="pref_lc_qh_mute_system_sounds"
+                android:title="@string/pref_lc_qh_mute_system_sounds_title"
+                android:entries="@array/system_sound_entries"
+                android:entryValues="@array/system_sound_values"
+                android:defaultValue="@array/empty_array" />
+        
+            <Preference 
+                android:key="pref_lc_qh_ringer_whitelist"
+                android:title="@string/pref_lc_qh_ringer_whitelist_title"
+                android:summary="@string/pref_lc_qh_ringer_whitelist_summary"
+                android:persistent="false" />
+
+        </PreferenceScreen>
+
+        <Preference 
+            android:key="pref_lc_qh_ranges"
+            android:title="@string/pref_lc_qh_ranges_title"
+            android:summary="@string/pref_lc_qh_ranges_summary"
+            android:persistent="false" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

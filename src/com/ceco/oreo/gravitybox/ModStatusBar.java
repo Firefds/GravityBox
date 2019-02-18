@@ -38,6 +38,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.content.res.XResources;
 import android.database.ContentObserver;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -282,6 +283,12 @@ public class ModStatusBar {
             StatusbarSignalCluster.initResources(prefs, resparam);
         } catch (Throwable t) {
             GravityBox.log(TAG, t);
+        }
+
+        if (Build.VERSION.SDK_INT >= 27 &&
+                prefs.getBoolean(GravityBoxSettings.PREF_KEY_CORNER_PADDING_REMOVE, false)) {
+            resparam.res.setReplacement(PACKAGE_NAME, "dimen", "rounded_corner_content_padding",
+                    new XResources.DimensionReplacement(0, TypedValue.COMPLEX_UNIT_DIP));
         }
     }
 
@@ -635,10 +642,7 @@ public class ModStatusBar {
                     XposedHelpers.findClass(CLASS_STATUSBAR, classLoader);
             final Class<?> phoneStatusBarPolicyClass = 
                     XposedHelpers.findClass(CLASS_PHONE_STATUSBAR_POLICY, classLoader);
-            Class<?> expandableNotifRowClass = null;
-            if (!Utils.hasLenovoVibeUI()) {
-                expandableNotifRowClass = XposedHelpers.findClass(CLASS_EXPANDABLE_NOTIF_ROW, classLoader);
-            }
+            final Class<?> expandableNotifRowClass = XposedHelpers.findClass(CLASS_EXPANDABLE_NOTIF_ROW, classLoader);
             final Class<?> statusBarWmClass = XposedHelpers.findClass(CLASS_STATUSBAR_WM, classLoader);
             final Class<?> notifPanelViewClass = XposedHelpers.findClass(CLASS_NOTIF_PANEL_VIEW, classLoader);
 
@@ -870,8 +874,8 @@ public class ModStatusBar {
             }
 
             // Expanded notifications
-            if (!Utils.hasLenovoVibeUI()) {
-                try {
+            try {
+                if (Utils.isSamsungRom()) {
                     XposedHelpers.findAndHookMethod(expandableNotifRowClass, "isUserExpanded", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -880,9 +884,18 @@ public class ModStatusBar {
                             }
                         }
                     });
-                } catch (Throwable t) {
-                    GravityBox.log(TAG, "Error setting up always expanded notifications", t);
+                } else {
+                    XposedHelpers.findAndHookMethod(expandableNotifRowClass, "setSystemExpanded", boolean.class, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            if (mNotifExpandAll) {
+                                param.args[0] = true;
+                            }
+                        }
+                    });
                 }
+            } catch (Throwable t) {
+                GravityBox.log(TAG, "Error setting up always expanded notifications", t);
             }
 
             // Hide alarm icon

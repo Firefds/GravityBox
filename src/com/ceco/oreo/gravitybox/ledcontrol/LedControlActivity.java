@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Peter Gregus for GravityBox Project (C3C076@xda)
+ * Copyright (C) 2018 Peter Gregus for GravityBox Project (C3C076@xda)
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,33 +29,36 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.SearchView.OnQueryTextListener;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 public class LedControlActivity extends GravityBoxListActivity implements ListItemActionHandler, OnItemClickListener {
 
     private static final int REQ_SETTINGS = 1;
+    private static final String KEY_ACTIVE_ONLY = "showActiveOnly";
+    private static final String KEY_SEARCH_QUERY = "searchQuery";
 
     private ListView mList;
     private AsyncTask<Void, Void, ArrayList<LedListItem>> mAsyncTask;
     private ProgressDialog mProgressDialog;
     private LedListItem mCurrentItem;
-    private EditText mSearchEditText;
     private boolean mShowActiveOnly;
+    private String mSearchQuery;
+    private SearchView mSearchView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            mShowActiveOnly = savedInstanceState.getBoolean("showActiveOnly", false);
+            mShowActiveOnly = savedInstanceState.getBoolean(KEY_ACTIVE_ONLY, false);
+            mSearchQuery = savedInstanceState.getString(KEY_SEARCH_QUERY, null);
         }
 
         setContentView(R.layout.led_control_activity);
@@ -63,34 +66,57 @@ public class LedControlActivity extends GravityBoxListActivity implements ListIt
         mList = getListView();
         mList.setOnItemClickListener(this);
 
-        mSearchEditText = (EditText) findViewById(R.id.input_search);
-        mSearchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (mList.getAdapter() != null) {
-                    ((LedListAdapter)mList.getAdapter()).getFilter().filter(s);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) { }
-        });
-
         setData();
     }
 
     @Override
     public void onStop() {
         cancelSetData();
+        mSearchView.clearFocus();
         super.onStop();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.led_control_activity_menu, menu);
+
+        final MenuItem search = menu.findItem(R.id.search);
+        mSearchView = (SearchView) search.getActionView();
+
+        if (mSearchQuery != null) {
+            mSearchView.setQuery(mSearchQuery, false);
+        }
+
+        mSearchView.setOnQueryTextListener(new OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String text) {
+                mSearchQuery = text;
+                if (mList.getAdapter() != null) {
+                    ((LedListAdapter)mList.getAdapter()).getFilter().filter(mSearchQuery);
+                }
+                return true;
+            }
+            @Override
+            public boolean onQueryTextSubmit(String text) {
+                mSearchView.clearFocus();
+                return true;
+            }
+        });
+
+        int closeBtnResId = getResources().getIdentifier(
+                "android:id/search_close_btn", null, null);
+        if (closeBtnResId != 0) {
+            View closeBtn = mSearchView.findViewById(closeBtnResId);
+            if (closeBtn != null) {
+                closeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        search.collapseActionView();
+                    }
+                });
+            }
+        }
+
         return true;
     }
 
@@ -139,11 +165,12 @@ public class LedControlActivity extends GravityBoxListActivity implements ListIt
             @Override
             protected void onPostExecute(ArrayList<LedListItem> result) {
                 dismissProgressDialog();
-                mSearchEditText.setText("");
-                mList.setAdapter(new LedListAdapter(LedControlActivity.this, result, 
-                        LedControlActivity.this));
-                ((LedListAdapter)mList.getAdapter()).notifyDataSetChanged();
-                mSearchEditText.setVisibility(mShowActiveOnly ? View.GONE : View.VISIBLE);
+                LedListAdapter adapter = new LedListAdapter(LedControlActivity.this, result, 
+                        LedControlActivity.this);
+                if (mSearchQuery != null) {
+                    adapter.getFilter().filter(mSearchQuery);
+                }
+                mList.setAdapter(adapter);
             }
         }.execute();
     }
@@ -213,6 +240,10 @@ public class LedControlActivity extends GravityBoxListActivity implements ListIt
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
-        bundle.putBoolean("showActiveOnly", mShowActiveOnly);
+        bundle.putBoolean(KEY_ACTIVE_ONLY, mShowActiveOnly);
+        if (mSearchQuery != null) {
+            bundle.putString(KEY_SEARCH_QUERY, mSearchQuery);
+        }
+        super.onSaveInstanceState(bundle);
     }
 }

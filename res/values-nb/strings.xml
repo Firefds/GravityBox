@@ -1195,10 +1195,6 @@
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">Charging color</string>
 
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">Week days</string>
-    <string name="pref_lc_qh_cat_weekend_title">Weekend</string>
-
     <!-- Force English locale -->
     <string name="pref_force_english_locale_title">Force English locale</string>
 

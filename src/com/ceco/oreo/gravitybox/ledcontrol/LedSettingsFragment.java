@@ -71,6 +71,7 @@ public class LedSettingsFragment extends PreferenceFragment implements OnPrefere
     private static final String PREF_CAT_KEY_QH = "pref_cat_lc_quiet_hours";
     private static final String PREF_KEY_QH_IGNORE = "pref_lc_qh_ignore";
     private static final String PREF_KEY_QH_IGNORE_LIST = "pref_lc_qh_ignore_list";
+    private static final String PREF_KEY_QH_IGNORE_INTERACTIVE = "pref_lc_qh_ignore_interactive";
     private static final String PREF_CAT_KEY_HEADS_UP = "pref_cat_lc_heads_up";
     private static final String PREF_KEY_HEADS_UP_MODE = "pref_lc_headsup_mode";
     private static final String PREF_KEY_HEADS_UP_DND = "pref_lc_headsup_dnd";
@@ -108,6 +109,7 @@ public class LedSettingsFragment extends PreferenceFragment implements OnPrefere
     private PreferenceCategory mQhCat;
     private CheckBoxPreference mQhIgnorePref;
     private EditTextPreference mQhIgnoreListPref;
+    private CheckBoxPreference mQhIgnoreInteractivePref;
     private PreferenceCategory mHeadsUpCat;
     private ListPreference mHeadsUpModePref;
     private CheckBoxPreference mHeadsUpDndPref;
@@ -153,6 +155,7 @@ public class LedSettingsFragment extends PreferenceFragment implements OnPrefere
         mQhCat = (PreferenceCategory) findPreference(PREF_CAT_KEY_QH);
         mQhIgnorePref = (CheckBoxPreference) findPreference(PREF_KEY_QH_IGNORE);
         mQhIgnoreListPref = (EditTextPreference) findPreference(PREF_KEY_QH_IGNORE_LIST);
+        mQhIgnoreInteractivePref = (CheckBoxPreference) findPreference(PREF_KEY_QH_IGNORE_INTERACTIVE);
         mHeadsUpCat = (PreferenceCategory) findPreference(PREF_CAT_KEY_HEADS_UP);
         mHeadsUpModePref = (ListPreference) findPreference(PREF_KEY_HEADS_UP_MODE);
         mHeadsUpModePref.setOnPreferenceChangeListener(this);
@@ -208,6 +211,7 @@ public class LedSettingsFragment extends PreferenceFragment implements OnPrefere
         } else {
             mQhIgnorePref.setChecked(ledSettings.getQhIgnore());
             mQhIgnoreListPref.setText(ledSettings.getQhIgnoreList());
+            mQhIgnoreInteractivePref.setChecked(ledSettings.getQhIgnoreInteractive());
         }
         if (!LedSettings.isHeadsUpEnabled(getActivity())) {
             getPreferenceScreen().removePreference(mHeadsUpCat);
@@ -329,6 +333,10 @@ public class LedSettingsFragment extends PreferenceFragment implements OnPrefere
 
     protected String getQhIgnoreList() {
         return mQhIgnoreListPref.getText();
+    }
+
+    protected boolean getQhIgnoreInteractive() {
+        return mQhIgnoreInteractivePref.isChecked();
     }
 
     protected String getHeadsUpMode() {

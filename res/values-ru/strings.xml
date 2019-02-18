@@ -1204,10 +1204,6 @@
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">Цвет при зарядке</string>
 
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">Будни</string>
-    <string name="pref_lc_qh_cat_weekend_title">Выходные</string>
-
     <!-- Force English locale -->
     <string name="pref_force_english_locale_title">Английский принудительно</string>
 
@@ -1334,8 +1330,7 @@
 
     <!-- Quiet Hours: mute vibrations -->
     <string name="pref_lc_qh_mute_vibe_title">Откл. вибрацию уведомлений</string>
-    <string name="pref_lc_qh_mute_vibe_summary">Отключение вибрации уведомлений на этом устройстве
-        и на сопряженном устройстве Android Wear</string>
+    <string name="pref_lc_qh_mute_vibe_summary">Отключение вибрации уведомлений</string>
 
     <!-- Quiet Hours: interactive mode -->
     <string name="pref_lc_qh_interactive_title">Интерактивный режим</string>
@@ -1401,9 +1396,6 @@
     <string name="charging_led_emulated">Эмуляция</string>
     <string name="charging_led_constant">Постоянно (необходима поддержка драйвера светодиода)</string>
     <string name="charging_led_disabled">Отключено</string>
-
-    <!-- Quiet hours week days -->
-    <string name="pref_lc_qh_weekdays_title">Установка будней</string>
 
     <!-- QuietHours: mute system sounds -->
     <string name="pref_lc_qh_mute_system_sounds_title">Отключение системных звуков</string>
@@ -1618,9 +1610,7 @@
     <!-- UNC: QuietHours: mute system level vibrations -->
     <string name="pref_lc_qh_mute_system_vibe_title">Откл. вибрацию на устройстве</string>
     <string name="pref_lc_qh_mute_system_vibe_summary">Отключение ВСЕХ вибраций на системном уровне,
-       включаю вибрацию уведомлений на ДАННОМ устройстве. Вибрации на сопряженном устройстве Android Wear
-       могут работать, если вибрация включена.
-    </string>
+        включая вибрацию уведомлений, виброотклик и др.</string>
 
     <!-- Lockscreen: doubletap to sleep -->
     <string name="pref_lockscreen_dt2s_title">Двойное нажатие для сна</string>
@@ -2054,5 +2044,86 @@
 
     <!-- BatteryStyle: Master switch -->
     <string name="pref_battery_masterswitch_summary">Включение настройки стиля значка батареии процентов (необходима перезагрузка)</string>
+
+    <!-- Visualizer -->
+    <string name="pref_cat_visualizer_title">Визуалайзер</string>
+    <string name="pref_visualizer_enable_summary">Включение визуалайзера на экране блокировки при воспроизведении музыки (необходима перезагрузка)</string>
+    <string name="pref_visualizer_dynamic_color_title">Динамический цвет</string>
+    <string name="pref_visualizer_dynamic_color_summary">Извлечение цвета из обложки текущей песни</string>
+    <string name="pref_visualizer_color_title">Цвет по умолчанию</string>
+    <string name="pref_visualizer_opacity_title">Непрозрачность цвета</string>
+    <string name="pref_visualizer_active_mode_title">Активный режим</string>
+    <string name="pref_visualizer_active_mode_summary">При отображении визуалайзера экран блокировки остаётся активным</string>
+    <string name="pref_visualizer_dim_title">Затемнение экрана</string>
+    <string name="pref_visualizer_dim_summary">Затемнение содержимого экрана блокировки после периода неактивности</string>
+    <string name="pref_visualizer_dim_level_title">Уровень затемнения</string>
+    <string name="pref_visualizer_dim_info_title">Показать информацию медиа</string>
+    <string name="pref_visualizer_dim_info_summary">Отображение текущей информации медиафайла на затемнённом экране</string>
+    <string name="pref_visualizer_dim_header_title">Показать заголовок</string>
+    <string name="pref_visualizer_dim_header_summary">Отображение поля с текущим временем и уровнем батареи на затемнённом экране</string>
+    <string name="pref_visualizer_dim_controls_title">Показать управление медиа</string>
+    <string name="pref_visualizer_dim_controls_summary">Показать кнопки управления медиа на затемнённом экране</string>
+    <string name="pref_visualizer_dim_artwork_title">Показать обложку</string>
+    <string name="pref_visualizer_dim_artwork_summary">Показать обложку поверх экрана блокировки на затемнённом экране</string>
+    <string name="pref_visualizer_navbar_title">Панель навигации</string>
+    <string name="pref_visualizer_navbar_summary">Отображение визуалайзера и в панели навигации</string>
+
+    <!-- QS: Ambient Display tile -->
+    <string name="qs_tile_ambient_display">Живой дисплей</string>
+
+    <!-- QS: Heads Up tile -->
+    <string name="qs_tile_heads_up">Всплытие (heads up)</string>
+
+    <!-- Reboot -->
+    <string name="reboot">Перезагрузка</string>
+
+    <!-- StatusBar: corner padding -->
+    <string name="pref_sb_corner_padding_remove_title">Удалить угловой отступ</string>
+    <string name="pref_sb_corner_padding_remove_summary">Удаление отступа, используемого для экранов с закруглёнными углами (необходима перезагрузка)</string>
+
+    <!-- QS: tiles per header -->
+    <string name="pref_qs_tiles_per_header_title">Плитки вверху</string>
+    <string name="pref_qs_tiles_per_header_summary">Количество плиток для отображения в верхней строке</string>
+
+    <!-- BatteryBar: only while charging -->
+    <string name="pref_battery_bar_show_charging_title">Только при зарядке</string>
+
+    <!-- Search -->
+    <string name="search">Поиск</string>
+    <string name="search_reset">Сброс поиска</string>
+    <string name="search_keyword_short">Keyword is too short</string>
+    <string name="search_no_match">Предпочтения не найдены</string>
+
+    <!-- UNC: ignore QH durine ginteractive mode -->
+    <string name="pref_lc_qh_ignore_interactive_title">Для интерактивного режима</string>
+    <string name="pref_lc_qh_ignore_interactive_summary">Если включено, уведомления, подходящие под правила игнорирования,
+        не будут заглушаться интерактивным режимом тихого часа</string>
+
+    <!-- QH: Phone ringer whitelist -->
+    <string name="pref_lc_qh_ringer_whitelist_title">Белый список звонка телефона</string>
+    <string name="pref_lc_qh_ringer_whitelist_summary">Управление списком контактов, для которых вызов не приглушается во время тихого часа</string>
+    <string name="search_no_contacts">Не найдено соответстствующих контактов</string>
+    <string name="qhrw_menu_show_all">Показать все</string>
+    <string name="qhrw_menu_show_starred">Показать избранные</string>
+    <string name="qhrw_menu_show_whitelisted">Показать белый список</string>
+    <string name="qhrw_permission_denied">Разрешение на чтение контактов не предоставлено</string>
+
+    <!-- QH: Time ranges -->
+    <string name="pref_lc_qh_ranges_title">Автоматический режим</string>
+    <string name="pref_lc_qh_ranges_summary">Возможность установить временные промежутки и их правила для автоматической активации тихого часа</string>
+    <string name="lc_qh_ranges_list_label">Тихий час - временные промежутки</string>
+    <string name="lc_qh_ranges_list_empty">Временные промежутки не установлены</string>
+    <string name="lc_qh_ranges_detail_label">Тихий час - время</string>
+    <string name="pref_lc_qh_range_days_title">Дни</string>
+    <string name="next_day">след. день</string>
+
+    <!-- QH: settings categorization -->
+    <string name="pref_lc_qh_cat_general_title">Общее</string>
+    <string name="pref_lc_qh_cat_rules_title">Правила</string>
+    <string name="pref_lc_qh_manual_title">Ручной режим</string>
+    <string name="pref_lc_qh_manual_summary">Возможность установить правила для тихого часа в ручном режиме</string>
+
+    <!-- QH: current mode -->
+    <string name="pref_lc_qh_mode_title">Текущий режим</string>
 
 </resources>

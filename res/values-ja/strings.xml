@@ -990,9 +990,6 @@
     <string name="pref_lc_qh_statusbar_icon_summary">お休みモード動作中にステータスバーにアイコンを表示します。</string>
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">充電時の色</string>
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">平日</string>
-    <string name="pref_lc_qh_cat_weekend_title">週末</string>
     <!-- Force English locale -->
     <string name="pref_force_english_locale_title">GBを英語表示にする</string>
     <!-- UNC Quiet Hours: ignore on per-app basis -->
@@ -1140,8 +1137,6 @@
     <string name="charging_led_default">デフォルト</string>
     <string name="charging_led_emulated">エミュレート</string>
     <string name="charging_led_disabled">無効</string>
-    <!-- Quiet hours week days -->
-    <string name="pref_lc_qh_weekdays_title">週日のセット</string>
     <!-- QuietHours: mute system sounds -->
     <string name="pref_lc_qh_mute_system_sounds_title">システムのサウンドを消音する</string>
     <string name="system_sound_dialpad">ダイヤルパッド操作音</string>

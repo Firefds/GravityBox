@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 
 import com.ceco.oreo.gravitybox.ModLedControl;
 import com.ceco.oreo.gravitybox.Utils;
@@ -42,49 +43,145 @@ public class QuietHours {
         public static final String RINGER = "ringer";
     }
 
+    public static final class Range {
+        public String id;
+        public Set<String> days;
+        public int startTime;
+        public int endTime;
+        public boolean muteLED;
+        public boolean muteVibe;
+        public boolean muteSystemVibe;
+        public Set<String> muteSystemSounds;
+        public Set<String> ringerWhitelist;
+
+        private Range() { }
+
+        public static Range parse(Set<String> dataSet) {
+            Range r = createDefault();
+            if (dataSet == null || dataSet.isEmpty())
+                return r;
+
+            for (String val : dataSet) {
+                String[] data = val.split(":", 2);
+                if (data[0].equals("id")) {
+                    r.id = data[1];
+                } else if (data[0].equals("days")) {
+                    r.days = new HashSet<String>(Arrays.asList(data[1].split(",")));
+                } else if (data[0].equals("startTime")) {
+                    r.startTime = Integer.valueOf(data[1]);
+                } else if (data[0].equals("endTime")) {
+                    r.endTime = Integer.valueOf(data[1]);
+                } else if (data[0].equals("muteLED")) {
+                    r.muteLED = Boolean.valueOf(data[1]);
+                } else if (data[0].equals("muteVibe")) {
+                    r.muteVibe = Boolean.valueOf(data[1]);
+                } else if (data[0].equals("muteSystemVibe")) {
+                    r.muteSystemVibe = Boolean.valueOf(data[1]);
+                } else if (data[0].equals("muteSystemSounds")) {
+                    r.muteSystemSounds = new HashSet<String>(Arrays.asList(data[1].split(",")));
+                } else if (data[0].equals("ringerWhitelist")) {
+                    r.ringerWhitelist = new HashSet<String>(Arrays.asList(data[1].split(",")));
+                }
+            }
+            return r;
+        }
+
+        public static Range createDefault() {
+            Range r = new Range();
+            r.id = String.format("qhr-%s", UUID.randomUUID().toString());
+            r.days = new HashSet<String>(Arrays.asList("1","2","3","4","5","6","7"));
+            r.startTime = 1380;
+            r.endTime = 360;
+            r.muteLED = false;
+            r.muteVibe = true;
+            r.muteSystemVibe = false;
+            r.muteSystemSounds = new HashSet<String>();
+            r.ringerWhitelist = new HashSet<String>();
+            return r;
+        }
+
+        public Set<String> getValue() {
+            Set<String> dataSet = new HashSet<String>();
+            dataSet.add("id:" + id);
+            String buf = "";
+            for (String day : days) {
+                if (!buf.isEmpty()) buf += ",";
+                buf += day;
+            }
+            dataSet.add("days:" + buf);
+            dataSet.add("startTime:" + String.valueOf(startTime));
+            dataSet.add("endTime:" + String.valueOf(endTime));
+            dataSet.add("muteLED:" + String.valueOf(muteLED));
+            dataSet.add("muteVibe:" + String.valueOf(muteVibe));
+            dataSet.add("muteSystemVibe:" + String.valueOf(muteSystemVibe));
+            buf = "";
+            for (String ss : muteSystemSounds) {
+                if (!buf.isEmpty()) buf += ",";
+                buf += ss;
+            }
+            dataSet.add("muteSystemSounds:" + buf);
+            buf = "";
+            for (String ss : ringerWhitelist) {
+                if (!buf.isEmpty()) buf += ",";
+                buf += ss;
+            }
+            dataSet.add("ringerWhitelist:" + buf);
+            return dataSet;
+        }
+
+        public boolean endsNextDay() {
+            return (endTime < startTime);
+        }
+
+        public static ArrayList<String> getIdList(SharedPreferences prefs) {
+            ArrayList<String> list = new ArrayList<>();
+            for (String key : prefs.getAll().keySet()) {
+                if (key.startsWith("qhr-")) {
+                    list.add(key);
+                }
+            }
+            return list;
+        }
+    }
+
     private static final List<String> NOTIF_TEXT_FIELDS = new ArrayList<>(Arrays.asList(
             "android.title","android.text","android.subText","android.infoText",
             "android.summaryText","android.bigText"));
 
     public boolean uncLocked;
     public boolean enabled;
-    int start;
-    int end;
-    int startAlt;
-    int endAlt;
-    public boolean muteLED;
-    public boolean muteVibe;
-    public Set<String> muteSystemSounds;
+    private boolean muteLED;
+    private boolean muteVibe;
+    private Set<String> muteSystemSounds;
     public boolean showStatusbarIcon;
     public Mode mode;
     public boolean interactive;
-    Set<String> weekDays;
-    public boolean muteSystemVibe;
+    private boolean muteSystemVibe;
+    private Set<String> ringerWhitelist;
+    private Set<Range> ranges;
 
     public QuietHours(Bundle prefs) {
         uncLocked = prefs.getBoolean(QuietHoursActivity.EXTRA_QH_LOCKED);
         enabled = prefs.getBoolean(QuietHoursActivity.EXTRA_QH_ENABLED);
-        start = prefs.getInt(QuietHoursActivity.EXTRA_QH_START);
-        end = prefs.getInt(QuietHoursActivity.EXTRA_QH_END);
-        startAlt = prefs.getInt(QuietHoursActivity.EXTRA_QH_START_ALT);
-        endAlt = prefs.getInt(QuietHoursActivity.EXTRA_QH_END_ALT);
         muteLED = prefs.getBoolean(QuietHoursActivity.EXTRA_QH_MUTE_LED);
         muteVibe = prefs.getBoolean(QuietHoursActivity.EXTRA_QH_MUTE_VIBE);
         muteSystemSounds = new HashSet<String>(prefs.getStringArrayList(QuietHoursActivity.EXTRA_QH_MUTE_SYSTEM_SOUNDS));
         showStatusbarIcon = prefs.getBoolean(QuietHoursActivity.EXTRA_QH_STATUSBAR_ICON);
         mode = Mode.valueOf(prefs.getString(QuietHoursActivity.EXTRA_QH_MODE));
         interactive = prefs.getBoolean(QuietHoursActivity.EXTRA_QH_INTERACTIVE);
-        weekDays = new HashSet<String>(prefs.getStringArrayList(QuietHoursActivity.EXTRA_QH_WEEKDAYS));
         muteSystemVibe = prefs.getBoolean(QuietHoursActivity.EXTRA_QH_MUTE_SYSTEM_VIBE);
+        ringerWhitelist = new HashSet<String>(prefs.getStringArrayList(QuietHoursActivity.EXTRA_QH_RINGER_WHITELIST));
+        ranges = new HashSet<Range>();
+        for (String key : prefs.keySet()) {
+            if (key.startsWith("qhr-")) {
+                ranges.add(Range.parse(new HashSet<>(prefs.getStringArrayList(key))));
+            }
+        }
     }
 
     public QuietHours(SharedPreferences prefs) {
         uncLocked = prefs.getBoolean(QuietHoursActivity.PREF_KEY_QH_LOCKED, false);
         enabled = prefs.getBoolean(QuietHoursActivity.PREF_KEY_QH_ENABLED, false);
-        start = prefs.getInt(QuietHoursActivity.PREF_KEY_QH_START, 1380);
-        end = prefs.getInt(QuietHoursActivity.PREF_KEY_QH_END, 360);
-        startAlt = prefs.getInt(QuietHoursActivity.PREF_KEY_QH_START_ALT, 1380);
-        endAlt = prefs.getInt(QuietHoursActivity.PREF_KEY_QH_END_ALT, 360);
         muteLED = prefs.getBoolean(QuietHoursActivity.PREF_KEY_QH_MUTE_LED, false);
         muteVibe = prefs.getBoolean(QuietHoursActivity.PREF_KEY_QH_MUTE_VIBE, true);
         muteSystemSounds = prefs.getStringSet(QuietHoursActivity.PREF_KEY_QH_MUTE_SYSTEM_SOUNDS,
@@ -92,9 +189,15 @@ public class QuietHours {
         showStatusbarIcon = prefs.getBoolean(QuietHoursActivity.PREF_KEY_QH_STATUSBAR_ICON, true);
         mode = Mode.valueOf(prefs.getString(QuietHoursActivity.PREF_KEY_QH_MODE, "AUTO"));
         interactive = prefs.getBoolean(QuietHoursActivity.PREF_KEY_QH_INTERACTIVE, false);
-        weekDays = prefs.getStringSet(QuietHoursActivity.PREF_KEY_QH_WEEKDAYS,
-                new HashSet<String>(Arrays.asList("2","3","4","5","6")));
         muteSystemVibe = prefs.getBoolean(QuietHoursActivity.PREF_KEY_MUTE_SYSTEM_VIBE, false);
+        ringerWhitelist = prefs.getStringSet(QuietHoursActivity.PREF_KEY_QH_RINGER_WHITELIST,
+                new HashSet<String>());
+        ranges = new HashSet<Range>();
+        for (String key : prefs.getAll().keySet()) {
+            if (key.startsWith("qhr-")) {
+                ranges.add(Range.parse(new HashSet<>(prefs.getStringSet(key, null))));
+            }
+        }
     }
 
     public boolean quietHoursActive(LedSettings ls, Notification n, boolean userPresent) {
@@ -105,9 +208,10 @@ public class QuietHours {
         }
 
         if (ls.getEnabled() && ls.getQhIgnore()) {
+            boolean defaultIgnoreResult = (interactive && userPresent) ? !ls.getQhIgnoreInteractive() : false;
             if (ls.getQhIgnoreList() == null || ls.getQhIgnoreList().trim().isEmpty()) {
                 if (ModLedControl.DEBUG) ModLedControl.log("QH ignored for all notifications");
-                return false;
+                return defaultIgnoreResult;
             } else {
                 List<CharSequence> notifTexts = getNotificationTexts(n);
                 String[] keywords = ls.getQhIgnoreList().trim().split(",");
@@ -121,7 +225,7 @@ public class QuietHours {
                     }
                 }
                 if (ModLedControl.DEBUG) ModLedControl.log("QH ignore list contains keyword?: " + ignore);
-                return (ignore ? false : (quietHoursActive() || (interactive && userPresent)));
+                return (ignore ? defaultIgnoreResult : (quietHoursActive() || (interactive && userPresent)));
             }
         } else {
             return (quietHoursActive() || (interactive && userPresent));
@@ -133,70 +237,84 @@ public class QuietHours {
 
         if (mode != Mode.AUTO) {
             return (mode == Mode.ON || mode == Mode.WEAR);
+        } else {
+            return (getActiveRange() != null);
         }
+    }
+
+    public Range getActiveRange() {
+        if (uncLocked || !enabled || mode != Mode.AUTO) return null;
 
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(System.currentTimeMillis());
         int curMin = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
-        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-        int s = start; 
-        int e = end;
-        if (!weekDays.contains(String.valueOf(dayOfWeek))) {
-            s = startAlt;
-            e = endAlt;
-        }
+        int curDay = c.get(Calendar.DAY_OF_WEEK);
+        int prevDay = (curDay == 1 ? 7 : curDay - 1);
 
-        // special logic for transition from week day to weekend and vice versa
-        // we assume people stay up longer before weekend  
-        if (isTransitionToWeekend(dayOfWeek)) {
-            if (curMin > end) {
-                // we are after previous QH
-                if (startAlt > endAlt) {
-                    // weekend range spans midnight
-                    // let's apply weekend start time instead
-                    s = startAlt;
-                    if (ModLedControl.DEBUG) ModLedControl.log("Applying weekend start time for day before weekend");
-                } else {
-                    // weekend range happens on the next day
-                    if (ModLedControl.DEBUG) ModLedControl.log("Ignoring quiet hours for day before weekend");
-                    return false;
-                }
+        for (Range range : ranges) {
+            boolean active = false;
+            if (range.endsNextDay()) {
+                active = (curMin >= range.startTime && range.days.contains(String.valueOf(curDay)) ||
+                    (curMin < range.endTime && range.days.contains(String.valueOf(prevDay))));
+            } else {
+                active = range.days.contains(String.valueOf(curDay));
             }
-        }
-        // we assume people go to sleep earlier before week day
-        if (isTransitionToWeekDay(dayOfWeek)) {
-            if (curMin > endAlt) {
-                // we are after previous QH
-                if (start > end) {
-                    // weekday range spans midnight
-                    // let's apply weekday start time instead
-                    s = start;
-                    if (ModLedControl.DEBUG) ModLedControl.log("Applying weekday start time for day before weekday");
-                } else {
-                    // weekday range happens on the next day
-                    if (ModLedControl.DEBUG) ModLedControl.log("Ignoring quiet hours for day before weekday");
-                    return false;
-                }
+            if (active && Utils.isTimeOfDayInRange(c.getTimeInMillis(), range.startTime, range.endTime)) {
+                return range;
             }
         }
 
-        return (Utils.isTimeOfDayInRange(System.currentTimeMillis(), s, e));
+        return null;
+    }
+
+    public boolean shouldMuteLed() {
+        if (mode == Mode.AUTO) {
+            Range r = getActiveRange();
+            if (r != null) {
+                return r.muteLED;
+            }
+        }
+        return muteLED;
+     }
+
+    public boolean shouldMuteVibe() {
+        if (mode == Mode.AUTO) {
+            Range r = getActiveRange();
+            if (r != null) {
+                return r.muteVibe;
+            }
+        }
+        return muteVibe;
+    }
+
+    public boolean shouldMuteSystemVibe() {
+        if (mode == Mode.AUTO) {
+            Range r = getActiveRange();
+            if (r != null) {
+                return r.muteSystemVibe;
+            }
+        }
+        return muteSystemVibe;
     }
 
     public boolean isSystemSoundMuted(String systemSound) {
-        return (muteSystemSounds.contains(systemSound) && quietHoursActive());
+        if (mode == Mode.AUTO) {
+            Range r = getActiveRange();
+            if (r != null) {
+                return r.muteSystemSounds.contains(systemSound);
+            }
+        }
+        return muteSystemSounds.contains(systemSound) && quietHoursActive();
     }
 
-    private boolean isTransitionToWeekend(int day) {
-        int nextDay = (day==7 ? 1 : day+1);
-        return (weekDays.contains(String.valueOf(day)) &&
-                    !weekDays.contains(String.valueOf(nextDay)));
-    }
-
-    private boolean isTransitionToWeekDay(int day) {
-        int nextDay = (day==7 ? 1 : day+1);
-        return (!weekDays.contains(String.valueOf(day)) &&
-                    weekDays.contains(String.valueOf(nextDay)));
+    public Set<String> getRingerWhitelist() {
+        if (mode == Mode.AUTO) {
+            Range r = getActiveRange();
+            if (r != null) {
+                return r.ringerWhitelist;
+            }
+        }
+        return ringerWhitelist;
     }
 
     private List<CharSequence> getNotificationTexts(Notification notification) {

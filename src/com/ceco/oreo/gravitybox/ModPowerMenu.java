@@ -30,15 +30,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +61,6 @@ public class ModPowerMenu {
     private static final boolean DEBUG = false;
     private static final String ITEM_LAYOUT_PACKAGE = Build.VERSION.SDK_INT >= 27 ? PACKAGE_NAME : "android";
 
-    private static Context mContext;
     private static String mRebootStr;
     private static String mRebootSoftStr;
     private static String mRecoveryStr;
@@ -76,7 +72,6 @@ public class ModPowerMenu {
     private static Drawable mExpandedDesktopIcon;
     private static Drawable mScreenshotIcon;
     private static Drawable mScreenrecordIcon;
-    private static boolean mIconsTinted;
     private static List<IIconListAdapterItem> mRebootItemList;
     private static String mRebootConfirmStr;
     private static String mRebootConfirmRecoveryStr;
@@ -125,20 +120,17 @@ public class ModPowerMenu {
             XposedBridge.hookAllConstructors(globalActionsClass, new XC_MethodHook() {
                @Override
                protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
-                   mContext = (Context) param.args[0];
+                   Context ctx = (Context) param.args[0];
                    mGlobalActionsDialog = param.thisObject;
-                   Resources res = mContext.getResources();
-                   Context gbContext = Utils.getGbContext(mContext, res.getConfiguration());
+                   Resources res = ctx.getResources();
+                   Context gbContext = Utils.getGbContext(ctx, res.getConfiguration());
 
                    int rebootStrId = res.getIdentifier("factorytest_reboot", "string", PACKAGE_NAME);
-                   int rebootSoftStrId = R.string.reboot_soft;
-                   int recoveryStrId = R.string.poweroff_recovery;
-                   int bootloaderStrId = Utils.isSamsungRom() ? 
-                           R.string.poweroff_download : R.string.poweroff_bootloader;
-                   mRebootStr  = (rebootStrId == 0) ? "Reboot" : res.getString(rebootStrId);
-                   mRebootSoftStr = gbContext.getString(rebootSoftStrId);
-                   mRecoveryStr = gbContext.getString(recoveryStrId);
-                   mBootloaderStr = gbContext.getString(bootloaderStrId);
+                   mRebootStr  = (rebootStrId == 0) ? gbContext.getString(R.string.reboot) : res.getString(rebootStrId);
+                   mRebootSoftStr = gbContext.getString(R.string.reboot_soft);
+                   mRecoveryStr = gbContext.getString(R.string.poweroff_recovery);
+                   mBootloaderStr = gbContext.getString(Utils.isSamsungRom() ? 
+                           R.string.poweroff_download : R.string.poweroff_bootloader);
                    mExpandedDesktopStr = gbContext.getString(R.string.action_expanded_desktop_title);
                    mExpandedDesktopOnStr = gbContext.getString(R.string.action_expanded_desktop_on);
                    mExpandedDesktopOffStr = gbContext.getString(R.string.action_expanded_desktop_off);
@@ -149,12 +141,9 @@ public class ModPowerMenu {
                    mRebootSoftIcon = gbContext.getDrawable(R.drawable.ic_lock_reboot_soft);
                    mRecoveryIcon = gbContext.getDrawable(R.drawable.ic_lock_recovery);
                    mBootloaderIcon = gbContext.getDrawable(R.drawable.ic_lock_bootloader);
-                   mExpandedDesktopIcon = gbContext.getDrawable(Utils.hasLenovoVibeUI() ?
-                           R.drawable.ic_lock_expanded_desktop_vibeui : R.drawable.ic_lock_expanded_desktop);
-                   mScreenshotIcon = gbContext.getDrawable(Utils.hasLenovoVibeUI() ?
-                           R.drawable.ic_lock_screenshot_vibeui : R.drawable.ic_lock_screenshot);
-                   mScreenrecordIcon = gbContext.getDrawable(Utils.hasLenovoVibeUI() ?
-                           R.drawable.ic_lock_screen_record_vibeui : R.drawable.ic_lock_screen_record);
+                   mExpandedDesktopIcon = gbContext.getDrawable(R.drawable.ic_lock_expanded_desktop);
+                   mScreenshotIcon = gbContext.getDrawable(R.drawable.ic_lock_screenshot);
+                   mScreenrecordIcon = gbContext.getDrawable(R.drawable.ic_lock_screen_record);
 
                    mRebootItemList = new ArrayList<IIconListAdapterItem>();
                    mRebootItemList.add(new BasicIconListItem(mRebootStr, null, mRebootIcon, null));
@@ -190,25 +179,7 @@ public class ModPowerMenu {
 
                 @Override
                 protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
-                    if (mContext == null) return;
-
-                    // tint icons with colorControlNormal of current power dialog theme
-                    if (!mIconsTinted) {
-                        Dialog dlg = (Dialog) param.getResult();
-                        TypedValue value = new TypedValue();
-                        int[] attribute = new int[] { android.R.attr.colorControlNormal };
-                        TypedArray array = dlg.getContext().obtainStyledAttributes(value.resourceId, attribute);
-                        int iconColor = array.getColor(0, Color.GRAY);
-                        array.recycle();
-                        mRebootIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
-                        mRebootSoftIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
-                        mRecoveryIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
-                        mBootloaderIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
-                        mExpandedDesktopIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
-                        mScreenshotIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
-                        mScreenrecordIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
-                        mIconsTinted = true;
-                    }
+                    final Context ctx = ((Dialog) param.getResult()).getContext();
 
                     mRebootConfirmRequired = prefs.getBoolean(
                             GravityBoxSettings.PREF_KEY_REBOOT_CONFIRM_REQUIRED, true);
@@ -228,7 +199,7 @@ public class ModPowerMenu {
                     // 2) check if the name of the corresponding resource contains "reboot" or "restart" substring
                     if (mRebootActionItem == null) {
                         if (DEBUG) log("Searching for existing reboot action item...");
-                        Resources res = mContext.getResources();
+                        Resources res = ctx.getResources();
                         for (Object o : mItems) {
                             // search for drawable
                             try {
@@ -285,7 +256,7 @@ public class ModPowerMenu {
                                     "onPress", new XC_MethodReplacement () {
                                 @Override
                                 protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
-                                    RebootAction.showRebootDialog(mContext);
+                                    RebootAction.showRebootDialog(ctx);
                                     return null;
                                 }
                             });
@@ -385,10 +356,24 @@ public class ModPowerMenu {
     private static void reboot() {
         try {
             Object wmf = XposedHelpers.getObjectField(mGlobalActionsDialog, "mWindowManagerFuncs");
-            XposedHelpers.callMethod(wmf, "reboot", false);
+            Method m = XposedHelpers.findMethodExactIfExists(wmf.getClass(), "reboot",
+                    boolean.class, String.class);
+            if (m != null) {
+                m.invoke(wmf, false, "reboot");
+            } else {
+                XposedHelpers.callMethod(wmf, "reboot", false);
+            }
         } catch (Throwable t) {
             GravityBox.log(TAG, t);
         }
+    }
+
+    private static ContextThemeWrapper getThemedContext(Context ctx, int defaultThemeResId) {
+        int resId = ctx.getResources().getIdentifier("qs_theme", "style", ctx.getPackageName());
+        if (resId == 0) {
+            resId = defaultThemeResId;
+        }
+        return new ContextThemeWrapper(ctx, resId);
     }
 
     private static class RebootAction implements InvocationHandler {
@@ -411,14 +396,20 @@ public class ModPowerMenu {
                 if (!mAllowSoftReboot) {
                     list.remove(1);
                 }
-                AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                final ContextThemeWrapper ctw = getThemedContext(context, android.R.style.Theme_Material_Dialog_Alert);
+                int color = Utils.getColorFromStyleAttr(ctw, android.R.attr.colorControlNormal);
+                mRebootIcon.setTint(color);
+                mRebootSoftIcon.setTint(color);
+                mRecoveryIcon.setTint(color);
+                mBootloaderIcon.setTint(color);
+                AlertDialog.Builder builder = new AlertDialog.Builder(ctw)
                     .setTitle(mRebootStr)
-                    .setAdapter(new IconListAdapter(context, list), new DialogInterface.OnClickListener() {
+                    .setAdapter(new IconListAdapter(ctw, list), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             if (DEBUG) log("onClick() item = " + which);
-                            handleReboot(context, mRebootStr, 
+                            handleReboot(ctw, mRebootStr, 
                                     (which > 0 && !mAllowSoftReboot) ? (which+1) : which);
                         }
                     })
@@ -461,8 +452,9 @@ public class ModPowerMenu {
                     } else if (mode == 3) {
                         message = mRebootConfirmBootloaderStr;
                     }
-    
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context)
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getThemedContext(
+                            context,android.R.style.Theme_Material_Dialog_Alert))
                         .setTitle(caption)
                         .setMessage(message)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -503,6 +495,7 @@ public class ModPowerMenu {
 
                 ImageView icon = (ImageView) v.findViewById(res.getIdentifier(
                         "icon", "id", "android"));
+                mRebootIcon.setTint(Utils.getColorFromStyleAttr(mContext, android.R.attr.colorControlNormal));
                 icon.setImageDrawable(mRebootIcon);
 
                 TextView messageView = (TextView) v.findViewById(res.getIdentifier(
@@ -597,6 +590,7 @@ public class ModPowerMenu {
 
                 ImageView icon = (ImageView) v.findViewById(res.getIdentifier(
                         "icon", "id", "android"));
+                mExpandedDesktopIcon.setTint(Utils.getColorFromStyleAttr(mContext, android.R.attr.colorControlNormal));
                 icon.setImageDrawable(mExpandedDesktopIcon);
 
                 TextView messageView = (TextView) v.findViewById(res.getIdentifier(
@@ -654,6 +648,7 @@ public class ModPowerMenu {
 
                 ImageView icon = (ImageView) v.findViewById(res.getIdentifier(
                         "icon", "id", "android"));
+                mScreenshotIcon.setTint(Utils.getColorFromStyleAttr(mContext, android.R.attr.colorControlNormal));
                 icon.setImageDrawable(mScreenshotIcon);
 
                 TextView messageView = (TextView) v.findViewById(res.getIdentifier(
@@ -718,6 +713,7 @@ public class ModPowerMenu {
 
                 ImageView icon = (ImageView) v.findViewById(res.getIdentifier(
                         "icon", "id", "android"));
+                mScreenrecordIcon.setTint(Utils.getColorFromStyleAttr(mContext, android.R.attr.colorControlNormal));
                 icon.setImageDrawable(mScreenrecordIcon);
 
                 TextView messageView = (TextView) v.findViewById(res.getIdentifier(

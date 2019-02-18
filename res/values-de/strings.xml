@@ -1191,10 +1191,6 @@
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">Aufladefarbe</string>
 
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">Werktage</string>
-    <string name="pref_lc_qh_cat_weekend_title">Wochenende</string>
-
     <!-- Force English locale -->
     <string name="pref_force_english_locale_title">Englisch erzwingen</string>
 
@@ -1321,7 +1317,7 @@
     <!-- Quiet Hours: mute vibrations -->
     <string name="pref_lc_qh_mute_vibe_title">Vibration deaktvieren</string>
 
-    <string name="pref_lc_qh_mute_vibe_summary">Benachrichtigungsvibrationen auf diesem und          allen verbundenen Geräten ausschalten</string>
+    <string name="pref_lc_qh_mute_vibe_summary">Benachrichtigungsvibrationen ausschalten</string>
     <!-- Quiet Hours: interactive mode -->
     <string name="pref_lc_qh_interactive_title">Interaktiver Modus</string>
     <string name="pref_lc_qh_interactive_summary">Benachrichtigungen bei Nutzerinteraktion verstummen lassen
@@ -1381,9 +1377,6 @@
     <string name="charging_led_default">Standard</string>
     <string name="charging_led_emulated">Emuliert</string>
     <string name="charging_led_disabled">Deaktiviert</string>
-
-    <!-- Quiet hours week days -->
-    <string name="pref_lc_qh_weekdays_title">Wochentage einstellen</string>
 
     <!-- QuietHours: mute system sounds -->
     <string name="pref_lc_qh_mute_system_sounds_title">Systemtöne stumm schalten</string>
@@ -1588,9 +1581,7 @@
 
     <!-- UNC: QuietHours: mute system level vibrations -->
     <string name="pref_lc_qh_mute_system_vibe_title">Gerätevibrationen stumm schalten</string>
-    <string name="pref_lc_qh_mute_system_vibe_summary">ALLE Systemvibrationen deaktivieren,
-        eingeschlossen Benachrichtigungsvibrationen auf DIESEM Gerät. Benachrichtigunen auf verbundenen Smartwatches können
-        weiterhin Vibrationen auslösen.</string>
+    <string name="pref_lc_qh_mute_system_vibe_summary">ALLE Systemvibrationen deaktivieren</string>
 
     <!-- Lockscreen: doubletap to sleep -->
     <string name="pref_lockscreen_dt2s_title">Doppeltippen um Standby zu aktivieren</string>

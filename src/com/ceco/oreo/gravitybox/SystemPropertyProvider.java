@@ -131,6 +131,7 @@ public class SystemPropertyProvider {
                                                 SysUiManagers.FingerprintLauncher.getEnrolledFingerprintIds());
                                     }
                                     data.putBoolean("isOxygenOsRom", Utils.isOxygenOsRom());
+                                    data.putBoolean("isOnePlus6Rom", Utils.isOnePlus6Rom());
                                     if (DEBUG) {
                                         log("hasGeminiSupport: " + data.getBoolean("hasGeminiSupport"));
                                         log("isTablet: " + data.getBoolean("isTablet"));
@@ -147,6 +148,7 @@ public class SystemPropertyProvider {
                                             log("fingerprintIds: " + data.getIntArray("fingerprintIds"));
                                         }
                                         log("isOxygenOsRom: " + data.getBoolean("isOxygenOsRom"));
+                                        log("isOnePlus6Rom: " + data.getBoolean("isOnePlus6Rom"));
                                     }
                                     receiver.send(RESULT_SYSTEM_PROPERTIES, data);
                                 } else if (intent.getAction().equals(ACTION_REGISTER_UUID) && 

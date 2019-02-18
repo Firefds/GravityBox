@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Peter Gregus for GravityBox Project (C3C076@xda)
+ * Copyright (C) 2018 Peter Gregus for GravityBox Project (C3C076@xda)
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,9 @@
  */
 package com.ceco.oreo.gravitybox.preference;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import android.content.Context;
@@ -29,6 +32,7 @@ public class TimePreference extends DialogPreference {
     private int mValue;
     private boolean mTimerMode;
     private String mDefaultSummaryText;
+    private String mSummarySuffix;
 
     public TimePreference(Context context) {
         this(context, null);
@@ -70,7 +74,9 @@ public class TimePreference extends DialogPreference {
             mValue = mPicker.getHour() * 60 + mPicker.getMinute();
             setSummary(getSummary());
             if (callChangeListener(mValue)) {
-                persistInt(mValue);
+                if (shouldPersist()) {
+                    persistInt(mValue);
+                }
                 notifyChanged();
             }
         }
@@ -101,7 +107,34 @@ public class TimePreference extends DialogPreference {
         } else {
             int hours = (int) (mValue / 60);
             int minutes = mValue - hours*60;
-            return (String.format(Locale.getDefault(), "%02d:%02d", hours, minutes));
+            String time = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
+            if (!(mTimerMode || DateFormat.is24HourFormat(getContext()))) {
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                try {
+                    Date dateObj = sdf.parse(time);
+                    time = new SimpleDateFormat("hh:mm aa", Locale.getDefault()).format(dateObj);
+                } catch (ParseException e) { }
+            }
+            if (mSummarySuffix != null) {
+                time = String.format("%s %s", time, mSummarySuffix);
+            }
+            return time;
         }
+    }
+
+    public int getValue() {
+        return mValue;
+    }
+
+    public void setValue(int value){
+        mValue = value;
+        if (shouldPersist()) {
+            persistInt(mValue);
+        }
+        setSummary(getSummary());
+    }
+
+    public void setSummarySuffix(String suffix) {
+        mSummarySuffix = suffix;
     }
 }

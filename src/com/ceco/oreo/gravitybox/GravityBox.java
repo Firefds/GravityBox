@@ -84,11 +84,6 @@ public class GravityBox implements IXposedHookZygoteInit, IXposedHookInitPackage
         XposedBridge.log("GB:Is Xperia device: " + Utils.isXperiaDevice());
         XposedBridge.log("GB:Is Moto XT device: " + Utils.isMotoXtDevice());
         XposedBridge.log("GB:Is OxygenOS ROM: " + Utils.isOxygenOsRom());
-        XposedBridge.log("GB:Has Lenovo custom UI: " + Utils.hasLenovoCustomUI());
-        if (Utils.hasLenovoCustomUI()) {
-            XposedBridge.log("GB:Lenovo UI is VIBE: " + Utils.hasLenovoVibeUI());
-            XposedBridge.log("GB:Lenovo ROM is ROW: " + Utils.isLenovoROW());
-        }
         XposedBridge.log("GB:Has telephony support: " + Utils.hasTelephonySupport());
         XposedBridge.log("GB:Has Gemini support: " + Utils.hasGeminiSupport());
         XposedBridge.log("GB:Android SDK: " + Build.VERSION.SDK_INT);
@@ -187,7 +182,8 @@ public class GravityBox implements IXposedHookZygoteInit, IXposedHookInitPackage
         }
 
         if (ModDialer26.PACKAGE_NAMES.contains(lpparam.packageName) && !Utils.isOxygenOsRom()) {
-            ModDialer26.init(prefs, qhPrefs, lpparam.classLoader, lpparam.packageName);
+            ModDialer26.init(prefs, qhPrefs, lpparam.classLoader,
+                    lpparam.packageName, lpparam.appInfo.targetSdkVersion);
         }
 
         if (lpparam.packageName.equals(ModQsTiles.PACKAGE_NAME) &&
@@ -224,8 +220,7 @@ public class GravityBox implements IXposedHookZygoteInit, IXposedHookInitPackage
             ModNavigationBar.init(prefs, lpparam.classLoader);
         }
 
-        if (!Utils.hasLenovoVibeUI() &&
-                lpparam.packageName.equals(ModLockscreen.PACKAGE_NAME)) {
+        if (lpparam.packageName.equals(ModLockscreen.PACKAGE_NAME)) {
             ModLockscreen.init(prefs, qhPrefs, lpparam.classLoader);
         }
 
@@ -258,9 +253,13 @@ public class GravityBox implements IXposedHookZygoteInit, IXposedHookInitPackage
             ModTelecom.init(prefs, lpparam.classLoader);
         }
 
-        if (Utils.isOxygenOsRom() &&
-                lpparam.packageName.equals((ModDialerOOS.PACKAGE_NAME_IN_CALL_UI))) {
-            ModDialerOOS.initInCallUi(prefs, lpparam.classLoader);
+        if (Utils.isOxygenOsRom()) {
+            if (lpparam.packageName.equals((ModDialerOOS.PACKAGE_NAME_DIALER))) {
+                ModDialerOOS.initDialer(prefs, lpparam.classLoader);
+            }
+            if (lpparam.packageName.equals(ModDialerOOS.PACKAGE_NAME_IN_CALL_UI)) {
+                ModDialerOOS.initInCallUi(prefs, lpparam.classLoader);
+            }
         }
     }
 }

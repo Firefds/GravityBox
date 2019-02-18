@@ -15,8 +15,10 @@
 package com.ceco.oreo.gravitybox.visualizer;
 
 import com.ceco.oreo.gravitybox.GravityBox;
+import com.ceco.oreo.gravitybox.GravityBoxSettings;
 import com.ceco.oreo.gravitybox.R;
 import com.ceco.oreo.gravitybox.Utils;
+import com.ceco.oreo.gravitybox.managers.BatteryInfoManager.BatteryData;
 import com.ceco.oreo.gravitybox.ModStatusBar.StatusBarState;
 
 import android.animation.ArgbEvaluator;
@@ -28,9 +30,9 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.media.MediaMetadata;
 import android.os.PowerManager;
 import android.os.SystemClock;
-import android.support.v7.graphics.Palette;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,13 +41,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
+import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
-public class VisualizerLayout extends FrameLayout
-        implements Palette.PaletteAsyncListener, View.OnClickListener {
+public class LockscreenVisualizerLayout extends AVisualizerLayout
+        implements View.OnClickListener {
 
-    private static final String TAG = "GB:VisualizerLayout";
+    private static final String TAG = "GB:LockscreenVisualizerLayout";
     private static final boolean DEBUG = false;
 
     private static final long DIM_STATE_DELAY = 10000l;
@@ -54,18 +57,8 @@ public class VisualizerLayout extends FrameLayout
         XposedBridge.log(TAG + ": " + message);
     }
 
-    private int mStatusBarState;
-    private boolean mVisible = false;
-    private boolean mPlaying = false;
-    private boolean mPowerSaveMode = false;
-    private boolean mDisplaying = false; // the state we're animating to
-
-    private int mDefaultColor;
-    private int mColor;
-    private ValueAnimator mColorAnimator;
     private int mBgColor;
     private ValueAnimator mBgColorAnimator;
-    private int mOpacity;
     private boolean mActiveMode;
     private int mPosition;
     private boolean mIsDimmed;
@@ -81,7 +74,6 @@ public class VisualizerLayout extends FrameLayout
     private View mScrim;
     private TextClock mClock;
     private TextView mBattery;
-    private VisualizerView mVisualizerView;
     private TextView mArtist;
     private TextView mTitle;
     private ImageView mArtwork;
@@ -92,22 +84,75 @@ public class VisualizerLayout extends FrameLayout
     private ImageView mControlStop;
     private ImageView mControlPrev;
 
-    public VisualizerLayout(Context context, int position) throws Throwable {
-        super(context, null, 0);
+    public LockscreenVisualizerLayout(Context context) throws Throwable {
+        super(context);
 
-        mPosition = position;
-        mDefaultColor = Color.WHITE;
-        mColor = Color.TRANSPARENT;
-        mOpacity = 140;
         mBgColor = 0;
 
         mPowerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-
-        inflateLayout();
     }
 
-    private void inflateLayout() throws Throwable {
+    @Override
+    public void initPreferences(XSharedPreferences prefs) {
+        super.initPreferences(prefs);
+
+        mActiveMode = prefs.getBoolean(GravityBoxSettings.PREF_KEY_VISUALIZER_ACTIVE_MODE, false);
+        mDimEnabled = prefs.getBoolean(GravityBoxSettings.PREF_KEY_VISUALIZER_DIM, true);
+        mDimLevel = Math.round(255f * ((float)prefs.getInt(GravityBoxSettings.PREF_KEY_VISUALIZER_DIM_LEVEL, 80)/100f));
+        mDimInfoEnabled = prefs.getBoolean(GravityBoxSettings.PREF_KEY_VISUALIZER_DIM_INFO, true);
+        mDimHeaderEnabled = prefs.getBoolean(GravityBoxSettings.PREF_KEY_VISUALIZER_DIM_HEADER, true);
+        mDimControlsEnabled = prefs.getBoolean(GravityBoxSettings.PREF_KEY_VISUALIZER_DIM_CONTROLS, true);
+        mDimArtworkEnabled = prefs.getBoolean(GravityBoxSettings.PREF_KEY_VISUALIZER_DIM_ARTWORK, true);
+    }
+
+    @Override
+    public void onPreferenceChanged(Intent intent) {
+        super.onPreferenceChanged(intent);
+
+        if (intent.hasExtra(GravityBoxSettings.EXTRA_VISUALIZER_ACTIVE_MODE)) {
+            mActiveMode = intent.getBooleanExtra(GravityBoxSettings.EXTRA_VISUALIZER_ACTIVE_MODE, false);
+        }
+        if (intent.hasExtra(GravityBoxSettings.EXTRA_VISUALIZER_DIM)) {
+            mDimEnabled = intent.getBooleanExtra(GravityBoxSettings.EXTRA_VISUALIZER_DIM, true);
+        }
+        if (intent.hasExtra(GravityBoxSettings.EXTRA_VISUALIZER_DIM_LEVEL)) {
+            mDimLevel = Math.round(255f * ((float)intent.getIntExtra(GravityBoxSettings.EXTRA_VISUALIZER_DIM_LEVEL, 80)/100f));
+        }
+        if (intent.hasExtra(GravityBoxSettings.EXTRA_VISUALIZER_DIM_INFO)) {
+            mDimInfoEnabled = intent.getBooleanExtra(GravityBoxSettings.EXTRA_VISUALIZER_DIM_INFO, true);
+        }
+        if (intent.hasExtra(GravityBoxSettings.EXTRA_VISUALIZER_DIM_HEADER)) {
+            mDimHeaderEnabled = intent.getBooleanExtra(GravityBoxSettings.EXTRA_VISUALIZER_DIM_HEADER, true);
+        }
+        if (intent.hasExtra(GravityBoxSettings.EXTRA_VISUALIZER_DIM_CONTROLS)) {
+            mDimControlsEnabled = intent.getBooleanExtra(GravityBoxSettings.EXTRA_VISUALIZER_DIM_CONTROLS, true);
+        }
+        if (intent.hasExtra(GravityBoxSettings.EXTRA_VISUALIZER_DIM_ARTWORK)) {
+            mDimArtworkEnabled = intent.getBooleanExtra(GravityBoxSettings.EXTRA_VISUALIZER_DIM_ARTWORK, true);
+        }
+    }
+
+    @Override
+    public void onCreateView(ViewGroup parent) throws Throwable {
+        // find suitable position, put as last if failed
+        mPosition = parent.getChildCount();
+        int resId = parent.getResources().getIdentifier("status_bar_container", "id",
+                parent.getContext().getPackageName());
+        if (resId != 0) {
+            View v = parent.findViewById(resId);
+            if (v != null) {
+                mPosition = parent.indexOfChild(v);
+            }
+        }
+        if (DEBUG) log("Computed view position: " + mPosition);
+
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT);
+        setLayoutParams(lp);
+        parent.addView(this, mPosition);
+
         LayoutInflater inflater = LayoutInflater.from(Utils.getGbContext(getContext(),
                 getContext().getResources().getConfiguration()));
         inflater.inflate(R.layout.visualizer, this);
@@ -150,7 +195,7 @@ public class VisualizerLayout extends FrameLayout
         @Override
         public void run() {
             userActivity();
-            if (mActiveMode && mDisplaying) {
+            if (mActiveMode && mActive && isEnabled()) {
                 postDelayed(this, 4000);
             }
         }
@@ -169,16 +214,6 @@ public class VisualizerLayout extends FrameLayout
             setDimState(false);
         }
     };
-
-    private void updateViewVisibility() {
-        final int curVis = getVisibility();
-        final int newVis = mStatusBarState != StatusBarState.SHADE ?
-                 View.VISIBLE : View.GONE;
-        if (curVis != newVis) {
-            setVisibility(newVis);
-            checkStateChanged();
-        }
-    }
 
     private void setDimState(final boolean dim) {
         mIsDimmed = dim;
@@ -245,187 +280,72 @@ public class VisualizerLayout extends FrameLayout
         }
     }
 
-    void onUserActivity() {
+    @Override
+    public void onUserActivity() {
+        super.onUserActivity();
+
         if (DEBUG) log("onUserActivity");
         removeCallbacks(mEnterDimStateRunnable);
         if (mIsDimmed) {
             post(mExitDimStateRunnable);
         }
-        if (mDisplaying && mActiveMode && mDimEnabled) {
+        if (isEnabled() && mActive && mActiveMode && mDimEnabled) {
             postDelayed(mEnterDimStateRunnable, DIM_STATE_DELAY);
         }
     }
 
-    void setVisible(boolean visible) {
-        if (mVisible != visible) {
-            if (DEBUG) {
-                log("setVisible() called with visible = [" + visible + "]");
+    
+    @Override
+    public void onMediaMetaDataUpdated(MediaMetadata md, Bitmap artwork) {
+        super.onMediaMetaDataUpdated(md, artwork);
+
+        mArtist.setText(md != null ? md.getString(MediaMetadata.METADATA_KEY_ARTIST) : null);
+        mTitle.setText(md != null ? md.getString(MediaMetadata.METADATA_KEY_TITLE) : null);
+        mArtwork.setImageBitmap(artwork);
+    }
+
+    
+    @Override
+    public void onActiveStateChanged(boolean active) {
+        super.onActiveStateChanged(active);
+
+        if (active && isEnabled()) {
+            if (mActiveMode) {
+                postDelayed(mUserActivityRunnable, 4000);
+                if (mDimEnabled) {
+                    postDelayed(mEnterDimStateRunnable, DIM_STATE_DELAY);
+                }
             }
-            mVisible = visible;
-            checkStateChanged();
-        }
-    }
-
-    void setPlaying(boolean playing) {
-        if (mPlaying != playing) {
-            if (DEBUG) {
-                log("setPlaying() called with playing = [" + playing + "]");
-            }
-            mPlaying = playing;
-            checkStateChanged();
-        }
-    }
-
-    void setPowerSaveMode(boolean powerSaveMode) {
-        if (mPowerSaveMode != powerSaveMode) {
-            if (DEBUG) {
-                log("setPowerSaveMode() called with powerSaveMode = [" + powerSaveMode + "]");
-            }
-            mPowerSaveMode = powerSaveMode;
-            checkStateChanged();
-        }
-    }
-
-    void setBatteryLevel(int level) {
-        mBattery.setText(String.format("%d%%", level));
-    }
-
-    void setStatusBarState(int statusBarState) {
-        if (mStatusBarState != statusBarState) {
-            mStatusBarState = statusBarState;
-            updateViewVisibility();
-        }
-    }
-
-    void setBitmap(Bitmap bitmap, boolean extractColor) {
-        mArtwork.setImageBitmap(bitmap);
-        if (bitmap != null && extractColor) {
-            Palette.from(bitmap).generate(this);
         } else {
-            setColor(Color.TRANSPARENT);
+            removeCallbacks(mEnterDimStateRunnable);
+            removeCallbacks(mUserActivityRunnable);
+            if (mIsDimmed) {
+                post(mExitDimStateRunnable);
+            }
         }
     }
 
     @Override
-    public void onGenerated(Palette palette) {
-        int color = Color.TRANSPARENT;
-
-        color = palette.getVibrantColor(color);
-        if (color == Color.TRANSPARENT) {
-            color = palette.getLightVibrantColor(color);
-            if (color == Color.TRANSPARENT) {
-                color = palette.getDarkVibrantColor(color);
-            }
-        }
-
-        setColor(color);
+    public void onBatteryStatusChanged(BatteryData batteryData) {
+        super.onBatteryStatusChanged(batteryData);
+        mBattery.setText(String.format("%d%%", batteryData.level));
     }
 
-    void setDefaultColor(int color) {
-        mDefaultColor = color;
-        setColor(mDefaultColor);
+    @Override
+    boolean supportsCurrentStatusBarState() {
+        return mStatusBarState != StatusBarState.SHADE;
     }
 
-    private void setColor(int color) {
-        if (color == Color.TRANSPARENT) {
-            color = mDefaultColor;
-        }
-
-        if (mColor != color) {
-            final int oldColor = mColor;
-            mColor = Color.argb(mOpacity, Color.red(color),
-                    Color.green(color), Color.blue(color));
-            if (mColorAnimator != null) {
-                mColorAnimator.cancel();
-            }
-            mColorAnimator = ValueAnimator.ofObject(new ArgbEvaluator(),
-                    oldColor, mColor);
-            mColorAnimator.setDuration(1200);
-            mColorAnimator.setStartDelay(600);
-            mColorAnimator.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator va) {
-                    int c = (int) va.getAnimatedValue();
-                    mVisualizerView.setColor(c);
-                    mClock.setTextColor(c);
-                    mBattery.setTextColor(c);
-                    mArtist.setTextColor(c);
-                    mTitle.setTextColor(c);
-                    mControlPrev.setImageTintList(ColorStateList.valueOf(c));
-                    mControlStop.setImageTintList(ColorStateList.valueOf(c));
-                    mControlNext.setImageTintList(ColorStateList.valueOf(c));
-                }
-            });
-            mColorAnimator.start();
-        }
-    }
-
-    void setOpacityPercent(int opacityPercent) {
-        mOpacity = Math.round(255f * ((float)opacityPercent/100f));
-        mVisualizerView.setColor(Color.argb(mOpacity, Color.red(mColor),
-                Color.green(mColor), Color.blue(mColor)));
-    }
-
-    void setActiveMode(boolean active) {
-        mActiveMode = active;
-    }
-
-    void setDimEnabled(boolean enabled) {
-        mDimEnabled = enabled;
-    }
-
-    void setDimLevelPercent(int dimLevelPercent) {
-        mDimLevel = Math.round(255f * ((float)dimLevelPercent/100f));
-    }
-
-    void setDimInfoEnabled(boolean enabled) {
-        mDimInfoEnabled = enabled;
-    }
-
-    void setDimHeaderEnabled(boolean enabled) {
-        mDimHeaderEnabled = enabled;
-    }
-
-    void setDimControlsEnabled(boolean enabled) {
-        mDimControlsEnabled = enabled;
-    }
-
-    void setDimArtworkEnabled(boolean enabled) {
-        mDimArtworkEnabled = enabled;
-    }
-
-    void setArtist(String text) {
-        mArtist.setText(text);
-    }
-
-    void setTitle(String text) {
-        mTitle.setText(text);
-    }
-
-    private void checkStateChanged() {
-        if (getVisibility() == View.VISIBLE &&
-                mVisible && mPlaying && !mPowerSaveMode) {
-            if (!mDisplaying) {
-                mDisplaying = true;
-                if (mActiveMode) {
-                    postDelayed(mUserActivityRunnable, 4000);
-                    if (mDimEnabled) {
-                        postDelayed(mEnterDimStateRunnable, DIM_STATE_DELAY);
-                    }
-                }
-                mVisualizerView.setPlaying(true);
-            }
-        } else {
-            if (mDisplaying) {
-                mDisplaying = false;
-                removeCallbacks(mEnterDimStateRunnable);
-                removeCallbacks(mUserActivityRunnable);
-                if (mIsDimmed) {
-                    post(mExitDimStateRunnable);
-                }
-                mVisualizerView.setPlaying(false);
-            }
-        }
+    @Override
+    void onColorAnimatedValueUpdated(int color) {
+        super.onColorAnimatedValueUpdated(color);
+        mClock.setTextColor(color);
+        mBattery.setTextColor(color);
+        mArtist.setTextColor(color);
+        mTitle.setTextColor(color);
+        mControlPrev.setImageTintList(ColorStateList.valueOf(color));
+        mControlStop.setImageTintList(ColorStateList.valueOf(color));
+        mControlNext.setImageTintList(ColorStateList.valueOf(color));
     }
 
     @Override

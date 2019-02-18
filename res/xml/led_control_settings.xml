@@ -34,7 +34,7 @@
             android:entries="@array/dnd_tile_em_entries"
             android:entryValues="@array/dnd_tile_em_values"
             android:defaultValue="@array/empty_array"
-            android:persistent="false" />
+            android:persistent="true" /> <!-- must be persistent due to BUG in Android -->
 
         <CheckBoxPreference
             android:key="pref_lc_led_ignore_update"
@@ -48,7 +48,8 @@
             android:title="@string/pref_lc_led_mode_title"
             android:entries="@array/lc_led_mode_entries"
             android:entryValues="@array/lc_led_mode_values"
-            android:defaultValue="OVERRIDE" />
+            android:defaultValue="OVERRIDE"
+            android:persistent="false" />
 
         <net.margaritov.preference.colorpicker.ColorPickerPreference 
             android:key="pref_lc_led_color"
@@ -205,6 +206,14 @@
             android:summary="@string/pref_lc_qh_ignore_list_summary"
             android:persistent="false"
             android:defaultValue=""
+            android:dependency="pref_lc_qh_ignore" />
+
+        <CheckBoxPreference
+            android:key="pref_lc_qh_ignore_interactive"
+            android:title="@string/pref_lc_qh_ignore_interactive_title"
+            android:summary="@string/pref_lc_qh_ignore_interactive_summary"
+            android:defaultValue="true"
+            android:persistent="false"
             android:dependency="pref_lc_qh_ignore" />
 
     </PreferenceCategory>

@@ -1198,10 +1198,6 @@
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">Màu đang sạc</string>
 
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">Các ngày trong tuần</string>
-    <string name="pref_lc_qh_cat_weekend_title">Cuối tuần</string>
-
     <!-- Force English locale -->
     <string name="pref_force_english_locale_title">Force English locale</string>
 
@@ -1388,9 +1384,6 @@
     <string name="charging_led_default">Mặc định</string>
     <string name="charging_led_emulated">Đổi màu liên tục</string>
     <string name="charging_led_disabled">Tắt</string>
-
-    <!-- Quiet hours week days -->
-    <string name="pref_lc_qh_weekdays_title">Đặt các ngày trong tuần</string>
 
     <!-- QuietHours: mute system sounds -->
     <string name="pref_lc_qh_mute_system_sounds_title">Tắt âm báo hệ thống</string>

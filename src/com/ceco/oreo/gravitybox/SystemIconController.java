@@ -151,7 +151,7 @@ public class SystemIconController implements BroadcastSubReceiver {
     }
 
     private void updateVibrateIcon() {
-        if (mIconCtrl == null || mContext == null) return;
+        if (mIconCtrl == null || mContext == null || Utils.isOnePlus6Rom()) return;
         try {
             AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
             if (Utils.isOxygenOsRom()) {

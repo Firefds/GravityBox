@@ -592,7 +592,17 @@
                 interval="1"
                 monitorBoxEnabled="true"
                 monitorBoxUnit="%" 
-                android:defaultValue="0" />
+                android:defaultValue="0"
+                android:dependency="pref_qs_management_enable" />
+
+            <ListPreference
+                android:key="pref_qs_tiles_per_header" 
+                android:title="@string/pref_qs_tiles_per_header_title"
+                android:summary="@string/pref_qs_tiles_per_header_summary" 
+                android:entries="@array/qs_tiles_per_header_entries"
+                android:entryValues="@array/qs_tiles_per_header_values"
+                android:defaultValue="0"
+                android:dependency="pref_qs_management_enable" />
 
             <ListPreference
                 android:key="pref_qs_locked_tile_indicator" 
@@ -925,6 +935,12 @@
                     android:key="pref_battery_bar_show"
                     android:title="@string/pref_battery_bar_show_title"
                     android:defaultValue="false" />
+
+                <CheckBoxPreference 
+                    android:key="pref_battery_bar_show_charging"
+                    android:title="@string/pref_battery_bar_show_charging_title"
+                    android:defaultValue="false"
+                    android:dependency="pref_battery_bar_show" />
 
                 <ListPreference 
                     android:key="pref_battery_bar_position"
@@ -1309,6 +1325,12 @@
             android:summary="@string/pref_disable_roaming_indicators_summary"
             android:defaultValue="false" />
 
+        <CheckBoxPreference 
+            android:key="pref_sb_corner_padding_remove"
+            android:title="@string/pref_sb_corner_padding_remove_title"
+            android:summary="@string/pref_sb_corner_padding_remove_summary"
+            android:defaultValue="false" />
+
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -1549,7 +1571,7 @@
                 android:key="pref_pie_control_trigger_size"
                 android:title="@string/pie_control_trigger_size_title"
                 minimum="2"
-                maximum="15"
+                maximum="30"
                 interval="1"
                 monitorBoxEnabled="true"
                 monitorBoxUnit="px"
@@ -2103,6 +2125,13 @@
                 monitorBoxEnabled="true"
                 monitorBoxUnit="%" 
                 android:defaultValue="50"
+                android:dependency="pref_visualizer_enable" />
+
+            <CheckBoxPreference 
+                android:key="pref_visualizer_navbar"
+                android:title="@string/pref_visualizer_navbar_title"
+                android:summary="@string/pref_visualizer_navbar_summary"
+                android:defaultValue="false"
                 android:dependency="pref_visualizer_enable" />
 
             <CheckBoxPreference 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Peter Gregus for GravityBox Project (C3C076@xda)
+ * Copyright (C) 2018 Peter Gregus for GravityBox Project (C3C076@xda)
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,7 +33,6 @@ public class ModQsTiles {
 
     @SuppressWarnings("unused")
     private static QsPanel mQsPanel;
-    @SuppressWarnings("unused")
     private static QsPanelQuick mQsPanelQuick;
     @SuppressWarnings("unused")
     private static QsDetailItems mQsDetailItems;
@@ -45,15 +44,26 @@ public class ModQsTiles {
     }
 
     public static void init(final XSharedPreferences prefs, final ClassLoader classLoader) {
+        if (DEBUG) log("init");
+
         try {
-            if (DEBUG) log("init");
-            mQsPanel = new QsPanel(prefs, classLoader);
             mQsPanelQuick = new QsPanelQuick(prefs, classLoader);
-            if (Utils.isOxygenOsRom()) {
-                mQsDetailItems = new QsDetailItems(classLoader);
-            }
         } catch (Throwable t) {
             GravityBox.log(TAG, t);
+        }
+
+        try {
+            mQsPanel = new QsPanel(prefs, classLoader, mQsPanelQuick);
+        } catch (Throwable t) {
+            GravityBox.log(TAG, t);
+        }
+
+        if (Utils.isOxygenOsRom()) {
+            try {
+                mQsDetailItems = new QsDetailItems(classLoader);
+            } catch (Throwable t) {
+                GravityBox.log(TAG, t);
+            }
         }
     }
 }

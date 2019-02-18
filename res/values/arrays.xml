@@ -142,6 +142,8 @@
         <item>@string/lc_quiet_hours</item>
         <item>@string/qs_tile_compass</item>
         <item>@string/qs_tile_bt_tethering</item>
+        <item>@string/qs_tile_ambient_display</item>
+        <item>@string/qs_tile_heads_up</item>
     </string-array>
 
     <string-array name="qs_tile_values" translatable="false">
@@ -178,6 +180,8 @@
         <item>gb_tile_quiet_hours</item>
         <item>gb_tile_compass</item>
         <item>gb_tile_bt_tethering</item>
+        <item>gb_tile_ambient_display</item>
+        <item>gb_tile_heads_up</item>
     </string-array>
 
     <string-array name="lockscreen_bg_entries" translatable="false">
@@ -1240,6 +1244,36 @@
         <item>DEFAULT</item>
         <item>LIGHT</item>
         <item>DARK</item>
+    </string-array>
+
+    <string-array name="qs_tiles_per_header_entries" translatable="false">
+        <item>@string/state_default</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
+    <string-array name="qs_tiles_per_header_values" translatable="false">
+        <item>0</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
+    <string-array name="lc_qh_mode_entries" translatable="false">
+        <item>@string/quiet_hours_on</item>
+        <item>@string/quiet_hours_off</item>
+        <item>@string/quiet_hours_auto</item>
+        <item>@string/quiet_hours_wear</item>
+    </string-array>
+
+    <string-array name="lc_qh_mode_values" translatable="false">
+        <item>ON</item>
+        <item>OFF</item>
+        <item>AUTO</item>
+        <item>WEAR</item>
     </string-array>
 
 </resources>

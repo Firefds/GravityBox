@@ -1205,10 +1205,6 @@
 
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">充电颜色</string>
-    
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">本周</string>
-    <string name="pref_lc_qh_cat_weekend_title">周末</string>
 
     <!-- Force English locale -->
     <string name="pref_force_english_locale_title">强制英语</string>
@@ -1337,8 +1333,7 @@
 
     <!-- Quiet Hours: mute vibrations -->
     <string name="pref_lc_qh_mute_vibe_title">通知静音震动</string>
-    <string name="pref_lc_qh_mute_vibe_summary">此设备上所有配对的Android Wear设备
-	关闭通知震动</string>
+    <string name="pref_lc_qh_mute_vibe_summary">关闭通知振动</string>
 
     <!-- Quiet Hours: interactive mode -->
     <string name="pref_lc_qh_interactive_title">交互模式</string>
@@ -1404,9 +1399,6 @@
     <string name="charging_led_emulated">仿真</string>
     <string name="charging_led_constant">不变(需要LED驱动支持)</string>
     <string name="charging_led_disabled">禁用</string>
-
-    <!-- Quiet hours week days -->
-    <string name="pref_lc_qh_weekdays_title">设置工作日</string>
 
     <!-- QuietHours: mute system sounds -->
     <string name="pref_lc_qh_mute_system_sounds_title">静音系统声音</string>
@@ -1620,9 +1612,7 @@
 	
     <!-- UNC: QuietHours: mute system level vibrations -->
     <string name="pref_lc_qh_mute_system_vibe_title">静音设备振动</string>
-    <string name="pref_lc_qh_mute_system_vibe_summary">关闭所有系统级振动
-	包括在此设备上的通知振动,配对Android Wear设备上的通知仍然可以
- 	在震动的情况下开启通知振动
+    <string name="pref_lc_qh_mute_system_vibe_summary">关闭系统级别的所有振动,包括通知振动,触觉反馈等
     </string>
 
     <!-- Lockscreen: doubletap to sleep -->
@@ -2072,5 +2062,62 @@
     <string name="pref_visualizer_dim_level_title">亮度等级</string>
     <string name="pref_visualizer_dim_info_title">显示媒体信息</string>
     <string name="pref_visualizer_dim_info_summary">在低亮度屏幕上显示当前媒体信息</string>
+    <string name="pref_visualizer_dim_header_title">显示标题</string>
+    <string name="pref_visualizer_dim_header_summary">在低亮度屏幕上显示当前时间和电量等级</string>
+    <string name="pref_visualizer_dim_controls_title">显示媒体控件</string>
+    <string name="pref_visualizer_dim_controls_summary">在低亮度屏幕上显示媒体控件</string>
+    <string name="pref_visualizer_dim_artwork_title">显示专辑封面</string>
+    <string name="pref_visualizer_dim_artwork_summary">在低亮度锁屏上显示专辑封面</string>
+    <string name="pref_visualizer_navbar_title">虚拟按键</string>
+    <string name="pref_visualizer_navbar_summary">在虚拟按键内显示视觉效果</string>
+
+    <!-- QS: Ambient Display tile -->
+    <string name="qs_tile_ambient_display">Ambient display</string>
+
+    <!-- QS: Heads Up tile -->
+    <string name="qs_tile_heads_up">浮动</string>
+
+    <!-- Reboot -->
+    <string name="reboot">重启</string>
+
+    <!-- StatusBar: corner padding -->
+    <string name="pref_sb_corner_padding_remove_title">删除圆角填充</string>
+    <string name="pref_sb_corner_padding_remove_summary">删除为圆角显示设计的填充(需要重新启动)</string>
+
+    <!-- QS: tiles per header -->
+    <string name="pref_qs_tiles_per_header_title">每个标题磁砖</string>
+    <string name="pref_qs_tiles_per_header_summary">在标题中定义显示多少个磁砖</string>
+
+    <!-- BatteryBar: only while charging -->
+    <string name="pref_battery_bar_show_charging_title">仅在充电时</string>
+	
+    <!-- Search -->
+    <string name="search">搜索</string>
+    <string name="search_reset">搜索重置</string>
+    <string name="search_keyword_short">关键字太短了</string>
+    <string name="search_no_match">没有找到设置</string>
+
+    <!-- UNC: ignore QH durine ginteractive mode -->
+    <string name="pref_lc_qh_ignore_interactive_title">对于交互模式</string>
+    <string name="pref_lc_qh_ignore_interactive_summary">当启用后,通知符合忽略规则
+	不会因静音时间与交互模式而被静音</string>
+
+    <!-- QH: Phone ringer whitelist -->
+    <string name="pref_lc_qh_ringer_whitelist_title">电话铃声白名单</string>
+    <string name="pref_lc_qh_ringer_whitelist_summary">管理在安静时间内不静音电话铃声的联系人列表</string>
+    <string name="search_no_contacts">找不到匹配的联系人关键字</string>
+    <string name="qhrw_menu_show_all">显示所有</string>
+    <string name="qhrw_menu_show_starred">显示星标记</string>
+    <string name="qhrw_menu_show_whitelisted">显示白名单</string>
+    <string name="qhrw_permission_denied">读取联系人权限时被拒绝</string>
+
+    <!-- QH: Time ranges -->
+    <string name="pref_lc_qh_ranges_title">设置时间范围</string>
+    <string name="pref_lc_qh_ranges_summary">允许为自动静音时间设置一个或多个时间范围</string>
+    <string name="lc_qh_ranges_list_label">静音时间 - 时间范围</string>
+    <string name="lc_qh_ranges_list_empty">目前没有设置时间范围</string>
+    <string name="lc_qh_ranges_detail_label">静音时间 - 时间范围</string>
+    <string name="pref_lc_qh_range_days_title">天</string>
+    <string name="next_day">下一天</string>
 
 </resources>

@@ -54,6 +54,7 @@ import android.os.PowerManager;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
+import android.telephony.TelephonyManager;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
@@ -93,12 +94,12 @@ public class ModLedControl {
     private static Sensor mProxSensor;
     private static QuietHours mQuietHours;
     private static Map<String, Long> mNotifTimestamps = new HashMap<String, Long>();
-    private static boolean mUserPresent;
     private static Object mNotifManagerService;
     private static boolean mProximityWakeUpEnabled;
     private static boolean mScreenOnDueToActiveScreen;
     private static AudioManager mAudioManager;
     private static Constructor<?> mNotificationLightConstructor;
+    private static TelephonyManager mTelephonyManager;
 
     // UNC settings
     private static boolean mUncLocked;
@@ -168,10 +169,8 @@ public class ModLedControl {
                 mQuietHours = new QuietHours(intent.getExtras());
             } else if (action.equals(Intent.ACTION_USER_PRESENT)) {
                 if (DEBUG) log("User present");
-                mUserPresent = true;
                 mScreenOnDueToActiveScreen = false;
             } else if (action.equals(Intent.ACTION_SCREEN_OFF)) {
-                mUserPresent = false;
                 mScreenOnDueToActiveScreen = false;
             } else if (action.equals(ACTION_CLEAR_NOTIFICATIONS)) {
                 clearNotifications();
@@ -290,6 +289,7 @@ public class ModLedControl {
                 Object oldRecord = getOldNotificationRecord(sbn.getKey());
                 Notification oldN = getNotificationFromRecord(oldRecord);
                 final String pkgName = sbn.getPackageName();
+                final boolean userPresent = isUserPresent();
 
                 LedSettings ls;
                 if (n.extras.containsKey("gbUncPreviewNotification")) {
@@ -301,18 +301,18 @@ public class ModLedControl {
                     if (!ls.getEnabled()) {
                         // use default settings in case they are active
                         ls = resolveLedSettings("default");
-                        if (!ls.getEnabled() && !mQuietHours.quietHoursActive(ls, n, mUserPresent)) {
+                        if (!ls.getEnabled() && !mQuietHours.quietHoursActive(ls, n, userPresent)) {
                             return;
                         }
                     }
                     if (DEBUG) log(pkgName + ": " + ls.toString());
                 }
 
-                final boolean qhActive = mQuietHours.quietHoursActive(ls, n, mUserPresent);
-                final boolean qhActiveIncludingLed = qhActive && mQuietHours.muteLED;
+                final boolean qhActive = mQuietHours.quietHoursActive(ls, n, userPresent);
+                final boolean qhActiveIncludingLed = qhActive && mQuietHours.shouldMuteLed();
                 final boolean qhActiveIncludingVibe = qhActive && (
-                        (mQuietHours.mode != QuietHours.Mode.WEAR && mQuietHours.muteVibe) ||
-                        (mQuietHours.mode == QuietHours.Mode.WEAR && mUserPresent));
+                        (mQuietHours.mode != QuietHours.Mode.WEAR && mQuietHours.shouldMuteVibe()) ||
+                        (mQuietHours.mode == QuietHours.Mode.WEAR && userPresent));
                 final boolean qhActiveIncludingActiveScreen = qhActive && !mUncActiveScreenIgnoreQh;
                 if (DEBUG) log("qhActive=" + qhActive + "; qhActiveIncludingLed=" + qhActiveIncludingLed +
                         "; qhActiveIncludingVibe=" + qhActiveIncludingVibe + 
@@ -413,13 +413,14 @@ public class ModLedControl {
                                 ls.getHeadsUpTimeout());
                     }
                     // active screen mode
-                    if (ls.getActiveScreenMode() != ActiveScreenMode.DISABLED && 
+                    if (mUncActiveScreenEnabled &&
+                            ls.getActiveScreenMode() != ActiveScreenMode.DISABLED && 
                             !(ls.getActiveScreenIgnoreUpdate() && oldN != null) &&
                             getNotificationImportance(param.thisObject) > NotificationManager.IMPORTANCE_MIN &&
                             ls.getVisibilityLs() != VisibilityLs.CLEARABLE &&
                             ls.getVisibilityLs() != VisibilityLs.ALL &&
                             !qhActiveIncludingActiveScreen && !isOngoing &&
-                            mPm != null && mKm.isKeyguardLocked()) {
+                            !userPresent) {
                         n.extras.putBoolean(NOTIF_EXTRA_ACTIVE_SCREEN, true);
                         n.extras.putString(NOTIF_EXTRA_ACTIVE_SCREEN_MODE,
                                 ls.getActiveScreenMode().toString());
@@ -440,6 +441,43 @@ public class ModLedControl {
             }
         }
     };
+
+    private static PowerManager getPowerManager() {
+        if (mPm == null) {
+            mPm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        }
+        return mPm;
+    }
+
+    private static KeyguardManager getKeyguardManager() {
+        if (mKm == null) {
+            mKm = (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
+        }
+        return mKm;
+    }
+
+    private static TelephonyManager getTelephonyManager() {
+        if (mTelephonyManager == null) {
+            mTelephonyManager = (TelephonyManager)
+                mContext.getSystemService(Context.TELEPHONY_SERVICE);
+        }
+        return mTelephonyManager;
+    }
+
+    private static boolean isUserPresent() {
+        try {
+            final boolean interactive =
+                    getPowerManager().isInteractive() &&
+                    !getKeyguardManager().isKeyguardLocked();
+            final int callState = getTelephonyManager().getCallState();
+            if (DEBUG) log("isUserPresent: interactive=" + interactive +
+                    "; call state=" + callState);
+            return (interactive || callState == TelephonyManager.CALL_STATE_OFFHOOK);
+        } catch (Throwable t) {
+            GravityBox.log(TAG, t);
+            return false;
+        }
+    }
 
     private static Object createNotificationLight(int color, int onMs, int offMs) {
         try {
@@ -556,14 +594,14 @@ public class ModLedControl {
     }
 
     private static XC_MethodHook applyZenModeHook = new XC_MethodHook() {
-        @SuppressWarnings("deprecation")
         @Override
         protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
             try {
                 Notification n = (Notification) XposedHelpers.callMethod(param.args[0], "getNotification");
-                if (!n.extras.containsKey(NOTIF_EXTRA_ACTIVE_SCREEN) ||
+                if (!mUncActiveScreenEnabled ||
+                        !n.extras.containsKey(NOTIF_EXTRA_ACTIVE_SCREEN) ||
                         !n.extras.containsKey(NOTIF_EXTRA_ACTIVE_SCREEN_MODE) ||
-                        !(mPm != null && !mPm.isScreenOn() && mKm.isKeyguardLocked())) {
+                        isUserPresent()) {
                     n.extras.remove(NOTIF_EXTRA_ACTIVE_SCREEN);
                     return;
                 }
@@ -615,7 +653,7 @@ public class ModLedControl {
     private static XC_MethodHook startVibrationHook = new XC_MethodHook() {
         @Override
         protected void beforeHookedMethod(final MethodHookParam param) throws Throwable {
-            if (mQuietHours.quietHoursActive() && (mQuietHours.muteSystemVibe ||
+            if (mQuietHours.quietHoursActive() && (mQuietHours.shouldMuteSystemVibe() ||
                     mQuietHours.mode == QuietHours.Mode.WEAR)) {
                 if (DEBUG) log("startVibrationLocked: system level vibration suppressed");
                 param.setResult(null);
@@ -671,15 +709,11 @@ public class ModLedControl {
         try {
             final boolean enable = !mUncLocked && mUncActiveScreenEnabled;  
             if (enable && mSm == null) {
-                mPm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-                mKm = (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
                 mSm = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
                 mProxSensor = mSm.getDefaultSensor(Sensor.TYPE_PROXIMITY);
             } else if (!enable) {
                 mProxSensor = null;
                 mSm = null;
-                mPm = null;
-                mKm = null;
             }
             if (DEBUG) log("Active screen feature: " + enable);
         } catch (Throwable t) {
@@ -693,7 +727,7 @@ public class ModLedControl {
             public void run() {
                 long ident = Binder.clearCallingIdentity();
                 try {
-                    XposedHelpers.callMethod(mPm, "wakeUp", SystemClock.uptimeMillis());
+                    XposedHelpers.callMethod(getPowerManager(), "wakeUp", SystemClock.uptimeMillis());
                     mScreenOnDueToActiveScreen = true;
                 } finally {
                     Binder.restoreCallingIdentity(ident);

@@ -41,9 +41,25 @@
         <item name="android:colorAccent">#ff30a6cb</item>
     </style>
 
+    <!-- Light application AppCompat theme -->
+    <style name="AppCompatBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar" />
+
+    <style name="AppCompatTheme" parent="AppCompatBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="colorPrimary">#ff30a6cb</item>
+        <item name="colorPrimaryDark">#ff2788a6</item>
+        <item name="colorAccent">#ff30a6cb</item>
+        <item name="dialogTheme">@style/DialogStyle</item>
+        <item name="alertDialogTheme">@style/AlertDialogStyle</item>
+    </style>
+
     <!-- Dark application theme -->
     <style name="AppBaseThemeDark" parent="android:Theme.Material" />
     <style name="AppThemeDark" parent="AppBaseThemeDark" />
+
+    <!-- Dark application AppCompat theme -->
+    <style name="AppCompatBaseThemeDark" parent="Theme.AppCompat" />
+    <style name="AppCompatThemeDark" parent="AppCompatBaseThemeDark" />
 
     <!-- AppLauncher labels -->
     <style name="AppLauncherTextView">

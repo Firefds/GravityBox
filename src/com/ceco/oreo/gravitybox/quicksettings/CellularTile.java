@@ -17,7 +17,11 @@ package com.ceco.oreo.gravitybox.quicksettings;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ceco.oreo.gravitybox.GravityBox;
+import com.ceco.oreo.gravitybox.Utils;
+
 import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedHelpers;
 
 public class CellularTile extends AospTile {
     public static final String AOSP_KEY = "cell";
@@ -28,6 +32,18 @@ public class CellularTile extends AospTile {
     protected CellularTile(Object host, String key, Object tile, XSharedPreferences prefs,
             QsTileEventDistributor eventDistributor) throws Throwable {
         super(host, key, tile, prefs, eventDistributor);
+    }
+
+    @Override
+    public void handleUpdateState(Object state, Object arg) {
+        if (!Utils.isOxygenOsRom()) {
+            try {
+                XposedHelpers.setBooleanField(state, "dualTarget", true);
+            } catch (Throwable t) {
+                GravityBox.log(TAG, t);
+            }
+        }
+        super.handleUpdateState(state, arg);
     }
 
     @Override

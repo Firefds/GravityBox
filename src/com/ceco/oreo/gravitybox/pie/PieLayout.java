@@ -357,6 +357,8 @@ public class PieLayout extends FrameLayout implements View.OnTouchListener {
             }
 
             canvas.restoreToCount(state);
+        } else if (getVisibility() == View.VISIBLE) {
+            setVisibility(View.GONE);
         }
     }
 
@@ -576,7 +578,6 @@ public class PieLayout extends FrameLayout implements View.OnTouchListener {
     }
 
     public void exit() {
-        setVisibility(View.GONE);
         mBackgroundAnimator.cancel();
 
         mActiveSnap = null;
@@ -592,6 +593,7 @@ public class PieLayout extends FrameLayout implements View.OnTouchListener {
         mActiveItem = null;
 
         mActive = false;
+        invalidate();
     }
 
     public void clearSlices() {

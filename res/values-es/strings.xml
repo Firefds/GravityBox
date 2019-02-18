@@ -1197,11 +1197,7 @@
     
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">Color de carga</string>
-    
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">Días entre semana</string>
-    <string name="pref_lc_qh_cat_weekend_title">Fin de semana</string>
-    
+
     <!-- Force English locale -->
     <string name="pref_force_english_locale_title">Forzar idioma inglés</string>
 
@@ -1389,9 +1385,6 @@
     <string name="charging_led_default">Predeterminado</string>
     <string name="charging_led_emulated">Emulado</string>
     <string name="charging_led_disabled">Desactivado</string>
-
-    <!-- Quiet hours week days -->
-    <string name="pref_lc_qh_weekdays_title">Establecer días entre semana</string>
 
     <!-- QuietHours: mute system sounds -->
     <string name="pref_lc_qh_mute_system_sounds_title">Silenciar sonidos del sistema</string>

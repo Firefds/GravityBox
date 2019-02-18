@@ -158,8 +158,8 @@ public class BatteryInfoManager implements BroadcastSubReceiver {
 
     private void notifyListeners() {
         synchronized(mListeners) {
-            for (BatteryStatusListener listener : mListeners) {
-                listener.onBatteryStatusChanged(mBatteryData.clone());
+            for (int i = mListeners.size()-1; i >= 0; i--) {
+                mListeners.get(i).onBatteryStatusChanged(mBatteryData.clone());
             }
         }
     }

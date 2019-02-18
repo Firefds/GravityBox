@@ -1185,10 +1185,6 @@
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">Culoare încărcare</string>
 
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">Zilele săptămânii</string>
-    <string name="pref_lc_qh_cat_weekend_title">Sfârșit de săptămână</string>
-
     <!-- UNC Quiet Hours: ignore on per-app basis -->
     <string name="pref_lc_qh_ignore_title">Ignorați orele de liniște</string>
     <string name="pref_lc_qh_ignore_list_title">Pentru cuvinte cheie specifice</string>
@@ -1311,7 +1307,7 @@
 
     <!-- Quiet Hours: mute vibrations -->
     <string name="pref_lc_qh_mute_vibe_title">Dezactivați vibrațiile de notificare</string>
-    <string name="pref_lc_qh_mute_vibe_summary">Dezactivează vibrațiile de notificare pe acest dispozitiv și pe orice dispozitiv asociat Android Wear</string>
+    <string name="pref_lc_qh_mute_vibe_summary">Dezactivează vibrațiile de notificare</string>
 
     <!-- Quiet Hours: interactive mode -->
     <string name="pref_lc_qh_interactive_title">Mod interactiv</string>
@@ -1368,9 +1364,6 @@
     <string name="charging_led_emulated">Emulat</string>
     <string name="charging_led_constant">Constant (necesită suport pentru LED-uri)</string>
     <string name="charging_led_disabled">Dezactivat</string>
-
-    <!-- Quiet hours week days -->
-    <string name="pref_lc_qh_weekdays_title">Setați zilele săptămânii</string>
 
     <!-- QuietHours: mute system sounds -->
     <string name="pref_lc_qh_mute_system_sounds_title">Dezactivare sunete sistem</string>
@@ -1568,8 +1561,7 @@
 
     <!-- UNC: QuietHours: mute system level vibrations -->
     <string name="pref_lc_qh_mute_system_vibe_title">Dezactivați vibrațiile dispozitivului</string>
-    <string name="pref_lc_qh_mute_system_vibe_summary">Dezactivează TOATE vibrațiile la nivel de sistem, inclusiv vibrațiile de notificare pe acest dispozitiv. Notificările pe dispozitivul Wear Android asociat pot vibra în continuare în cazul în care vibrațiile de notificare sunt activate.
-    </string>
+    <string name="pref_lc_qh_mute_system_vibe_summary">Dezactivează TOATE vibrațiile la nivel de sistem</string>
 
     <!-- Lockscreen: doubletap to sleep -->
     <string name="pref_lockscreen_dt2s_title">Atingeți de două ori pentru a închide ecranul</string>

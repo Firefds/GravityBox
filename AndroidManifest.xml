@@ -16,8 +16,8 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ceco.oreo.gravitybox"
-    android:versionCode="805"
-    android:versionName="8.0.3" >
+    android:versionCode="830"
+    android:versionName="8.3.0" >
 
     <uses-sdk
         android:minSdkVersion="26"
@@ -34,6 +34,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <permission
         android:name="gravitybox.permission.UNLOCK"
@@ -120,6 +121,23 @@
         <activity
             android:name="com.ceco.oreo.gravitybox.ledcontrol.QuietHoursActivity"
             android:label="@string/lc_quiet_hours" >
+        </activity>
+
+        <activity
+            android:name="com.ceco.oreo.gravitybox.ledcontrol.RingerWhitelistActivity"
+            android:label="@string/pref_lc_qh_ringer_whitelist_title"
+            android:theme="@style/AppCompatTheme" >
+        </activity>
+
+        <activity
+            android:name="com.ceco.oreo.gravitybox.ledcontrol.QuietHoursRangeListActivity"
+            android:label="@string/lc_qh_ranges_list_label"
+            android:theme="@style/AppCompatTheme" >
+        </activity>
+
+        <activity
+            android:name="com.ceco.oreo.gravitybox.ledcontrol.QuietHoursRangeActivity"
+            android:label="@string/lc_qh_ranges_detail_label">
         </activity>
 
         <activity
@@ -452,6 +470,28 @@
                 android:name=".quicksettings.BluetoothTetheringTile$Service"
                 android:label="@string/qs_tile_bt_tethering"
                 android:icon="@drawable/ic_qs_bt_tethering"
+                android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+                android:enabled="false">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <service
+                android:name=".quicksettings.AmbientDisplayTile$Service"
+                android:label="@string/qs_tile_ambient_display"
+                android:icon="@drawable/ic_qs_ambientdisplay_on"
+                android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+                android:enabled="false">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <service
+                android:name=".quicksettings.HeadsUpTile$Service"
+                android:label="@string/qs_tile_heads_up"
+                android:icon="@drawable/ic_qs_heads_up_on"
                 android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
                 android:enabled="false">
             <intent-filter>

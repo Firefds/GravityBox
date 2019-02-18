@@ -7,7 +7,8 @@
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing, sof
+
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
@@ -1194,10 +1195,6 @@
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">Töltés szín</string>
 
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">Hétköznapok</string>
-    <string name="pref_lc_qh_cat_weekend_title">Hétvége</string>
-
     <!-- Force English locale -->
     <string name="pref_force_english_locale_title">Angol lokalizáció kényszerítése</string>
 
@@ -1323,7 +1320,7 @@
 
     <!-- Quiet Hours: mute vibrations -->
     <string name="pref_lc_qh_mute_vibe_title">Értesítés rezgések némítása</string>
-    <string name="pref_lc_qh_mute_vibe_summary">Kikapcsolja az értesítések rezgő visszajelzéseit ezen a készüléken és bármely párosított Android Wear eszközön</string>
+    <string name="pref_lc_qh_mute_vibe_summary">Kikapcsolja az értesítések rezgő visszajelzéseit</string>
 
     <!-- Quiet Hours: interactive mode -->
     <string name="pref_lc_qh_interactive_title">Interaktív mód</string>
@@ -1387,9 +1384,6 @@
     <string name="charging_led_emulated">Emulált</string>
     <string name="charging_led_constant">Folyamatos (LED driver támogatás szükséges)</string>
     <string name="charging_led_disabled">Letiltva</string>
-
-    <!-- Quiet hours week days -->
-    <string name="pref_lc_qh_weekdays_title">Hétköznapok beállítása (munkanapok)</string>
 
     <!-- QuietHours: mute system sounds -->
     <string name="pref_lc_qh_mute_system_sounds_title">Rendszerhangok némítása</string>
@@ -1587,7 +1581,7 @@
 
     <!-- UNC: QuietHours: mute system level vibrations -->
     <string name="pref_lc_qh_mute_system_vibe_title">Eszköz rezgések némítása</string>
-    <string name="pref_lc_qh_mute_system_vibe_summary">Kikapcsolja az ÖSSZES rezgő visszajelzést rendszer szinten, az értesítések rezgéseit is beleértve EZEN az eszközön. A párosított Android Wear eszköz értesítés rezgései működni fognak, amennyiben engedélyez van a funkció.</string>
+    <string name="pref_lc_qh_mute_system_vibe_summary">Kikapcsolja az ÖSSZES rezgő visszajelzést rendszer szinten</string>
 
     <!-- Lockscreen: doubletap to sleep -->
     <string name="pref_lockscreen_dt2s_title">Dupla érintésre alvás</string>
@@ -1811,6 +1805,9 @@
 
     <!-- Statusbar: Hide vibrate icon -->
     <string name="pref_sb_hide_vibrate_icon_title">Rezgés ikon elrejtése</string>
+	
+    <!-- Statusbar: Hide data saver icon -->
+    <string name="pref_sb_hide_data_saver_icon_title">Adatcsökkentő ikon elrejtése</string>
 
     <!-- Shortcut: Show toast option -->
     <string name="shortcut_show_toast">Állapot üzenet mutatása</string>
@@ -1990,5 +1987,53 @@
     <string name="notif_channel_services_desc">Az előtérben lévő szolgáltatások értesítéséhez, mint pl. a Zseblámpa és Képernyő videofelvétel</string>
     <string name="notif_channel_unc_title">UNC előnézet</string>
     <string name="notif_channel_unc_desc">A Végső Értesítés Vezérlés (UNC) értesítés előnézetéhez</string>
+	
+    <!-- Recents: Clear always visible -->
+    <string name="pref_recent_clear_always_visible_title">Összes törlése gomb állandó megjelenítése</string>
+
+    <!-- Theme -->
+    <string name="theme_title">Téma</string>
+    <string name="theme_default">Alapértelmezett</string>
+    <string name="theme_light">Világos</string>
+    <string name="theme_dark">Sötét</string>
+
+    <!-- QS: Haptic feedback -->
+    <string name="pref_qs_haptic_feedback_title">Érintés visszajelzés</string>
+    <string name="pref_qs_haptic_feedback_summary">Engedélyezi a rezgéssel történő visszajelzést csempe egyszeri érintésére</string>
+
+    <!-- BatteryStyle: Master switch -->
+    <string name="pref_battery_masterswitch_summary">Engedélyezi az akkumulátor ikon stílus és százalék módosításokat (újraindítás szükséges)</string>
+
+    <!-- Visualizer -->
+    <string name="pref_cat_visualizer_title">Vizualizáló</string>
+    <string name="pref_visualizer_enable_summary">Engedélyezi a vizualizálót a zárképernyőn zene lejátszása közben (újraindítás szükséges)</string>
+    <string name="pref_visualizer_dynamic_color_title">Dinamikus szín</string>
+    <string name="pref_visualizer_dynamic_color_summary">Az aktuális dal képéből határozza meg a színt</string>
+    <string name="pref_visualizer_color_title">Alapértelmezett szín</string>
+    <string name="pref_visualizer_opacity_title">Szín átlátszóság</string>
+    <string name="pref_visualizer_active_mode_title">Aktív mód</string>
+    <string name="pref_visualizer_active_mode_summary">Zárképernyő aktívan tartása a vizualizáló működésekor</string>
+    <string name="pref_visualizer_dim_title">Sötétített képernyő</string>
+    <string name="pref_visualizer_dim_summary">A zárképernyő tartalmának sötétítése a felhasználó inaktivitási időszaka után</string>
+    <string name="pref_visualizer_dim_level_title">Sötétítési szint</string>
+    <string name="pref_visualizer_dim_info_title">Médiaadatok mutatása</string>
+    <string name="pref_visualizer_dim_info_summary">Megjeleníti az aktuális médiaadatokat a sötétített képernyőn</string>
+    <string name="pref_visualizer_dim_header_title">Fejléc mutatása</string>
+    <string name="pref_visualizer_dim_header_summary">Megjeleníti a fejlécet a sötétített képernyőn az aktuális idő és akkumulátor szint információkkal</string>
+    <string name="pref_visualizer_dim_controls_title">Médiavezérlők mutatása</string>
+    <string name="pref_visualizer_dim_controls_summary">Megjeleníti a média lejátszási vezérlőket a sötétített képernyőn</string>
+    <string name="pref_visualizer_dim_artwork_title">Grafika mutatása</string>
+    <string name="pref_visualizer_dim_artwork_summary">Megjeleníti a grafikákat a sötétített képernyőn a zárképernyőt lefedve</string>
+    <string name="pref_visualizer_navbar_title">Navigációs sáv</string>
+    <string name="pref_visualizer_navbar_summary">Megjeleníti a vizualizálót a navigációs sávon is</string>
+
+    <!-- QS: Ambient Display tile -->
+    <string name="qs_tile_ambient_display">Környezeti kijelző</string>
+
+    <!-- QS: Heads Up tile -->
+    <string name="qs_tile_heads_up">Lebegő értesítés</string>
+
+    <!-- Reboot -->
+    <string name="reboot">Újraindítás</string>
 	
 </resources>

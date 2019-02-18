@@ -88,37 +88,39 @@ public class ModDialer26 {
     }
 
     public static void init(final XSharedPreferences prefs, final XSharedPreferences qhPrefs,
-            final ClassLoader classLoader, final String packageName) {
-        try {
-            XposedHelpers.findAndHookMethod(CLASS_DIALTACTS_ACTIVITY, classLoader, 
-                    "onResume", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    prefs.reload();
-                    if (!prefs.getBoolean(GravityBoxSettings.PREF_KEY_DIALER_SHOW_DIALPAD, false)) return;
-
-                    final String realClassName = param.thisObject.getClass().getName();
-                    Method m = null;
-                    for (String mn : new String[] { "showDialpadFragment", "e" }) {
-                        if (realClassName.equals(CLASS_DIALTACTS_ACTIVITY)) {
-                            m = XposedHelpers.findMethodExactIfExists(
-                                    param.thisObject.getClass(), mn, boolean.class);
-                        } else if (realClassName.equals(CLASS_DIALTACTS_ACTIVITY_GOOGLE)) {
-                            m = XposedHelpers.findMethodExactIfExists(
-                                    param.thisObject.getClass().getSuperclass(), mn, boolean.class);
+            final ClassLoader classLoader, final String packageName, int sdkVersion) {
+        if (sdkVersion < 28) {
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_DIALTACTS_ACTIVITY, classLoader, 
+                        "onResume", new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        prefs.reload();
+                        if (!prefs.getBoolean(GravityBoxSettings.PREF_KEY_DIALER_SHOW_DIALPAD, false)) return;
+    
+                        final String realClassName = param.thisObject.getClass().getName();
+                        Method m = null;
+                        for (String mn : new String[] { "showDialpadFragment", "f" }) {
+                            if (realClassName.equals(CLASS_DIALTACTS_ACTIVITY)) {
+                                m = XposedHelpers.findMethodExactIfExists(
+                                        param.thisObject.getClass(), mn, boolean.class);
+                            } else if (realClassName.equals(CLASS_DIALTACTS_ACTIVITY_GOOGLE)) {
+                                m = XposedHelpers.findMethodExactIfExists(
+                                        param.thisObject.getClass().getSuperclass(), mn, boolean.class);
+                            }
+                            if (m != null) break;
                         }
-                        if (m != null) break;
+                        if (m == null) {
+                            GravityBox.log(TAG, "DialtactsActivity: couldn't identify showDialpadFragment method");
+                        } else {
+                            m.invoke(param.thisObject, false);
+                            if (DEBUG) log("showDialpadFragment() called within " + realClassName);
+                        }
                     }
-                    if (m == null) {
-                        GravityBox.log(TAG, "DialtactsActivity: couldn't identify showDialpadFragment method");
-                    } else {
-                        m.invoke(param.thisObject, false);
-                        if (DEBUG) log("showDialpadFragment() called within " + realClassName);
-                    }
-                }
-            });
-        } catch (Throwable t) {
-            GravityBox.log(TAG, "DialtactsActivity: incompatible version of Dialer app", t);
+                });
+            } catch (Throwable t) {
+                GravityBox.log(TAG, "DialtactsActivity: incompatible version of Dialer app", t);
+            }
         }
 
         try {

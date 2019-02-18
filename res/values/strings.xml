@@ -1206,10 +1206,6 @@
     <!-- Battey percent text: charging color -->
     <string name="battery_percent_text_charging_color_title">Charging color</string>
 
-    <!-- Notification control: Quiet hours for weekends-->
-    <string name="pref_lc_qh_cat_weekdays_title">Week days</string>
-    <string name="pref_lc_qh_cat_weekend_title">Weekend</string>
-
     <!-- Force English locale -->
     <string name="pref_force_english_locale_title">Force English locale</string>
 
@@ -1337,8 +1333,7 @@
 
     <!-- Quiet Hours: mute vibrations -->
     <string name="pref_lc_qh_mute_vibe_title">Mute notification vibrations</string>
-    <string name="pref_lc_qh_mute_vibe_summary">Turns off notification vibrations on this device and
-        any paired Android Wear device</string>
+    <string name="pref_lc_qh_mute_vibe_summary">Turns off notification vibrations</string>
 
     <!-- Quiet Hours: interactive mode -->
     <string name="pref_lc_qh_interactive_title">Interactive mode</string>
@@ -1404,9 +1399,6 @@
     <string name="charging_led_emulated">Emulated</string>
     <string name="charging_led_constant">Constant (requires LED driver support)</string>
     <string name="charging_led_disabled">Disabled</string>
-
-    <!-- Quiet hours week days -->
-    <string name="pref_lc_qh_weekdays_title">Set week days</string>
 
     <!-- QuietHours: mute system sounds -->
     <string name="pref_lc_qh_mute_system_sounds_title">Mute system sounds</string>
@@ -1621,9 +1613,7 @@
     <!-- UNC: QuietHours: mute system level vibrations -->
     <string name="pref_lc_qh_mute_system_vibe_title">Mute device vibrations</string>
     <string name="pref_lc_qh_mute_system_vibe_summary">Turns off ALL vibrations at system level,
-        including notification vibrations on THIS device. Notifications on paired Android Wear device can
-        still vibrate in case notification vibrations are enabled.
-    </string>
+        including notification vibrations, haptic feedback, etc.</string>
 
     <!-- Lockscreen: doubletap to sleep -->
     <string name="pref_lockscreen_dt2s_title">Double-tap to sleep</string>
@@ -2078,5 +2068,65 @@
     <string name="pref_visualizer_dim_controls_summary">Shows media playback controls on dimmed screen</string>
     <string name="pref_visualizer_dim_artwork_title">Show artwork</string>
     <string name="pref_visualizer_dim_artwork_summary">Shows artwork covering lock screen contents on dimmed screen</string>
+    <string name="pref_visualizer_navbar_title">Navigation bar</string>
+    <string name="pref_visualizer_navbar_summary">Shows visualizer also in navigation bar</string>
+
+    <!-- QS: Ambient Display tile -->
+    <string name="qs_tile_ambient_display">Ambient display</string>
+
+    <!-- QS: Heads Up tile -->
+    <string name="qs_tile_heads_up">Heads up</string>
+
+    <!-- Reboot -->
+    <string name="reboot">Reboot</string>
+
+    <!-- StatusBar: corner padding -->
+    <string name="pref_sb_corner_padding_remove_title">Remove corner padding</string>
+    <string name="pref_sb_corner_padding_remove_summary">Removes padding designed for rounded corner displays (requires reboot)</string>
+
+    <!-- QS: tiles per header -->
+    <string name="pref_qs_tiles_per_header_title">Tiles per header</string>
+    <string name="pref_qs_tiles_per_header_summary">Defines how many tiles to display in header</string>
+
+    <!-- BatteryBar: only while charging -->
+    <string name="pref_battery_bar_show_charging_title">Only when charging</string>
+
+    <!-- Search -->
+    <string name="search">Search</string>
+    <string name="search_reset">Reset search</string>
+    <string name="search_keyword_short">Keyword is too short</string>
+    <string name="search_no_match">No preferences found</string>
+
+    <!-- UNC: ignore QH durine ginteractive mode -->
+    <string name="pref_lc_qh_ignore_interactive_title">For interactive mode</string>
+    <string name="pref_lc_qh_ignore_interactive_summary">When enabled, notifications matching ignoring rules
+        won\'t be muted by quiet hours interactive mode</string>
+
+    <!-- QH: Phone ringer whitelist -->
+    <string name="pref_lc_qh_ringer_whitelist_title">Phone ringer whitelist</string>
+    <string name="pref_lc_qh_ringer_whitelist_summary">Manages list of contacts for which not to mute phone ringer during quiet hours</string>
+    <string name="search_no_contacts">No contacts matching keyword found</string>
+    <string name="qhrw_menu_show_all">Show all</string>
+    <string name="qhrw_menu_show_starred">Show starred</string>
+    <string name="qhrw_menu_show_whitelisted">Show whitelisted</string>
+    <string name="qhrw_permission_denied">Permission to read contacts denied</string>
+
+    <!-- QH: Time ranges -->
+    <string name="pref_lc_qh_ranges_title">Automatic mode</string>
+    <string name="pref_lc_qh_ranges_summary">Allows to set time ranges and their rules for automatic quiet hours</string>
+    <string name="lc_qh_ranges_list_label">Quiet hours - time ranges</string>
+    <string name="lc_qh_ranges_list_empty">There are currently no time ranges set</string>
+    <string name="lc_qh_ranges_detail_label">Quiet hours - time range</string>
+    <string name="pref_lc_qh_range_days_title">Days</string>
+    <string name="next_day">next day</string>
+
+    <!-- QH: settings categorization -->
+    <string name="pref_lc_qh_cat_general_title">General</string>
+    <string name="pref_lc_qh_cat_rules_title">Rules</string>
+    <string name="pref_lc_qh_manual_title">Manual mode</string>
+    <string name="pref_lc_qh_manual_summary">Allows to set rules for manual quiet hours</string>
+
+    <!-- QH: current mode -->
+    <string name="pref_lc_qh_mode_title">Current mode</string>
 
 </resources>

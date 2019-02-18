@@ -1,3 +1,95 @@
+Changelog 8.3.0 - 09/09/2018
+--------------------------------------
+- QuietHours: additional enhancements and redesign
+--- rules for ligts/vibrations/sounds/ringer whitelist can now be set for each time range independently
+--- manual mode has its own set of rules that are independent of automatic time ranges
+--- initial ringer whitelist for newly created time range is inherited from manual mode settings
+--- added option for controlling current mode directly from the QuietHours settings
+--- improved user present detection logic for Interactive mode
+--- reorganized settings
+--- !!! data structure changes render existing time ranges incompatible - need to be reconfigured !!!
+- Made always expanded notifications collapsible (thanks to Caagr98)
+- Updated Chinese (Simplified) translations (thanks to liveasx)
+- Updated Russian translations (thanks to gaich)
+- Updated Turkish translations (thanks to Fatih Firinci)
+- Updated Malay translations (thanks to zamzameir)
+- Updated Ukrainian translations (thanks to burunduk)
+
+Changelog 8.2.1 - 29/06/2018
+--------------------------------------
+- QuietHours: added support for multiple time ranges:
+--- allows to set multiple time ranges for automatic quiet hours together with days which they apply to
+--- change requires setting up new time ranges; as the previous ones are not preserved due to design changes
+- QuietHours Interactive Mode: treat session as interactive when device is locked during phone call 
+- OOS Call Recording enabler:
+--- reworked to support all OP devices/OOS variants
+--- enabled call recorder specific options in Phone settings (auto call recording, etc.)
+--- should survive firmware updates 
+- Search: include all children of matching preference categories
+- Updated Turkish translations (thanks to Fatih Firinci)
+
+Changelog 8.2.0 - 13/06/2018
+--------------------------------------
+- Settings: added search feature
+--- filters the list of all enabled preferences based on specified keyword
+--- maintains tree structure of filtered preferences for a user to better understand context
+--- matching preference groups will show all child preferences
+- QuickSettings: enabled detail view for CellularTile (non-OOS only)
+- Ultimate notification control:
+--- fixed crash during screen orientation change
+--- redesigned Search functionality in per-app list
+- UNC QuietHours:
+--- added phone ringer whitelist management:
+------ allows to manage list of contacts for which not to mute phone ringer during quiet hours
+--- added per-app option for respecting quiet hours ignore rules during interactive mode
+- Advanced reboot: fixed Reboot not working on LineageOS based ROMs
+- Fixed status bar DnD system icon misbehavior on OP6
+- Call recording on OOS:
+--- adjusted for OP3T Beta 27 and 28
+--- adjusted for OP5T Beta 8
+--- adjusted for OP5 Beta 11
+- APK size increased due to inclusion of necessary Android Support libraries
+- Updated Turkish translations (thanks to Fatih Firinci)
+- Updated Chinese (Simplified) translations (thanks to liveasx)
+- Updated Ukrainian translations (thanks to burunduk)
+- Updated Russian translations (thanks to gaich)
+- Updated French translations (thanks to Choukajohn)
+
+Changelog 8.1.1 - 24/04/2018
+--------------------------------------
+- StatusBar: added option for removing rounded corner padding (8.1 only)
+- QuickSettings: added option for number of quick tiles in header
+- BatteryBar: added option to show bar only while charging
+- Visualizer:
+--- added option to show visualizer in navigation bar (thanks to @Dark_Eyes_ )
+--- additional fixes and improvements (thanks to @Dark_Eyes_ )
+- Pie: fixes and improvements:
+--- increased max value for trigger size
+--- fixed previous view flicking on activation
+--- unpin currently pinned task on back long-press (has priority over custom long-press action)
+- Increased lethality of Kill foreground app action
+- Updated Chinese (Simplified) translations (thanks to liveasx)
+- Updated French translations (thanks to Choukajohn)
+- Updated Russian translations (thanks to gaich)
+- Updated Hungarian translations (thanks to benjoe1)
+- Updated Turkish translations (thanks to Fatih Firinci)
+
+Changelog 8.1.0 - 01/04/2018
+--------------------------------------
+- QuickSettings management:
+--- added Ambient Display tile (Controls whether received notifications activate ambient screen)
+--- added Heads Up tile (Controls whether to show heads up for notifications globally)
+- Media tweaks: Visualizer extensions:
+--- added option for header showing current time and battery level on dimmed screen
+--- added option for media controls on dimmed screen
+--- added option to show artwork as background of dimmed screen covering lock screen contents
+--- improved layout and transition animations
+- Power: fixed dynamic theming of Advanced Power Menu
+- Dialer: adjusted for compatibility with the latest Google Dialer app
+- Updated French translations (thanks to Choukajohn)
+- Updated Chinese (Simplified) translations (thanks to liveasx)
+- Updated Turkish translations (thanks to Fatih Firinci)
+
 Changelog 8.0.3 - 26/03/2018
 --------------------------------------
 - Media tweaks: added Visualizer feature (basic functionality ported from LineageOS)
