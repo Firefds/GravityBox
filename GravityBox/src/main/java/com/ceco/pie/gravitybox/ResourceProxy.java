@@ -97,8 +97,9 @@ public class ResourceProxy {
     private XC_MethodHook mInterceptHook = new XC_MethodHook() {
         @Override
         protected void afterHookedMethod(MethodHookParam param) {
+            Object value = param.getResult();
             ResourceSpec spec = getOrCreateResourceSpec((Resources)param.thisObject,
-                    (int)param.args[0], param.getResult());
+                    (int)param.args[0], value);
             if (spec != null) {
                 if (spec.isProcessed) {
                     if (spec.isOverridden) {
@@ -108,7 +109,8 @@ public class ResourceProxy {
                 }
                 synchronized (mInterceptors) {
                     if (mInterceptors.containsKey(spec.pkgName)) {
-                        if (mInterceptors.get(spec.pkgName).onIntercept(spec)) {
+                        if (mInterceptors.get(spec.pkgName).onIntercept(spec) &&
+                                value.getClass().isAssignableFrom(spec.value.getClass())) {
                             if (DEBUG) log(param.method.getName() + ": " + spec.toString());
                             spec.isOverridden = true;
                             param.setResult(spec.value);
@@ -142,6 +144,7 @@ public class ResourceProxy {
             }
             // handle potential alias pointing to Framework res
             if (spec == null && mInterceptors.containsKey("android") &&
+                    mInterceptors.containsKey(resPkgName) &&
                     mInterceptors.get("android").getSupportedResourceNames().contains(name)) {
                 spec = new ResourceSpec("android", id, name, value);
                 if (DEBUG) log("Using android interceptor for " + resPkgName + ": " + spec.toString());

@@ -25,6 +25,7 @@ import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.hardware.fingerprint.FingerprintManager;
@@ -40,7 +41,9 @@ import android.provider.ContactsContract.Contacts;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
+import android.view.DisplayCutout;
 import android.view.View;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -606,5 +609,15 @@ public class Utils {
             cursor.close();
         }
         return lookupKey;
+    }
+
+    public static Rect getDisplayCutoutTop(WindowInsets insets) {
+        DisplayCutout cutout = insets.getDisplayCutout();
+        if (cutout != null && cutout.getBoundingRects().size() > 0) {
+            Rect r = cutout.getBoundingRects().get(0);
+            if (r.left > 0 && r.top <= 100)
+                return r;
+        }
+        return null;
     }
 }

@@ -171,7 +171,7 @@ public class BatteryInfoManager implements BroadcastSubReceiver {
         boolean newCharging = newPowerSource != 0;
         int newTemp = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0);
         int newVoltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0);
-        boolean newFastCharging = intent.getBooleanExtra(EXTRA_FAST_CHARGE, false);
+        boolean newFastCharging = intent.getIntExtra(EXTRA_FAST_CHARGE, 0) != 0;
 
         if (mBatteryData.level != newLevel || mBatteryData.charging != newCharging ||
                 mBatteryData.powerSource != newPowerSource ||

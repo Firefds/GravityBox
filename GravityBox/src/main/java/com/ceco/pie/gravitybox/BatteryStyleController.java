@@ -337,10 +337,10 @@ public class BatteryStyleController implements BroadcastSubReceiver {
             try {
                 mHooks.add(XposedHelpers.findAndHookMethod(CLASS_BATTERY_METER_VIEW,
                         mContainer.getClass().getClassLoader(),
-                        "onFastChargeChanged", boolean.class, new XC_MethodHook() {
+                        "onFastChargeChanged", int.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) {
-                        mIsDashCharging = (boolean) param.args[0];
+                        mIsDashCharging = (int)param.args[0] != 0;
                         updateBatteryStyle();
                     }
                 }));

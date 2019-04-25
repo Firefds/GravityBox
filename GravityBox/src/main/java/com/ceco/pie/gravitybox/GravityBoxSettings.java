@@ -584,10 +584,12 @@ public class GravityBoxSettings extends GravityBoxActivity implements GravityBox
     public static final String PREF_KEY_STATUSBAR_DISABLE_PEEK = "pref_statusbar_disable_peek";
     public static final String PREF_KEY_STATUSBAR_DT2S = "pref_statusbar_dt2s";
     public static final String PREF_KEY_CORNER_PADDING_REMOVE = "pref_sb_corner_padding_remove";
+    public static final String PREF_KEY_STATUSBAR_MAX_NOTIF_ICONS = "pref_sb_max_notif_icons";
     public static final String ACTION_PREF_STATUSBAR_CHANGED = "gravitybox.intent.action.STATUSBAR_CHANGED";
     public static final String EXTRA_SB_BRIGHTNESS = "sbBrightness";
     public static final String EXTRA_SB_DISABLE_PEEK = "sbDisablePeek";
     public static final String EXTRA_SB_DT2S = "sbDt2s";
+    public static final String EXTRA_SB_MAX_NOTIF_ICONS = "maxNotifIcons";
 
     public static final String PREF_CAT_KEY_PHONE_TELEPHONY = "pref_cat_phone_telephony";
     public static final String PREF_CAT_KEY_PHONE_DIALER = "pref_cat_phone_dialer";
@@ -3349,6 +3351,9 @@ public class GravityBoxSettings extends GravityBoxActivity implements GravityBox
             } else if (key.equals(PREF_KEY_POWEROFF_ADVANCED)) {
                 intent.setAction(ACTION_PREF_POWER_CHANGED);
                 intent.putExtra(EXTRA_POWER_ADVANCED, prefs.getBoolean(key, false));
+            } else if (key.equals(PREF_KEY_STATUSBAR_MAX_NOTIF_ICONS)) {
+                intent.setAction(ACTION_PREF_STATUSBAR_CHANGED);
+                intent.putExtra(EXTRA_SB_MAX_NOTIF_ICONS, prefs.getBoolean(key, false));
             }
 
             if (intent.getAction() != null) {

@@ -1929,4 +1929,8 @@
     <string name="pref_battery_style_header_title">Aplikovat v záhlaví</string>
     <string name="pref_battery_style_header_summary">Aplikuje zvolený styl indikátoru baterie i v záhlaví stavové lišty</string>
 
+    <!-- Statusbar: max notification icons -->
+    <string name="pref_sb_max_notif_icons_title">Více ikon oznámení</string>
+    <string name="pref_sb_max_notif_icons_summary">Vypne omezení maximálního počtu ikon oznámení v stavové liště</string>
+
 </resources>

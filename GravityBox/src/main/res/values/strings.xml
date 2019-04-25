@@ -2033,4 +2033,8 @@
     <string name="pref_battery_style_header_title">Apply to status bar header</string>
     <string name="pref_battery_style_header_summary">Applies chosen battery indicator also to status bar header</string>
 
+    <!-- Statusbar: max notification icons -->
+    <string name="pref_sb_max_notif_icons_title">Max notification icons</string>
+    <string name="pref_sb_max_notif_icons_summary">Attempts to remove restriction on number of visible notification icons in status bar</string>
+
 </resources>

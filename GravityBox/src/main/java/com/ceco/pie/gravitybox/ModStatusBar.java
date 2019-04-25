@@ -36,6 +36,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -130,6 +131,8 @@ public class ModStatusBar {
     private static SystemIconController mSystemIconController;
     private static StatusbarQuietHoursIcon mQhIcon;
     private static int mHomeLongpressAction = 0;
+    private static boolean mMaxNotifIconsEnabled;
+    private static Boolean mMaxNotifIconsIsStaticLayoutOrig;
 
     // Brightness control
     private static boolean mBrightnessControlEnabled;
@@ -194,6 +197,9 @@ public class ModStatusBar {
                 }
                 if (intent.hasExtra(GravityBoxSettings.EXTRA_SB_DT2S)) {
                     mDt2sEnabled = intent.getBooleanExtra(GravityBoxSettings.EXTRA_SB_DT2S, false);
+                }
+                if (intent.hasExtra(GravityBoxSettings.EXTRA_SB_MAX_NOTIF_ICONS)) {
+                    mMaxNotifIconsEnabled = intent.getBooleanExtra(GravityBoxSettings.EXTRA_SB_MAX_NOTIF_ICONS, false);
                 }
             } else if (intent.getAction().equals(
                     GravityBoxSettings.ACTION_PREF_ONGOING_NOTIFICATIONS_CHANGED)) {
@@ -559,6 +565,7 @@ public class ModStatusBar {
             mDisablePeek = prefs.getBoolean(GravityBoxSettings.PREF_KEY_STATUSBAR_DISABLE_PEEK, false);
             mDt2sEnabled = prefs.getBoolean(GravityBoxSettings.PREF_KEY_STATUSBAR_DT2S, false);
             setCameraVibratePattern(prefs.getString(GravityBoxSettings.PREF_KEY_POWER_CAMERA_VP, null));
+            mMaxNotifIconsEnabled = prefs.getBoolean(GravityBoxSettings.PREF_KEY_STATUSBAR_MAX_NOTIF_ICONS, false);
 
             try {
                 mHomeLongpressAction = Integer.valueOf(
@@ -975,24 +982,73 @@ public class ModStatusBar {
                 GravityBox.log(TAG, t);
             }
 
-            // Adjust notification icon area for center clock
+            // Adjust notification icon area for center layout and max notification icons
             try {
                 XposedHelpers.findAndHookMethod(CLASS_NOTIF_ICON_CONTAINER, classLoader,
                         "getActualWidth", new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
-                        if (mLayoutCenter != null && mLayoutCenter.getChildCount() > 0 &&
-                                mLayoutCenter.getChildAt(0).getVisibility() == View.VISIBLE) {
-                            int width = Math.round(mLayoutCenter.getWidth()/2f -
-                                            mLayoutCenter.getChildAt(0).getWidth()/2f) - 4;
-                            if (width > 0) {
-                                if (mTrafficMeter != null &&
-                                        mTrafficMeter.getVisibility() == View.VISIBLE &&
-                                        mTrafficMeter.getTrafficMeterPosition() == GravityBoxSettings.DT_POSITION_LEFT) {
-                                    width -= (mTrafficMeter.getWidth()+4);
-                                }
-                                param.setResult(width);
+                        View container = (View) param.thisObject;
+                        if (shouldOverrideActualWidth(container)) {
+                            int[] location = new int[2];
+                            container.getLocationOnScreen(location);
+                            int xOffset = location[0];
+                            int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+                            Rect topCutout = Utils.getDisplayCutoutTop(container.getRootWindowInsets());
+                            int baseWidth = Math.round(screenWidth * (2f/3f));
+                            int safeWidth = topCutout == null ? baseWidth :
+                                    Math.min(baseWidth, topCutout.left);
+
+                            if (centerLayoutHasVisibleChild()) {
+                                int[] centerViewLoc = new int[2];
+                                mLayoutCenter.getChildAt(0).getLocationOnScreen(centerViewLoc);
+                                if (DEBUG_LAYOUT) log("getActualWidth: mLayoutCenter related safe width=" + centerViewLoc[0]);
+                                safeWidth = Math.min(safeWidth, centerViewLoc[0]);
                             }
+
+                            int maxWidth = safeWidth - xOffset;
+                            if (DEBUG_LAYOUT) log("getActualWidth: screenWidth=" + screenWidth +
+                                    "; baseWidth=" + baseWidth +
+                                    "; topCutout=" + (topCutout == null ? "null" : String.valueOf(topCutout.left)) +
+                                    "; safeWidth=" + safeWidth +
+                                    "; xOffset=" + location[0] +
+                                    "; maxWidth=" + maxWidth + "px");
+                            param.setResult(maxWidth);
+                        }
+                    }
+                });
+
+                XposedHelpers.findAndHookMethod(CLASS_NOTIF_ICON_CONTAINER, classLoader,
+                        "calculateIconTranslations", new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) {
+                        View container = (View) param.thisObject;
+                        if (isNotificationIconContainer(container)) {
+                            if (mMaxNotifIconsEnabled) {
+                                if (mMaxNotifIconsIsStaticLayoutOrig == null) {
+                                    mMaxNotifIconsIsStaticLayoutOrig = XposedHelpers.getBooleanField(
+                                            param.thisObject, "mIsStaticLayout");
+                                    if (DEBUG_LAYOUT) log("calculateIconTranslations: Notification icon container has static layout; disabling");
+                                    XposedHelpers.setObjectField(param.thisObject, "mIsStaticLayout", false);
+                                }
+                            } else if (mMaxNotifIconsIsStaticLayoutOrig != null) {
+                                if (DEBUG_LAYOUT) log("calculateIconTranslations: Setting back original Notification icon container layout");
+                                XposedHelpers.setObjectField(param.thisObject, "mIsStaticLayout",
+                                        mMaxNotifIconsIsStaticLayoutOrig);
+                                mMaxNotifIconsIsStaticLayoutOrig = null;
+                            }
+                        }
+                    }
+                });
+
+                XposedHelpers.findAndHookMethod(CLASS_NOTIF_ICON_CONTAINER, classLoader, "onLayout",
+                        boolean.class, int.class, int.class, int.class, int.class, new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) {
+                        View container = (View) param.thisObject;
+                        if (isNotificationIconContainer(container) && mMaxNotifIconsEnabled) {
+                            if (DEBUG_LAYOUT) log("onLayout: calling updateState()");
+                            XposedHelpers.callMethod(param.thisObject, "updateState");
                         }
                     }
                 });
@@ -1021,6 +1077,21 @@ public class ModStatusBar {
         catch (Throwable t) {
             GravityBox.log(TAG, t);
         }
+    }
+
+    private static boolean shouldOverrideActualWidth(View v) {
+        return (isNotificationIconContainer(v) &&
+                (centerLayoutHasVisibleChild() || mMaxNotifIconsEnabled));
+    }
+
+    private static boolean isNotificationIconContainer(View v) {
+        return v.getId() == mContext.getResources().getIdentifier(
+                "notificationIcons", "id", PACKAGE_NAME);
+    }
+
+    private static boolean centerLayoutHasVisibleChild() {
+        return (mLayoutCenter != null && mLayoutCenter.getChildCount() > 0 &&
+                mLayoutCenter.getChildAt(0).getVisibility() == View.VISIBLE);
     }
 
     private static void updateHiddenByPolicy(boolean hidden) {
