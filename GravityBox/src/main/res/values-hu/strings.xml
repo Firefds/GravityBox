@@ -1880,5 +1880,9 @@
 
     <!-- Reboot -->
     <string name="reboot">Újraindítás</string>
-	
+
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Csengőhang és figyelmeztető hangok értékei</string>
+    <string name="pref_link_volumes_summary">Amikor ki van kapcsolva, a csengőhang és a figyelmeztető hangok értékei egymástól függetlenül állíthatóak</string>
+
 </resources>

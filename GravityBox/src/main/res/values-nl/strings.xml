@@ -1088,4 +1088,8 @@
     <!-- HW Key Actions: expand quick settings -->
     <string name="hwkey_action_expand_quicksettings">Expand QuickSettings panel</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Link beltoon &amp; meldings volumes</string>
+    <string name="pref_link_volumes_summary">Indien uitgeschakeld kunnen volumes voor beltoon en meldingen apart ingesteld worden</string>
+
 </resources>

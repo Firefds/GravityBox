@@ -2025,6 +2025,18 @@
             android:entryValues="@array/tri_state_values"
             android:defaultValue="DEFAULT" />
 
+        <CheckBoxPreference
+            android:key="pref_link_volumes"
+            android:title="@string/pref_link_volumes_title"
+            android:summary="@string/pref_link_volumes_summary"
+            android:defaultValue="true" />
+
+        <CheckBoxPreference
+            android:key="pref_volume_panel_expanded"
+            android:title="@string/pref_volume_panel_expanded_title"
+            android:summary="@string/pref_volume_panel_expanded_summary"
+            android:defaultValue="false" />
+
     </PreferenceScreen>
 
     <PreferenceScreen 

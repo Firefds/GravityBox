@@ -2023,4 +2023,8 @@
     <string name="clock_pos_right">右</string>
     <string name="clock_pos_center">中心</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">合并铃声音量与通知音量</string>
+    <string name="pref_link_volumes_summary">禁用后铃声音量与通知音量将可以分别调整</string>
+
 </resources>

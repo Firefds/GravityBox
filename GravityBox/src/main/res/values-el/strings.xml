@@ -915,4 +915,8 @@
     <!-- HW Key Actions: expand quick settings -->
     <string name="hwkey_action_expand_quicksettings">Εμφάνιση πεδίου QuickSettings</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Ένωση εντάσεων Κουδουνίσματος &amp; ειδοποιήσεων</string>
+    <string name="pref_link_volumes_summary">Όταν είναι απενεργοποιημένο, οι εντάσεις των ήχων κλήσης και ειδοποιήσεων μπορούν να οριστούν ανεξάρτητα</string>
+
 </resources>

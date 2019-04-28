@@ -2030,4 +2030,8 @@
     <string name="pref_battery_style_header_title">Применить к заголовку строки состояния</string>
     <string name="pref_battery_style_header_summary">Применение выбранного индикатора батареи и к заголовку строки состояния</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Связать громкость</string>
+    <string name="pref_link_volumes_summary">Когда отключено, громкость уведомлений и рингтона можно задавать независимо</string>
+
 </resources>

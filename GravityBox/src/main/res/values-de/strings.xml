@@ -1735,4 +1735,8 @@
     <string name="qs_panel_toggle">Zeige/verstecke Schnelleinstellungsleiste</string>
     <string name="qs_panel_collapse">Verstecke Schnelleinstellungsleiste</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Anruf- &amp; Benachrichtigungslautstärke verknüpfen</string>
+    <string name="pref_link_volumes_summary">Lautstärke für Anrufe und Benachrichtigungen gemeinsam oder getrennt einstellen</string>
+
 </resources>

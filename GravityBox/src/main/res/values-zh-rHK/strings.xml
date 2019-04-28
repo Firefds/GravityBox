@@ -1318,4 +1318,8 @@
     <!-- HW Key Actions: expand quick settings -->
     <string name="hwkey_action_expand_quicksettings">展開快速設定面板</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">將鈴聲音量與通知音量連結</string>
+    <string name="pref_link_volumes_summary">當停用時，您可以分別調整鈴聲音量與通知音量</string>
+
 </resources>

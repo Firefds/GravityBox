@@ -36,6 +36,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.os.AsyncTask;
@@ -133,6 +136,8 @@ public class ModStatusBar {
     private static int mHomeLongpressAction = 0;
     private static boolean mMaxNotifIconsEnabled;
     private static Boolean mMaxNotifIconsIsStaticLayoutOrig;
+    private static int mNotifIconContainerComputedWidth;
+    private static int mSystemIconAreaMaxWidth;
 
     // Brightness control
     private static boolean mBrightnessControlEnabled;
@@ -990,12 +995,17 @@ public class ModStatusBar {
                     protected void beforeHookedMethod(MethodHookParam param) {
                         View container = (View) param.thisObject;
                         if (shouldOverrideActualWidth(container)) {
+                            if (DEBUG_LAYOUT) {
+                                container.setWillNotDraw(false);
+                            }
                             int[] location = new int[2];
                             container.getLocationOnScreen(location);
                             int xOffset = location[0];
                             int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+                            int screenHeight = mContext.getResources().getDisplayMetrics().heightPixels;
                             Rect topCutout = Utils.getDisplayCutoutTop(container.getRootWindowInsets());
-                            int baseWidth = Math.round(screenWidth * (2f/3f));
+                            int baseWidth = Math.round(screenWidth <= screenHeight ?
+                                    screenWidth*0.55f : screenWidth*0.60f);
                             int safeWidth = topCutout == null ? baseWidth :
                                     Math.min(baseWidth, topCutout.left);
 
@@ -1006,12 +1016,16 @@ public class ModStatusBar {
                                 safeWidth = Math.min(safeWidth, centerViewLoc[0]);
                             }
 
-                            int maxWidth = safeWidth - xOffset;
+                            mNotifIconContainerComputedWidth = Math.max(0, safeWidth);
+                            mSystemIconAreaMaxWidth = screenWidth - mNotifIconContainerComputedWidth
+                                    - (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6,
+                                    mContext.getResources().getDisplayMetrics());
+                            int maxWidth = Math.max(0, safeWidth - xOffset);
                             if (DEBUG_LAYOUT) log("getActualWidth: screenWidth=" + screenWidth +
                                     "; baseWidth=" + baseWidth +
                                     "; topCutout=" + (topCutout == null ? "null" : String.valueOf(topCutout.left)) +
                                     "; safeWidth=" + safeWidth +
-                                    "; xOffset=" + location[0] +
+                                    "; xOffset=" + xOffset +
                                     "; maxWidth=" + maxWidth + "px");
                             param.setResult(maxWidth);
                         }
@@ -1049,9 +1063,72 @@ public class ModStatusBar {
                         if (isNotificationIconContainer(container) && mMaxNotifIconsEnabled) {
                             if (DEBUG_LAYOUT) log("onLayout: calling updateState()");
                             XposedHelpers.callMethod(param.thisObject, "updateState");
+                            ViewGroup parent = getNotifIconArea(container);
+                            if (parent != null && parent.getWidth() != mNotifIconContainerComputedWidth) {
+                                ViewGroup.LayoutParams lp = parent.getLayoutParams();
+                                lp.width = mNotifIconContainerComputedWidth;
+                                if (DEBUG_LAYOUT) log("onLayout: parent width adjusted: " +
+                                        parent.getWidth() + " -> " + lp.width);
+                                if (lp instanceof LinearLayout.LayoutParams) {
+                                    ((LinearLayout.LayoutParams)lp).weight = 0;
+                                    if (DEBUG_LAYOUT) log("onLayout: parent weight set to 0");
+                                }
+                                parent.setLayoutParams(lp);
+                                ViewGroup sysIconArea = getSystemIconArea(container);
+                                if (sysIconArea != null) {
+                                    lp = sysIconArea.getLayoutParams();
+                                    lp.width = mSystemIconAreaMaxWidth;
+                                    if (DEBUG_LAYOUT) log("onLayout: system icon area width adjusted: " +
+                                            sysIconArea.getWidth() + " -> " + lp.width);
+                                    if (lp instanceof LinearLayout.LayoutParams) {
+                                        ((LinearLayout.LayoutParams)lp).weight = 0;
+                                        if (DEBUG_LAYOUT) log("onLayout: system icon area weight set to 0");
+                                    }
+                                    sysIconArea.setLayoutParams(lp);
+                                }
+                                container.postDelayed(container::requestLayout, 1000);
+                            }
                         }
                     }
                 });
+
+                if (DEBUG_LAYOUT) {
+                    XposedHelpers.findAndHookMethod(CLASS_NOTIF_ICON_CONTAINER, classLoader, "onDraw",
+                            Canvas.class, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) {
+                            View container = (View) param.thisObject;
+                            if (isNotificationIconContainer(container)) {
+                                Canvas canvas = (Canvas) param.args[0];
+                                Paint paint = new Paint();
+                                paint.setStyle(Paint.Style.STROKE);
+                                Object lvIconState = XposedHelpers.getObjectField(container, "mLastVisibleIconState");
+                                Object fvIconState = XposedHelpers.getObjectField(container, "mFirstVisibleIconState");
+                                if (lvIconState == null) {
+                                    return;
+                                }
+                                int height = container.getHeight();
+                                int end = (int) XposedHelpers.callMethod(container, "getFinalTranslationX");
+                                // Visualize the "end" of the layout
+                                paint.setColor(Color.BLUE);
+                                canvas.drawLine(end, 0, end, height, paint);
+                                paint.setColor(Color.GREEN);
+                                int lastIcon = (int) XposedHelpers.getFloatField(lvIconState, "xTranslation");
+                                canvas.drawLine(lastIcon, 0, lastIcon, height, paint);
+                                if (fvIconState != null) {
+                                    int firstIcon = (int) XposedHelpers.getFloatField(fvIconState, "xTranslation");
+                                    canvas.drawLine(firstIcon, 0, firstIcon, height, paint);
+                                }
+                                paint.setColor(Color.RED);
+                                float ovStart = XposedHelpers.getFloatField(container, "mVisualOverflowStart");
+                                canvas.drawLine(ovStart, 0, ovStart, height, paint);
+                                paint.setColor(Color.YELLOW);
+                                float overflow = (float) XposedHelpers.callMethod(container, "getMaxOverflowStart");
+                                canvas.drawLine(overflow, 0, overflow, height, paint);
+                            }
+                        }
+                    });
+                }
             } catch (Throwable t) {
                 GravityBox.log(TAG, t);
             }
@@ -1077,6 +1154,32 @@ public class ModStatusBar {
         catch (Throwable t) {
             GravityBox.log(TAG, t);
         }
+    }
+
+    private static ViewGroup getSystemIconArea(View child) {
+        try {
+            int resId = child.getResources().getIdentifier("system_icon_area", "id", PACKAGE_NAME);
+            ViewGroup root = (ViewGroup) child.getRootView();
+            if (resId != 0 && root != null) {
+                return root.findViewById(resId);
+            }
+        } catch (Throwable t) {
+            GravityBox.log(TAG, t);
+        }
+        return null;
+    }
+
+    private static ViewGroup getNotifIconArea(View child) {
+        try {
+            int resId = child.getResources().getIdentifier("notification_icon_area", "id", PACKAGE_NAME);
+            ViewGroup root = (ViewGroup) child.getRootView();
+            if (resId != 0 && root != null) {
+                return root.findViewById(resId);
+            }
+        } catch (Throwable t) {
+            GravityBox.log(TAG, t);
+        }
+        return null;
     }
 
     private static boolean shouldOverrideActualWidth(View v) {

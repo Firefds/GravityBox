@@ -1482,4 +1482,8 @@ ID транзакцыі ахвяравання PayPal. Спробавы перы
     <string name="pref_statusbar_dt2s_title">Падвойны націск для сну</string>
     <string name="pref_statusbar_dt2s_summary">Неабходна адключэнне прагляду</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Звязаць гучнасць</string>
+    <string name="pref_link_volumes_summary">Калі адключана, гучнасць паведамленняў і рынгтону можна задаваць незалежна</string>
+
 </resources>

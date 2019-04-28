@@ -1847,7 +1847,7 @@
 
     <!-- OOS: call recording -->
     <string name="pref_oos_call_recording_title">Enable call recording</string>
-    <string name="pref_oos_call_recording_summary">Note, that call recording may be illegal in your country</string>
+    <string name="pref_oos_call_recording_summary">Note, that call recording may be illegal in your country (requires reboot)</string>
 
     <!-- OOS: disable dash charging sound -->
     <string name="pref_oos_dash_sound_disable_title">Disable Dash charging sound</string>
@@ -2036,5 +2036,13 @@
     <!-- Statusbar: max notification icons -->
     <string name="pref_sb_max_notif_icons_title">Max notification icons</string>
     <string name="pref_sb_max_notif_icons_summary">Attempts to remove restriction on number of visible notification icons in status bar</string>
+
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Link ringtone &amp; notifications volumes</string>
+    <string name="pref_link_volumes_summary">When disabled, volumes for ringtone and notifications can be set independently</string>
+
+    <!-- Expanded volume panel -->
+    <string name="pref_volume_panel_expanded_title">Expanded volume panel</string>
+    <string name="pref_volume_panel_expanded_summary">Shows volume sliders for all general stream types even if they are not currently active</string>
 
 </resources>

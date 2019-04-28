@@ -45,6 +45,7 @@ public class ModLowBatteryWarning {
     private static Object mBatteryLed;
     private static boolean mFlashingLedDisabled;
     private static ChargingLed mChargingLed;
+    private static Integer mDashChargingSoundIdOrig;
 
     private static void log(String message) {
         XposedBridge.log(TAG + ": " + message);
@@ -171,14 +172,25 @@ public class ModLowBatteryWarning {
 
         // OOS Dash charging sound
         if (Utils.isOxygenOsRom()) {
-            final String CLASS_INDICATION_CTRL = "com.android.systemui.statusbar.KeyguardIndicationController";
+            final String CLASS_INDICATION_CTRL_CB = "com.android.systemui.statusbar.KeyguardIndicationController.BaseKeyguardCallback";
             try {
-                XposedHelpers.findAndHookMethod(CLASS_INDICATION_CTRL, classLoader,
-                        "-get3", CLASS_INDICATION_CTRL, new XC_MethodHook() {
+                XposedBridge.hookAllMethods(XposedHelpers.findClass(CLASS_INDICATION_CTRL_CB, classLoader),
+                        "onRefreshBatteryInfo", new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
                         if (isDashSoundDisabled(prefs, qhPrefs)) {
-                            param.setResult(0);
+                            Object ctrl = XposedHelpers.getSurroundingThis(param.thisObject);
+                            mDashChargingSoundIdOrig = XposedHelpers.getIntField(ctrl, "mChargingSoundId");
+                            XposedHelpers.setIntField(ctrl, "mChargingSoundId", 0);
+                        }
+                    }
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) {
+                        if (mDashChargingSoundIdOrig != null) {
+                            Object ctrl = XposedHelpers.getSurroundingThis(param.thisObject);
+                            XposedHelpers.setIntField(ctrl, "mChargingSoundId",
+                                    mDashChargingSoundIdOrig);
+                            mDashChargingSoundIdOrig = null;
                         }
                     }
                 });

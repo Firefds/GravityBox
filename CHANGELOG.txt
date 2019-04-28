@@ -1,3 +1,18 @@
+Changelog 9.0.0-beta-9 - 28/04/2019
+--------------------------------------
+- OxygenOS specific adjustments:
+--- fixed fast charging detection logic
+--- fixed option for disabling fast charging sound
+--- fixed option for enabling call recording feature (requires reboot)
+- Statusbar: added option for removing max notification icon restriction
+- Media: added back option for unlinking ringer & notification volumes
+--- does not require resource hooking support
+--- accessible only from SystemUI volume panel (cannot be managed in the system's Sound settings)
+- Media: added option for enabling expanded volume panel
+--- Shows volume sliders for all general stream types even if they are not currently active
+- Advanced tuning: fixed crashes in the settings
+- Power: Fixed exception for Samsung devices (thanks to Firefds)
+
 Changelog 9.0.0-beta-8 - 18/04/2019
 --------------------------------------
 - TrafficMeter: fixed visibility in lock screen

@@ -1510,4 +1510,8 @@
     <!-- Lockscreen: Bottom-left action -->
     <string name="pref_lockscreen_bleft_action_title">Hành động dưới cùng bên trái</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Liên kết âm lượng nhạc chuông &amp; âm thông báo</string>
+    <string name="pref_link_volumes_summary">Khi tắt, âm lượng của nhạc chuông và âm thông báo của thể chỉnh riêng rẽ</string>
+
 </resources>

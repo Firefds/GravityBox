@@ -1913,4 +1913,8 @@
     <string name="pref_lc_qh_range_days_title">Дні</string>
     <string name="next_day">наступний день</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Зв\'язати виклик та повідомлення</string>
+    <string name="pref_link_volumes_summary">Коли вимкнено, гучність повідомлень і виклику можна задавати незалежно</string>
+
 </resources>

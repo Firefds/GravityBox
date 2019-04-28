@@ -312,10 +312,14 @@ public class GravityBoxSettings extends GravityBoxActivity implements GravityBox
     public static final String PREF_KEY_MUSIC_VOLUME_STEPS_VALUE = "pref_music_volume_steps_value";
     public static final String PREF_KEY_VOL_FORCE_RING_CONTROL = "pref_vol_force_ring_control";
     public static final String PREF_KEY_SAFE_MEDIA_VOLUME = "pref_safe_media_volume2";
+    public static final String PREF_KEY_LINK_VOLUMES = "pref_link_volumes";
+    public static final String PREF_KEY_VOL_EXPANDED = "pref_volume_panel_expanded";
     public static final String ACTION_PREF_MEDIA_CONTROL_CHANGED =
             "gravitybox.intent.action.MEDIA_CONTROL_CHANGED";
     public static final String EXTRA_VOL_FORCE_RING_CONTROL = "volForceRingControl";
     public static final String EXTRA_VOL_MUSIC_CONTROLS = "extraVolMusicControls";
+    public static final String EXTRA_VOL_LINKED = "linked";
+    public static final String EXTRA_VOL_EXPANDED = "volPanelExpanded";
 
     public static final String PREF_CAT_HWKEY_ACTIONS = "pref_cat_hwkey_actions";
     public static final String PREF_CAT_HWKEY_MENU = "pref_cat_hwkey_menu";
@@ -879,7 +883,8 @@ public class GravityBoxSettings extends GravityBoxActivity implements GravityBox
             PREF_KEY_BATTERY_TWEAKS_ENABLED,
             PREF_KEY_VISUALIZER_ENABLE,
             PREF_KEY_CORNER_PADDING_REMOVE,
-            PREF_KEY_DISPLAY_ALLOW_ALL_ROTATIONS
+            PREF_KEY_DISPLAY_ALLOW_ALL_ROTATIONS,
+            PREF_KEY_OOS_CALL_RECORDING
     ));
 
     private static final List<String> customAppKeys = new ArrayList<>(Arrays.asList(
@@ -1298,6 +1303,7 @@ public class GravityBoxSettings extends GravityBoxActivity implements GravityBox
         private SeekBarPreference mPrefDataTrafficOmniAutohideTh;
         private CheckBoxPreference mPrefDataTrafficActiveMobileOnly;
         private ListPreference mPrefDataTrafficDisplayMode;
+        private CheckBoxPreference mPrefLinkVolumes;
         private PreferenceScreen mPrefCatAppLauncher;
         private AppPickerPreference[] mPrefAppLauncherSlot;
         private File callerPhotoFile;
@@ -1485,6 +1491,7 @@ public class GravityBoxSettings extends GravityBoxActivity implements GravityBox
             mPrefCatMedia = (PreferenceScreen) findPreference(PREF_CAT_KEY_MEDIA);
             mPrefMusicVolumeSteps = (CheckBoxPreference) findPreference(PREF_KEY_MUSIC_VOLUME_STEPS);
             mPrefMusicVolumeStepsValue = (SeekBarPreference) findPreference(PREF_KEY_MUSIC_VOLUME_STEPS_VALUE);
+            mPrefLinkVolumes = (CheckBoxPreference) findPreference(PREF_KEY_LINK_VOLUMES);
             mPrefTranclucentDecor =  (ListPreference) findPreference(PREF_KEY_TRANSLUCENT_DECOR);
 
             mPrefExpandedDesktop = (ListPreference) findPreference(PREF_KEY_EXPANDED_DESKTOP);
@@ -1622,6 +1629,7 @@ public class GravityBoxSettings extends GravityBoxActivity implements GravityBox
             }
             if (!Utils.hasTelephonySupport(getActivity())) {
                 mPrefCatPhone.removePreference(mPrefCatPhoneTelephony);
+                mPrefCatMedia.removePreference(mPrefLinkVolumes);
             }
             // TODO: launcher tweaks? probably not...
             //if (!(Utils.isAppInstalled(getActivity(), APP_GOOGLE_NOW) &&
@@ -2723,6 +2731,10 @@ public class GravityBoxSettings extends GravityBoxActivity implements GravityBox
                 intent.setAction(ACTION_PREF_HWKEY_LOCKSCREEN_TORCH_CHANGED);
                 intent.putExtra(EXTRA_HWKEY_TORCH, Integer.valueOf(
                         prefs.getString(PREF_KEY_HWKEY_LOCKSCREEN_TORCH, "0")));
+            } else if (key.equals(PREF_KEY_LINK_VOLUMES)) {
+                intent.setAction(ACTION_PREF_MEDIA_CONTROL_CHANGED);
+                intent.putExtra(EXTRA_VOL_LINKED,
+                        prefs.getBoolean(PREF_KEY_LINK_VOLUMES, true));
             } else if (key.equals(PREF_KEY_NOTIF_EXPAND_ALL)) {
                 intent.setAction(ACTION_NOTIF_EXPAND_ALL_CHANGED);
                 intent.putExtra(EXTRA_NOTIF_EXPAND_ALL,
@@ -3354,6 +3366,9 @@ public class GravityBoxSettings extends GravityBoxActivity implements GravityBox
             } else if (key.equals(PREF_KEY_STATUSBAR_MAX_NOTIF_ICONS)) {
                 intent.setAction(ACTION_PREF_STATUSBAR_CHANGED);
                 intent.putExtra(EXTRA_SB_MAX_NOTIF_ICONS, prefs.getBoolean(key, false));
+            } else if (key.equals(PREF_KEY_VOL_EXPANDED)) {
+                intent.setAction(ACTION_PREF_MEDIA_CONTROL_CHANGED);
+                intent.putExtra(EXTRA_VOL_EXPANDED, prefs.getBoolean(key, false));
             }
 
             if (intent.getAction() != null) {

@@ -1987,4 +1987,8 @@ Devam ederseniz, kendi sorumluluğunuz altındadır ve herhangi bir destek bekle
     <string name="pref_battery_style_header_title">Durum çubuğu başlığına uygula</string>
     <string name="pref_battery_style_header_summary">Seçilen pil göstergesini durum çubuğu başlığına da uygular</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Zil sesi ve bildirim seslerini birleştir</string>
+    <string name="pref_link_volumes_summary">Devre dışı bırakıldığında, zil sesi ve bildirimler için sesler ayrı ayrı ayarlanabilir</string>
+
 </resources>

@@ -1070,5 +1070,6 @@
 <string name="notification_panel_toggle">سوئیچ تعیین وضعیت پنل اعلان</string>
 <string name="notification_panel_collapse">بستن پنل اعلان</string>
 <string name="qs_panel_toggle">سوئیچ تعیین وضعیت پنل تنظیمات سریع</string>
-<string name="qs_panel_collapse">بستن پنل تنظیمات سریع</string>
+<string name="qs_panel_collapse">بستن پنل تنظیمات سریع</string><string name="pref_link_volumes_title">"همتاسازی حجم صدای زنگ تماس و اعلان "</string>
+<string name="pref_link_volumes_summary">هنگام غیرفعال بودن، حجم صدای برای اعلان و زنگ تماس بصورت مستقیم تنظیم میشود</string>
 </resources>

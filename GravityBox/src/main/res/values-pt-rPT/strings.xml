@@ -1386,4 +1386,8 @@
     <!-- HW Key Actions: expand quick settings -->
     <string name="hwkey_action_expand_quicksettings">Expandir painel de definições rápidas</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Volumes de toque e notificações interligados</string>
+    <string name="pref_link_volumes_summary">Quando desativado, os volumes de toque e notificações podem ser controlados de forma independente</string>
+
 </resources>

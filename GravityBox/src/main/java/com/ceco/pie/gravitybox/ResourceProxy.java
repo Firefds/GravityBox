@@ -14,9 +14,12 @@
  */
 package com.ceco.pie.gravitybox;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.SparseArray;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,16 +66,43 @@ public class ResourceProxy {
 
     static abstract class Interceptor {
         private List<String> mSupportedResourceNames;
+        private List<Integer> mSupportedFakeResIds;
+
+        Interceptor(List<String> supportedResourceNames, List<Integer> supportedFakeResIds) {
+            mSupportedResourceNames = supportedResourceNames;
+            mSupportedFakeResIds = supportedFakeResIds;
+        }
 
         Interceptor(List<String> supportedResourceNames) {
-            mSupportedResourceNames = supportedResourceNames;
+            this(supportedResourceNames, new ArrayList<>());
         }
 
         List<String> getSupportedResourceNames() {
             return mSupportedResourceNames;
         }
 
+        List<Integer> getSupportedFakeResIds() {
+            return mSupportedFakeResIds;
+        }
+
         abstract boolean onIntercept(ResourceSpec resourceSpec);
+        Object onGetFakeResource(Context gbContext, int fakeResId) { return null; }
+    }
+
+    static int getFakeResId(String resourceName) {
+        return 0x7e000000 | (resourceName.hashCode() & 0x00ffffff);
+    }
+
+    private static Context getGbContext(Configuration config) {
+        try {
+            Class<?> atClass = XposedHelpers.findClass("android.app.ActivityThread", null);
+            Object currentAt = XposedHelpers.callStaticMethod(atClass, "currentActivityThread");
+            Context systemContext = (Context) XposedHelpers.callMethod(currentAt, "getSystemContext");
+            return Utils.getGbContext(systemContext, config);
+        } catch (Throwable t) {
+            GravityBox.log(TAG, t);
+            return null;
+        }
     }
 
     private final Map<String, Interceptor> mInterceptors = new HashMap<>();
@@ -84,6 +114,7 @@ public class ResourceProxy {
         createDimensionPixelOffsetHook();
         createDimensionPixelSizeHook();
         createStringHook();
+        createDrawableHook();
     }
 
     void addInterceptor(String pkgName, Interceptor interceptor) {
@@ -95,6 +126,25 @@ public class ResourceProxy {
     }
 
     private XC_MethodHook mInterceptHook = new XC_MethodHook() {
+        @Override
+        protected void beforeHookedMethod(MethodHookParam param) {
+            final int resId = (int)param.args[0];
+            synchronized (mInterceptors) {
+                for (Interceptor interceptor : mInterceptors.values()) {
+                    if (interceptor.getSupportedFakeResIds().contains(resId)) {
+                        Context gbContext = getGbContext(((Resources) param.thisObject).getConfiguration());
+                        if (gbContext != null) {
+                            Object value = interceptor.onGetFakeResource(gbContext, resId);
+                            if (value != null) {
+                                if (DEBUG) log("onGetFakeResource: resId=" + resId + "; value=" + value);
+                                param.setResult(value);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         @Override
         protected void afterHookedMethod(MethodHookParam param) {
             Object value = param.getResult();
@@ -227,6 +277,15 @@ public class ResourceProxy {
         try {
             XposedHelpers.findAndHookMethod(Resources.class, "getText",
                     int.class, mInterceptHook);
+        } catch (Throwable t) {
+            GravityBox.log(TAG, t);
+        }
+    }
+
+    private void createDrawableHook() {
+        try {
+            XposedHelpers.findAndHookMethod(Resources.class, "getDrawableForDensity",
+                    int.class, int.class, Resources.Theme.class, mInterceptHook);
         } catch (Throwable t) {
             GravityBox.log(TAG, t);
         }

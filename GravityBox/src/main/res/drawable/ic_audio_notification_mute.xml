@@ -1,0 +1,31 @@
+<!--
+ * Copyright (C) 2019 Peter Gregus for GravityBox Project (C3C076@xda)
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M12,2C9.5253,2 7.2643,2.9057 5.5176,4.3965L6.9355,5.8145C8.316,4.6822 10.0801,4 12,4C16.41,4 20,7.59 20,12C20,13.9189 19.3187,15.6823 18.1875,17.0625L19.6055,18.4805C21.0952,16.7341 22,14.4737 22,12C22,6.48 17.52,2 12,2zM3.5488,6.6738C2.5734,8.2174 2,10.0403 2,12C2,17.52 6.48,22 12,22C13.9603,22 15.7842,21.4271 17.3281,20.4512L15.873,18.9961C14.7246,19.6345 13.4041,20 12,20C7.59,20 4,16.41 4,12C4,10.5965 4.366,9.277 5.0039,8.1289L3.5488,6.6738zM11,7L11,9L13,9L13,7L11,7zM12.123,11L13,11.877L13,11L12.123,11zM11,14.123L11,17L13,17L13,16.123L11,14.123z"/>
+  <path
+      android:pathData="M1.9902,3.7062 L20.2963,22.0847"
+      android:strokeAlpha="1"
+      android:strokeLineJoin="round"
+      android:strokeWidth="2.12899995"
+      android:fillColor="#FFFFFFFF"
+      android:strokeColor="#FFFFFFFF"
+      android:strokeLineCap="butt"/>
+</vector>

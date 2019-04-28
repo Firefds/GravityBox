@@ -2026,5 +2026,8 @@
     <string name="pref_battery_style_header_title">Applica all\'intestazione della barra di stato</string>
     <string name="pref_battery_style_header_summary">Applica l\'indicatore della batteria scelto anche all\'intestazione della barra di stato</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Collega volumi suoneria &amp; notifiche</string>
+    <string name="pref_link_volumes_summary">Se disattivato, i volumi di suoneria e notifiche possono essere impostati in modo indipendente</string>
 
 </resources>

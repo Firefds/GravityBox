@@ -14,6 +14,8 @@
  */
 package com.ceco.pie.gravitybox;
 
+import android.content.Context;
+
 import com.ceco.pie.gravitybox.managers.TunerManager;
 import com.ceco.pie.gravitybox.tuner.TunerMainActivity;
 
@@ -121,7 +123,9 @@ class SystemWideResources {
             TunerManager.addUserItemKeysToList(TunerManager.Category.SYSTEMUI, resourceNames);
         }
         sResourceProxy.addInterceptor("com.android.systemui",
-                new ResourceProxy.Interceptor(resourceNames) {
+                new ResourceProxy.Interceptor(resourceNames, new ArrayList<>(Arrays.asList(
+                        ResourceProxy.getFakeResId("ic_audio_notification"),
+                        ResourceProxy.getFakeResId("ic_audio_notification_mute")))) {
             @Override
             public boolean onIntercept(ResourceProxy.ResourceSpec resourceSpec) {
                 // Advanced tuning has priority
@@ -141,6 +145,16 @@ class SystemWideResources {
                         break;
                 }
                 return false;
+            }
+
+            @Override
+            public Object onGetFakeResource(Context gbContext, int fakeResId) {
+                if (fakeResId == ResourceProxy.getFakeResId("ic_audio_notification")) {
+                    return gbContext.getDrawable(R.drawable.ic_audio_notification);
+                } else if (fakeResId == ResourceProxy.getFakeResId("ic_audio_notification_mute")) {
+                    return gbContext.getDrawable(R.drawable.ic_audio_notification_mute);
+                }
+                return null;
             }
         });
 

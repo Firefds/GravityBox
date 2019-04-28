@@ -1787,7 +1787,7 @@
 
     <!-- OOS: call recording -->
     <string name="pref_oos_call_recording_title">Povoliť nahrávanie hovorov</string>
-    <string name="pref_oos_call_recording_summary">Pozor, nahrávanie hovorov môže byť ilegálne vo Vašej krajine</string>
+    <string name="pref_oos_call_recording_summary">Pozor, nahrávanie hovorov môže byť ilegálne vo Vašej krajine (vyžaduje reštart)</string>
 
     <!-- OOS: disable dash charging sound -->
     <string name="pref_oos_dash_sound_disable_title">Vypnúť zvuk Dash nabíjania</string>
@@ -1937,5 +1937,13 @@
     <!-- Statusbar: max notification icons -->
     <string name="pref_sb_max_notif_icons_title">Viac ikon oznámení</string>
     <string name="pref_sb_max_notif_icons_summary">Odstráni obmedzenie maximálneho počtu ikon oznámení v stavovej lište</string>
+
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Spojiť hlasitosť vyzváňania a notifikácií</string>
+    <string name="pref_link_volumes_summary">Ak je vypnuté, umožňuje nastaviť úrovne hlasitosti zvlášť pre vyzváňanie a notifikácie</string>
+
+    <!-- Expanded volume panel -->
+    <string name="pref_volume_panel_expanded_title">Rozšírený panel hlasitosti</string>
+    <string name="pref_volume_panel_expanded_summary">Zobrazí ovládanie všetkých bežných zvukových kanálov, aj keď nie sú momentálne aktívne</string>
 
 </resources>

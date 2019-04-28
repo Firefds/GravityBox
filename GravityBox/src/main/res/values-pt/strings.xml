@@ -1433,4 +1433,8 @@ se o tráfego de dados móveis atual excede o limite definido (Ajuste para 0 par
     <!-- HW Key Actions: expand quick settings -->
     <string name="hwkey_action_expand_quicksettings">Expandir painel de configurações rápidas</string>
 
+    <!-- Link ringtone & notifications volumes -->
+    <string name="pref_link_volumes_title">Unir volumes de ringtone e de notificações</string>
+    <string name="pref_link_volumes_summary">Quando desabilitado, os volumes para ringtone e notificações são definidos individualmente</string>
+
 </resources>
