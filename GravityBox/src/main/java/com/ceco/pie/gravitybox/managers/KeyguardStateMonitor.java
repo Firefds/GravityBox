@@ -233,6 +233,10 @@ public class KeyguardStateMonitor implements BroadcastSubReceiver {
         }
     }
 
+    public boolean isInteractive() {
+        return mPm.isInteractive();
+    }
+
     public boolean isShowing() {
         return mIsShowing;
     }

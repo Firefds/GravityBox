@@ -232,6 +232,11 @@ public class ModLockscreen {
                         return;
                     }
 
+                    if (!mKgMonitor.isInteractive()) {
+                        if (DEBUG) log("updateMediaMetaData: device not interactive");
+                        return;
+                    }
+
                     View backDrop = (View) XposedHelpers.getObjectField(mStatusBar, "mBackdrop");
                     ImageView backDropBack = (ImageView) XposedHelpers.getObjectField(
                             mStatusBar, "mBackdropBack");
