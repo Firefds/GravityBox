@@ -2025,11 +2025,19 @@
             android:entryValues="@array/tri_state_values"
             android:defaultValue="DEFAULT" />
 
-        <CheckBoxPreference
-            android:key="pref_link_volumes"
+        <ListPreference
+            android:key="pref_link_volumes_v2"
             android:title="@string/pref_link_volumes_title"
-            android:summary="@string/pref_link_volumes_summary"
-            android:defaultValue="true" />
+            android:entries="@array/volume_link_entries"
+            android:entryValues="@array/volume_link_values"
+            android:defaultValue="DEFAULT" />
+
+        <ListPreference
+            android:key="pref_link_ringer_system_volumes"
+            android:title="@string/pref_link_ringer_system_volumes_title"
+            android:entries="@array/volume_link_entries"
+            android:entryValues="@array/volume_link_values"
+            android:defaultValue="DEFAULT" />
 
         <CheckBoxPreference
             android:key="pref_volume_panel_expanded"

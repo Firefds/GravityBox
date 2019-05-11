@@ -1508,6 +1508,5 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">Enlazar vol. del tono de llamada con notificaciones</string>
-    <string name="pref_link_volumes_summary">Cuando se desactiva, el volumen del tono de llamada se configura independientemente del de las notificaciones</string>
 
 </resources>

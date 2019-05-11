@@ -1,3 +1,15 @@
+Changelog 9.0.0-beta-10 - 10/05/2019
+--------------------------------------
+- Fixed custom wallpaper showing in Ambient screen when using Live wallpapers
+- Added support for resource overlays:
+--- improves Advanced Tuning compatibility with systems using Theme overlays
+--- fixes "Remove corner padding" option on Nokia (and other) devices
+--- fixes hiding navigation bar by disabling "Enable navigation bar" option in Navbar tweaks
+- Media tweaks:
+--- redesigned option for unlinking ring/notification volumes to allow default system behavior
+--- added option for unlinking ring/system sounds volumes
+- Updated Turkish translations (thanks to Fatih Firinci)
+
 Changelog 9.0.0-beta-9 - 28/04/2019
 --------------------------------------
 - OxygenOS specific adjustments:

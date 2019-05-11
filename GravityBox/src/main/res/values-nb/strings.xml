@@ -1164,6 +1164,5 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">Link ringtone &amp; notifications volumes</string>
-    <string name="pref_link_volumes_summary">When disabled, volumes for ringtone and notifications can be set independently</string>
 
 </resources>

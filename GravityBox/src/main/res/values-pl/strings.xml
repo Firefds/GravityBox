@@ -1824,6 +1824,5 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">Połączone ust. głośności dzwonka i powiadomień</string>
-    <string name="pref_link_volumes_summary">Po wyłączeniu głośność dzwonka i powiadomień można ustawiać niezależnie</string>
 
 </resources>

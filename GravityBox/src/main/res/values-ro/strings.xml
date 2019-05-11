@@ -1771,6 +1771,5 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">Legare volum ton de apel și notificări</string>
-    <string name="pref_link_volumes_summary">Când este dezactivat, volumele pentru tonurile de apel și notificări pot fi setate independent</string>
 
 </resources>

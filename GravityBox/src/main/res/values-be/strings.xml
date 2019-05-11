@@ -1484,6 +1484,5 @@ ID транзакцыі ахвяравання PayPal. Спробавы перы
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">Звязаць гучнасць</string>
-    <string name="pref_link_volumes_summary">Калі адключана, гучнасць паведамленняў і рынгтону можна задаваць незалежна</string>
 
 </resources>

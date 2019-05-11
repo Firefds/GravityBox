@@ -1176,6 +1176,5 @@
     <string name="hwkey_action_expand_quicksettings">퀵세팅 패널 확장</string>
 
     <string name="pref_link_volumes_title">벨소리와 알림음 음량 연결</string>
-    <string name="pref_link_volumes_summary">비활성화 시에는 벨소리와 알림음이 각각 따로 음량을 설정할 수 있도록 만듭니다.</string>
 
 </resources>

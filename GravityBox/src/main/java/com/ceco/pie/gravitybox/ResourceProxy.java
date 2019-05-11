@@ -20,9 +20,8 @@ import android.content.res.Resources;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Pattern;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -36,28 +35,35 @@ public class ResourceProxy {
         XposedBridge.log(TAG + ": " + message);
     }
 
-    private static Map<String,SparseArray<ResourceSpec>> sCache = new HashMap<>();
+    private static SparseArray<ResourceSpec> sCache = new SparseArray<>();
+    private static int getCacheKey(String pkgName, int resId) {
+        return (pkgName + "_" + resId).hashCode();
+    }
 
     public static class ResourceSpec {
-        public String pkgName;
-        public int id;
+        private Interceptor interceptor;
+        public int resId;
         public String name;
         public Object value;
         private boolean isProcessed;
         private boolean isOverridden;
 
-        private ResourceSpec(String pkgName, int id, String name, Object value) {
-            this.pkgName = pkgName;
-            this.id = id;
+        private ResourceSpec(Interceptor interceptor, int resId, String name, Object value) {
+            this.interceptor = interceptor;
+            this.resId = resId;
             this.name = name;
             this.value = value;
+        }
+
+        public String getPackageName() {
+            return interceptor.supportedPackageName;
         }
 
         @Override
         public String toString() {
             return "ResourceSpec{" +
-                    "pkg=" + pkgName +
-                    ", id=" + id +
+                    "pkgName=" + getPackageName() +
+                    ", resId=" + resId +
                     ", name='" + name + '\'' +
                     ", value=" + value +
                     '}';
@@ -65,24 +71,25 @@ public class ResourceProxy {
     }
 
     static abstract class Interceptor {
-        private List<String> mSupportedResourceNames;
-        private List<Integer> mSupportedFakeResIds;
+        private String supportedPackageName;
+        private List<String> supportedResourceNames;
+        private List<Integer> supportedFakeResIds;
+        private boolean isFramework;
+        private Pattern packageNamePattern;
 
-        Interceptor(List<String> supportedResourceNames, List<Integer> supportedFakeResIds) {
-            mSupportedResourceNames = supportedResourceNames;
-            mSupportedFakeResIds = supportedFakeResIds;
+        Interceptor(String packageName ,List<String> supportedResourceNames,
+                    List<Integer> supportedFakeResIds) {
+            this.supportedPackageName = packageName;
+            this.packageNamePattern = Pattern.compile("^" +
+                    this.supportedPackageName.replace(".", "\\.") +
+                    "+((?:\\.\\w+)+)?$");
+            this.isFramework = "android".equals(packageName);
+            this.supportedResourceNames = supportedResourceNames;
+            this.supportedFakeResIds = supportedFakeResIds;
         }
 
-        Interceptor(List<String> supportedResourceNames) {
-            this(supportedResourceNames, new ArrayList<>());
-        }
-
-        List<String> getSupportedResourceNames() {
-            return mSupportedResourceNames;
-        }
-
-        List<Integer> getSupportedFakeResIds() {
-            return mSupportedFakeResIds;
+        Interceptor(String packageName, List<String> supportedResourceNames) {
+            this(packageName, supportedResourceNames, new ArrayList<>());
         }
 
         abstract boolean onIntercept(ResourceSpec resourceSpec);
@@ -105,7 +112,7 @@ public class ResourceProxy {
         }
     }
 
-    private final Map<String, Interceptor> mInterceptors = new HashMap<>();
+    private final List<Interceptor> mInterceptors = new ArrayList<>();
 
     ResourceProxy() {
         createIntegerHook();
@@ -117,11 +124,43 @@ public class ResourceProxy {
         createDrawableHook();
     }
 
-    void addInterceptor(String pkgName, Interceptor interceptor) {
+    void addInterceptor(Interceptor interceptor) {
         synchronized (mInterceptors) {
-            if (!mInterceptors.containsKey(pkgName)) {
-                mInterceptors.put(pkgName, interceptor);
+            if (!mInterceptors.contains(interceptor)) {
+                mInterceptors.add(interceptor);
             }
+        }
+    }
+
+    private Interceptor findInterceptorForFramework() {
+        synchronized (mInterceptors) {
+            return mInterceptors.stream().filter((i) -> i.isFramework)
+                    .findFirst().orElse(null);
+        }
+    }
+
+    private Interceptor findInterceptorForResource(String packageName, String resName) {
+        if (packageName == null || resName == null) return null;
+        Interceptor fwi = findInterceptorForFramework();
+        synchronized (mInterceptors) {
+            for (Interceptor i : mInterceptors) {
+                if (i.packageNamePattern.matcher(packageName).matches()) {
+                    if (i.supportedResourceNames.contains(resName)) {
+                        return i;
+                    } else if (fwi != null && fwi.supportedResourceNames.contains(resName)) {
+                        return  fwi;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private Interceptor findInterceptorForFakeResourceId(int fakeResId) {
+        synchronized (mInterceptors) {
+            return mInterceptors.stream().filter((i) ->
+                    i.supportedFakeResIds.contains(fakeResId))
+                    .findFirst().orElse(null);
         }
     }
 
@@ -129,24 +168,25 @@ public class ResourceProxy {
         @Override
         protected void beforeHookedMethod(MethodHookParam param) {
             final int resId = (int)param.args[0];
-            synchronized (mInterceptors) {
-                for (Interceptor interceptor : mInterceptors.values()) {
-                    if (interceptor.getSupportedFakeResIds().contains(resId)) {
-                        Context gbContext = getGbContext(((Resources) param.thisObject).getConfiguration());
-                        if (gbContext != null) {
-                            Object value = interceptor.onGetFakeResource(gbContext, resId);
-                            if (value != null) {
-                                if (DEBUG) log("onGetFakeResource: resId=" + resId + "; value=" + value);
-                                param.setResult(value);
-                                return;
-                            }
-                        }
-                    }
+            Interceptor i = findInterceptorForFakeResourceId(resId);
+            if (i == null) return;
+
+            Context gbContext = getGbContext(((Resources) param.thisObject).getConfiguration());
+            if (gbContext != null) {
+                Object value = i.onGetFakeResource(gbContext, resId);
+                if (value != null) {
+                    if (DEBUG) log("onGetFakeResource: resId=" + resId + "; value=" + value);
+                    param.setResult(value);
+                    param.getExtra().putBoolean("returnEarly", true);
                 }
             }
         }
         @Override
         protected void afterHookedMethod(MethodHookParam param) {
+            if (param.getExtra().getBoolean("returnEarly")) {
+                if (DEBUG) log(param.method.getName() + " after hook suppressed by before hook");
+                return;
+            }
             Object value = param.getResult();
             ResourceSpec spec = getOrCreateResourceSpec((Resources)param.thisObject,
                     (int)param.args[0], value);
@@ -157,56 +197,34 @@ public class ResourceProxy {
                     }
                     return;
                 }
-                synchronized (mInterceptors) {
-                    if (mInterceptors.containsKey(spec.pkgName)) {
-                        if (mInterceptors.get(spec.pkgName).onIntercept(spec) &&
-                                value.getClass().isAssignableFrom(spec.value.getClass())) {
-                            if (DEBUG) log(param.method.getName() + ": " + spec.toString());
-                            spec.isOverridden = true;
-                            param.setResult(spec.value);
-                        }
-                    }
+                if (spec.interceptor.onIntercept(spec) &&
+                        value.getClass().isAssignableFrom(spec.value.getClass())) {
+                    if (DEBUG) log(param.method.getName() + ": onIntercept: " + spec.toString());
+                    spec.isOverridden = true;
+                    param.setResult(spec.value);
                 }
                 spec.isProcessed = true;
             }
         }
     };
 
-    private ResourceSpec getOrCreateResourceSpec(Resources res, int id, Object value) {
-        final String resPkgName = getResourcePackageName(res, id);
-        if (resPkgName == null)
-            return null;
-        if (sCache.containsKey(resPkgName) && sCache.get(resPkgName).get(id) != null)
-            return sCache.get(resPkgName).get(id);
+    private ResourceSpec getOrCreateResourceSpec(Resources res, int resId, Object value) {
+        String pkgName = getResourcePackageName(res, resId);
+        if (pkgName == null) return null;
 
-        final String name = getResourceEntryName(res, id);
-        if (name == null)
-            return null;
+        int cacheKey = getCacheKey(pkgName, resId);
+        if (sCache.get(cacheKey) != null)
+            return sCache.get(cacheKey);
 
-        ResourceSpec spec = null;
-        synchronized (mInterceptors) {
-            for (Map.Entry<String,Interceptor> entry : mInterceptors.entrySet()) {
-                if (entry.getKey().equals(resPkgName) &&
-                        entry.getValue().getSupportedResourceNames().contains(name)) {
-                    spec = new ResourceSpec(resPkgName, id, name, value);
-                    if (DEBUG) log("New " + spec.toString());
-                }
-            }
-            // handle potential alias pointing to Framework res
-            if (spec == null && mInterceptors.containsKey("android") &&
-                    mInterceptors.containsKey(resPkgName) &&
-                    mInterceptors.get("android").getSupportedResourceNames().contains(name)) {
-                spec = new ResourceSpec("android", id, name, value);
-                if (DEBUG) log("Using android interceptor for " + resPkgName + ": " + spec.toString());
-            }
-            if (spec != null) {
-                if (!sCache.containsKey(resPkgName)) {
-                    sCache.put(resPkgName, new SparseArray<>());
-                }
-                sCache.get(resPkgName).put(id, spec);
-            }
-        }
+        String resName = getResourceEntryName(res, resId);
+        if (resName == null) return null;
 
+        Interceptor i = findInterceptorForResource(pkgName, resName);
+        if (i == null) return null;
+
+        ResourceSpec spec = new ResourceSpec(i, resId, resName, value);
+        if (DEBUG) log("New " + spec.toString());
+        sCache.put(cacheKey, spec);
         return spec;
     }
 

@@ -844,6 +844,5 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">הצמד עוצמות שמע של צילצולים &amp; התראות</string>
-    <string name="pref_link_volumes_summary">כאשר אפשרות זו מבוטלת, ניתן לקבוע עוצמת שמע עבור צילצולים והתראות בנפרד</string>
 
 </resources>

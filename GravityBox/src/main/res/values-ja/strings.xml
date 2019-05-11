@@ -1175,6 +1175,5 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">着信音と通知音の音量をリンクする</string>
-    <string name="pref_link_volumes_summary">無効にすると着信音と通知音の音量を別々に設定できます。</string>
 
 </resources>

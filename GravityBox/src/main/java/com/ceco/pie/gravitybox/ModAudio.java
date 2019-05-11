@@ -39,14 +39,18 @@ public class ModAudio {
     private static QuietHours mQh;
     private static AudioManager mAudioManager;
     private static Object mAudioService;
-    private static boolean mVolumesLinked;
+    private static StreamLink mRingNotifVolumesLinked;
+    private static StreamLink mRingSystemVolumesLinked;
+    private static Integer mNotifStreamAliasOrig;
+    private static Integer mSystemStreamAliasOrig;
 
     private static void log(String message) {
         XposedBridge.log(TAG + ": " + message);
     }
 
-    private static BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+    public enum StreamLink { DEFAULT, LINKED, UNLINKED }
 
+    private static BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (DEBUG) log("Broadcast received: " + intent.toString());
@@ -57,8 +61,15 @@ public class ModAudio {
                     if (DEBUG) log("Force ring volume control set to: " + mVolForceRingControl);
                 }
                 if (intent.hasExtra(GravityBoxSettings.EXTRA_VOL_LINKED)) {
-                    mVolumesLinked = intent.getBooleanExtra(GravityBoxSettings.EXTRA_VOL_LINKED, true);
-                    if (DEBUG) log("mVolumesLinked set to: " + mVolumesLinked);
+                    mRingNotifVolumesLinked = StreamLink.valueOf(
+                            intent.getStringExtra(GravityBoxSettings.EXTRA_VOL_LINKED));
+                    if (DEBUG) log("mRingNotifVolumesLinked set to: " + mRingNotifVolumesLinked);
+                    updateStreamVolumeAlias();
+                }
+                if (intent.hasExtra(GravityBoxSettings.EXTRA_VOL_RINGER_SYSTEM_LINKED)) {
+                    mRingSystemVolumesLinked = StreamLink.valueOf(
+                            intent.getStringExtra(GravityBoxSettings.EXTRA_VOL_RINGER_SYSTEM_LINKED));
+                    if (DEBUG) log("mRingSystemVolumesLinked set to: " + mRingSystemVolumesLinked);
                     updateStreamVolumeAlias();
                 }
             } else if (intent.getAction().equals(QuietHoursActivity.ACTION_QUIET_HOURS_CHANGED)) {
@@ -73,7 +84,10 @@ public class ModAudio {
             final Class<?> classAudioSystem = XposedHelpers.findClass(CLASS_AUDIO_SYSTEM, classLoader);
 
             mQh = new QuietHours(qhPrefs);
-            mVolumesLinked = prefs.getBoolean(GravityBoxSettings.PREF_KEY_LINK_VOLUMES, true);
+            mRingNotifVolumesLinked = StreamLink.valueOf(prefs.getString(
+                    GravityBoxSettings.PREF_KEY_LINK_VOLUMES, "DEFAULT"));
+            mRingSystemVolumesLinked = StreamLink.valueOf(prefs.getString(
+                    GravityBoxSettings.PREF_KEY_LINK_RINGER_SYSTEM_VOLUMES, "DEFAULT"));
 
             XposedBridge.hookAllConstructors(classAudioService, new XC_MethodHook() {
                 @Override
@@ -174,15 +188,39 @@ public class ModAudio {
                 protected void afterHookedMethod(final MethodHookParam param) {
                     if ((Boolean) XposedHelpers.callMethod(param.thisObject, "isPlatformVoice")) {
                         int[] streamVolumeAlias = (int[]) XposedHelpers.getObjectField(param.thisObject, "mStreamVolumeAlias");
-                        streamVolumeAlias[AudioManager.STREAM_NOTIFICATION] = mVolumesLinked ?
-                                AudioManager.STREAM_RING : AudioManager.STREAM_NOTIFICATION;
+                        if (mNotifStreamAliasOrig == null) mNotifStreamAliasOrig = streamVolumeAlias[AudioManager.STREAM_NOTIFICATION];
+                        if (mSystemStreamAliasOrig == null) mSystemStreamAliasOrig = streamVolumeAlias[AudioManager.STREAM_SYSTEM];
+                        streamVolumeAlias[AudioManager.STREAM_NOTIFICATION] = getNotifStreamAlias();
                         if (DEBUG) log("AudioService mStreamVolumeAlias updated, STREAM_NOTIFICATION set to: " +
-                                streamVolumeAlias[AudioManager.STREAM_NOTIFICATION]);
+                                    streamVolumeAlias[AudioManager.STREAM_NOTIFICATION]);
+                        streamVolumeAlias[AudioManager.STREAM_SYSTEM] = getSystemStreamAlias();
+                        if (DEBUG) log("AudioService mStreamVolumeAlias updated, STREAM_SYSTEM set to: " +
+                                streamVolumeAlias[AudioManager.STREAM_SYSTEM]);
                     }
                 }
             });
         } catch(Throwable t) {
             GravityBox.log(TAG, t);
+        }
+    }
+
+    private static int getNotifStreamAlias() {
+        switch (mRingNotifVolumesLinked) {
+            default:
+            case DEFAULT: return mNotifStreamAliasOrig == null ?
+                    AudioManager.STREAM_RING : mNotifStreamAliasOrig;
+            case LINKED: return AudioManager.STREAM_RING;
+            case UNLINKED: return AudioManager.STREAM_NOTIFICATION;
+        }
+    }
+
+    private static int getSystemStreamAlias() {
+        switch (mRingSystemVolumesLinked) {
+            default:
+            case DEFAULT: return mSystemStreamAliasOrig == null ?
+                    AudioManager.STREAM_RING : mSystemStreamAliasOrig;
+            case LINKED: return AudioManager.STREAM_RING;
+            case UNLINKED: return AudioManager.STREAM_SYSTEM;
         }
     }
 

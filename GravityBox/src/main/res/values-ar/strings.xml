@@ -457,6 +457,5 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">ربط الاشعارات بنغمة الرنين</string>
-    <string name="pref_link_volumes_summary">عند التعطيل بإمكانك ضبط حجم الصوت لكل منهما على حدة</string>
 
 </resources>

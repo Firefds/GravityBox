@@ -1512,6 +1512,5 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">Liên kết âm lượng nhạc chuông &amp; âm thông báo</string>
-    <string name="pref_link_volumes_summary">Khi tắt, âm lượng của nhạc chuông và âm thông báo của thể chỉnh riêng rẽ</string>
 
 </resources>

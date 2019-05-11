@@ -38,8 +38,10 @@ public class ModVolumePanel {
 
     private static Object mVolumePanel;
     private static boolean mVolForceRingControl;
-    private static boolean mVolumesLinked;
+    private static ModAudio.StreamLink mRingNotifVolumesLinked;
+    private static ModAudio.StreamLink mRingSystemVolumesLinked;
     private static boolean mVolumePanelExpanded;
+    private static boolean mNotificationStreamRowAddedByGb;
 
     private static void log(String message) {
         XposedBridge.log(TAG + ": " + message);
@@ -55,12 +57,18 @@ public class ModVolumePanel {
                     updateDefaultStream();
                 }
                 if (intent.hasExtra(GravityBoxSettings.EXTRA_VOL_LINKED)) {
-                    mVolumesLinked = intent.getBooleanExtra(GravityBoxSettings.EXTRA_VOL_LINKED, true);
-                    if (DEBUG) log("mVolumesLinked set to: " + mVolumesLinked);
+                    mRingNotifVolumesLinked = ModAudio.StreamLink.valueOf(
+                            intent.getStringExtra(GravityBoxSettings.EXTRA_VOL_LINKED));
+                    if (DEBUG) log("mRingNotifVolumesLinked set to: " + mRingNotifVolumesLinked);
+                }
+                if (intent.hasExtra(GravityBoxSettings.EXTRA_VOL_RINGER_SYSTEM_LINKED)) {
+                    mRingSystemVolumesLinked = ModAudio.StreamLink.valueOf(
+                            intent.getStringExtra(GravityBoxSettings.EXTRA_VOL_RINGER_SYSTEM_LINKED));
+                    if (DEBUG) log("mRingSystemVolumesLinked set to: " + mRingSystemVolumesLinked);
                 }
                 if (intent.hasExtra(GravityBoxSettings.EXTRA_VOL_EXPANDED)) {
                     mVolumePanelExpanded = intent.getBooleanExtra(GravityBoxSettings.EXTRA_VOL_EXPANDED, false);
-                    if (DEBUG) log("mVolumePanelExpanded set to: " + mVolumesLinked);
+                    if (DEBUG) log("mVolumePanelExpanded set to: " + mVolumePanelExpanded);
                 }
             }
         }
@@ -72,7 +80,10 @@ public class ModVolumePanel {
 
             mVolForceRingControl = prefs.getBoolean(
                     GravityBoxSettings.PREF_KEY_VOL_FORCE_RING_CONTROL, false);
-            mVolumesLinked = prefs.getBoolean(GravityBoxSettings.PREF_KEY_LINK_VOLUMES, true);
+            mRingNotifVolumesLinked = ModAudio.StreamLink.valueOf(prefs.getString(
+                    GravityBoxSettings.PREF_KEY_LINK_VOLUMES, "DEFAULT"));
+            mRingSystemVolumesLinked = ModAudio.StreamLink.valueOf(prefs.getString(
+                    GravityBoxSettings.PREF_KEY_LINK_RINGER_SYSTEM_VOLUMES, "DEFAULT"));
             mVolumePanelExpanded = prefs.getBoolean(GravityBoxSettings.PREF_KEY_VOL_EXPANDED, false);
 
             XposedBridge.hookAllConstructors(classVolumePanel, new XC_MethodHook() {
@@ -91,9 +102,7 @@ public class ModVolumePanel {
             XposedHelpers.findAndHookMethod(classVolumePanel, "initDialog", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(final MethodHookParam param) {
-                    if (!Utils.isSamsungRom()) {
-                        prepareNotificationRow();
-                    }
+                    prepareNotificationRow();
                     updateDefaultStream();
                 }
             });
@@ -102,17 +111,20 @@ public class ModVolumePanel {
                 @Override
                 protected void afterHookedMethod(final MethodHookParam param) {
                     int streamType = XposedHelpers.getIntField(param.args[0], "stream");
+                    boolean visible = (boolean) param.getResult();
                     if (mVolumePanelExpanded && (streamType == AudioManager.STREAM_MUSIC ||
                             streamType == AudioManager.STREAM_RING ||
-                            (streamType == AudioManager.STREAM_NOTIFICATION && !mVolumesLinked) ||
+                            (streamType == AudioManager.STREAM_NOTIFICATION &&
+                                    shouldShowNotificationRow(true)) ||
                             streamType == AudioManager.STREAM_ALARM ||
-                            streamType == AudioManager.STREAM_VOICE_CALL)) {
+                            streamType == AudioManager.STREAM_VOICE_CALL ||
+                            (streamType == AudioManager.STREAM_SYSTEM &&
+                                    shouldShowSystemRow(true)))) {
                         param.setResult(true);
-                    } else if (XposedHelpers.getAdditionalInstanceField(
-                            param.args[0], "gbNotifSlider") != null) {
-                        boolean visible = (boolean) param.getResult();
-                        visible &= !mVolumesLinked;
-                        param.setResult(visible);
+                    } else if (streamType == AudioManager.STREAM_NOTIFICATION) {
+                        param.setResult(shouldShowNotificationRow(visible));
+                    } else if (streamType == AudioManager.STREAM_SYSTEM) {
+                        param.setResult(shouldShowSystemRow(visible));
                     }
                 }
             };
@@ -123,8 +135,9 @@ public class ModVolumePanel {
                     CLASS_VOLUME_ROW, boolean.class, int.class, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(final MethodHookParam param) {
-                    if (!mVolumesLinked && XposedHelpers.getAdditionalInstanceField(
-                            param.args[0], "gbNotifSlider") != null) {
+                    int streamType = XposedHelpers.getIntField(param.args[0], "stream");
+                    if (streamType == AudioManager.STREAM_NOTIFICATION &&
+                            mRingNotifVolumesLinked == ModAudio.StreamLink.UNLINKED) {
                         View slider = (View) XposedHelpers.getObjectField(param.args[0], "slider");
                         slider.setEnabled(isRingerSliderEnabled());
                         View icon = (View) XposedHelpers.getObjectField(param.args[0], "icon");
@@ -150,12 +163,21 @@ public class ModVolumePanel {
                     ResourceProxy.getFakeResId("ic_audio_notification"),
                     ResourceProxy.getFakeResId("ic_audio_notification_mute"),
                     true, true);
-            Object row = rows.get(rows.size()-1);
-            XposedHelpers.setAdditionalInstanceField(row, "gbNotifSlider", true);
+            mNotificationStreamRowAddedByGb = true;
             if (DEBUG) log("notification row added");
         } catch (Throwable t) {
             GravityBox.log(TAG, t);
         }
+    }
+
+    private static boolean shouldShowNotificationRow(boolean visible) {
+        return visible && (mNotificationStreamRowAddedByGb ?
+                mRingNotifVolumesLinked == ModAudio.StreamLink.UNLINKED :
+                mRingNotifVolumesLinked != ModAudio.StreamLink.LINKED);
+    }
+
+    private static boolean shouldShowSystemRow(boolean visible) {
+        return visible && (mRingSystemVolumesLinked != ModAudio.StreamLink.LINKED);
     }
 
     private static boolean isRingerSliderEnabled() {

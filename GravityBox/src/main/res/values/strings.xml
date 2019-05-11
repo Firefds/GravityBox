@@ -2039,10 +2039,16 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">Link ringtone &amp; notifications volumes</string>
-    <string name="pref_link_volumes_summary">When disabled, volumes for ringtone and notifications can be set independently</string>
 
     <!-- Expanded volume panel -->
     <string name="pref_volume_panel_expanded_title">Expanded volume panel</string>
     <string name="pref_volume_panel_expanded_summary">Shows volume sliders for all general stream types even if they are not currently active</string>
+
+    <!-- Link/unlink audio stream volumes -->
+    <string name="volumes_linked">Volumes linked</string>
+    <string name="volumes_unlinked">Volumes unlinked</string>
+
+    <!-- Link ringtone & system volumes -->
+    <string name="pref_link_ringer_system_volumes_title">Link ringtone &amp; system volumes</string>
 
 </resources>

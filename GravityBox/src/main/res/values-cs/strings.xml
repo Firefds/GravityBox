@@ -1935,10 +1935,16 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">Spojit hlasitost vyzvánění a notifikací</string>
-    <string name="pref_link_volumes_summary">Pokud je vypnuto, umožňuje nastavit úrovně hlasitosti zvlášť pro vyzvánění a notifikace</string>
 
     <!-- Expanded volume panel -->
     <string name="pref_volume_panel_expanded_title">Rozšířený panel hlasitosti</string>
     <string name="pref_volume_panel_expanded_summary">Zobrazí ovládání všech běžných zvukových kanálů, i když nejsou momentálně aktivní</string>
+
+    <!-- Link/unlink audio stream volumes -->
+    <string name="volumes_linked">Hlasitosti spojené</string>
+    <string name="volumes_unlinked">Hlasitosti rozděleny</string>
+
+    <!-- Link ringtone & system volumes -->
+    <string name="pref_link_ringer_system_volumes_title">Spojit hlasitost vyzvánění a systémových zvuků</string>
 
 </resources>

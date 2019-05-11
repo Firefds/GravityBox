@@ -749,12 +749,13 @@ public class ModStatusBar {
                         // block if requested
                         if (mOngoingNotif.contains(notifData)) {
                             param.setResult(null);
+                            param.getExtra().putBoolean("returnEarly", true);
                             if (DEBUG) log("Ongoing notification " + notifData + " blocked.");
                         }
                     }
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) {
-                        if (mProgressBarCtrl != null) {
+                        if (!param.getExtra().getBoolean("returnEarly") && mProgressBarCtrl != null) {
                             mProgressBarCtrl.onNotificationAdded((StatusBarNotification)param.args[0]);
                         }
                     }

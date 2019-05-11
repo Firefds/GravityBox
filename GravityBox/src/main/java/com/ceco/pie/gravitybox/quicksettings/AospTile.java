@@ -128,13 +128,15 @@ public abstract class AospTile extends BaseTile implements QsEventListener {
                     if (mKey.equals(XposedHelpers.getAdditionalInstanceField(
                             param.thisObject, BaseTile.TILE_KEY_NAME)) &&
                             onBeforeHandleClick()) {
+                        param.getExtra().putBoolean("returnEarly", true);
                         param.setResult(null);
                     }
                 }
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) {
-                    if (mKey.equals(XposedHelpers.getAdditionalInstanceField(
-                            param.thisObject, BaseTile.TILE_KEY_NAME))) {
+                    if (!param.getExtra().getBoolean("returnEarly") &&
+                            mKey.equals(XposedHelpers.getAdditionalInstanceField(
+                                param.thisObject, BaseTile.TILE_KEY_NAME))) {
                         handleClick();
                     }
                 }

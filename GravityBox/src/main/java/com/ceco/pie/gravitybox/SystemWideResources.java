@@ -48,8 +48,7 @@ class SystemWideResources {
                 !tunerPrefs.getBoolean(TunerMainActivity.PREF_KEY_LOCKED, false)) {
             TunerManager.addUserItemKeysToList(TunerManager.Category.FRAMEWORK, resourceNames);
         }
-        sResourceProxy.addInterceptor("android",
-                new ResourceProxy.Interceptor(resourceNames) {
+        sResourceProxy.addInterceptor(new ResourceProxy.Interceptor("android", resourceNames) {
             @Override
             public boolean onIntercept(ResourceProxy.ResourceSpec resourceSpec) {
                 // Advanced tuning has priority
@@ -122,8 +121,10 @@ class SystemWideResources {
                 !tunerPrefs.getBoolean(TunerMainActivity.PREF_KEY_LOCKED, false)) {
             TunerManager.addUserItemKeysToList(TunerManager.Category.SYSTEMUI, resourceNames);
         }
-        sResourceProxy.addInterceptor("com.android.systemui",
-                new ResourceProxy.Interceptor(resourceNames, new ArrayList<>(Arrays.asList(
+        sResourceProxy.addInterceptor(new ResourceProxy.Interceptor(
+                "com.android.systemui",
+                resourceNames,
+                new ArrayList<>(Arrays.asList(
                         ResourceProxy.getFakeResId("ic_audio_notification"),
                         ResourceProxy.getFakeResId("ic_audio_notification_mute")))) {
             @Override

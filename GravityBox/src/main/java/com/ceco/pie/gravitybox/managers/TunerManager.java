@@ -228,7 +228,7 @@ public class TunerManager implements BroadcastSubReceiver {
     }
 
     public static boolean onIntercept(ResourceProxy.ResourceSpec spec) {
-        Category category = getCategoryFor(spec.pkgName);
+        Category category = getCategoryFor(spec.getPackageName());
         if (category != null) {
             TuneableItem item = findUserItemByKey(category, spec.name);
             if (item != null) {

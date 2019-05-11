@@ -1989,6 +1989,9 @@ Devam ederseniz, kendi sorumluluğunuz altındadır ve herhangi bir destek bekle
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">Zil sesi ve bildirim seslerini birleştir</string>
-    <string name="pref_link_volumes_summary">Devre dışı bırakıldığında, zil sesi ve bildirimler için sesler ayrı ayrı ayarlanabilir</string>
 
-</resources>
+    <!-- Expanded volume panel -->
+    <string name="pref_volume_panel_expanded_title">Genişletilmiş ses paneli</string>
+    <string name="pref_volume_panel_expanded_summary">O anda etkin olmasalar bile, tüm genel akış türleri için ses kaydırıcılarını gösterir</string>
+
+ </resources>

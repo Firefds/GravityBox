@@ -1915,6 +1915,5 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">Зв\'язати виклик та повідомлення</string>
-    <string name="pref_link_volumes_summary">Коли вимкнено, гучність повідомлень і виклику можна задавати незалежно</string>
 
 </resources>

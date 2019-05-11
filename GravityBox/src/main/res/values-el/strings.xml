@@ -917,6 +917,5 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">Ένωση εντάσεων Κουδουνίσματος &amp; ειδοποιήσεων</string>
-    <string name="pref_link_volumes_summary">Όταν είναι απενεργοποιημένο, οι εντάσεις των ήχων κλήσης και ειδοποιήσεων μπορούν να οριστούν ανεξάρτητα</string>
 
 </resources>

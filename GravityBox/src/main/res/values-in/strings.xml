@@ -525,6 +525,5 @@
 
     <!-- Link ringtone & notifications volumes -->
     <string name="pref_link_volumes_title">Gabungkan alur ringtone &amp; notifikasi</string>
-    <string name="pref_link_volumes_summary">Ketika dimatikan, alur volume untuk ringtone dan notifikasi bisa di set secara independen</string>
 
 </resources>
